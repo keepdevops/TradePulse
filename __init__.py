@@ -1,6 +1,6 @@
 """
-AI Module for Trading Strategies
-Generates AI-driven trading recommendations to maximize profits and minimize losses.
+Data Grid Module
+Manages stock data collection and visualization from Redline utility and live feeds.
 """
 
 __version__ = "1.0.0"
