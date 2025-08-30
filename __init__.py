@@ -1,6 +1,7 @@
 """
-Data Grid Module
-Manages stock data collection and visualization from Redline utility and live feeds.
+Models Grid Module
+Manages machine learning model workflows and advanced visualization.
+Integrates with Redline's preprocessed data to predict stock price movements.
 """
 
 __version__ = "1.0.0"
