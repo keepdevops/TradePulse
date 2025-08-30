@@ -1,0 +1,202 @@
+version: '3.8'
+
+services:
+  # Message Bus Service
+  message_bus:
+    image: condaforge/mambaforge:latest
+    container_name: tradepulse_message_bus
+    command: >
+      bash -c "
+        conda install -c conda-forge pyzmq -y &&
+        python -c '
+        import zmq
+        context = zmq.Context()
+        socket = context.socket(zmq.PUB)
+        socket.bind(\"tcp://*:5555\")
+        print(\"Message Bus started on port 5555\")
+        import time
+        while True:
+            time.sleep(1)
+        '
+      "
+    ports:
+      - "5555:5555"
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+
+  # Data Grid Service
+  data_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.data_grid
+    container_name: tradepulse_data_grid
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+
+  # Analysis Grid Service
+  analysis_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.analysis_grid
+    container_name: tradepulse_analysis_grid
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+
+  # Models Grid Service
+  models_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.models_grid
+    container_name: tradepulse_models_grid
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./models:/app/models
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+
+  # Trading Grid Service
+  trading_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.trading_grid
+    container_name: tradepulse_trading_grid
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+
+  # Portfolio Grid Service
+  portfolio_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.portfolio_grid
+    container_name: tradepulse_portfolio_grid
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+
+  # AI Module Service
+  ai_module:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai_module
+    container_name: tradepulse_ai_module
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+
+  # Main Application Service
+  main_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.main
+    container_name: tradepulse_main
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+    depends_on:
+      - message_bus
+      - data_grid
+      - analysis_grid
+      - models_grid
+      - trading_grid
+      - portfolio_grid
+      - ai_module
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+    ports:
+      - "8000:8000"
+
+  # PostgreSQL Database (Optional)
+  postgres:
+    image: postgres:16
+    container_name: tradepulse_postgres
+    environment:
+      POSTGRES_DB: tradepulse
+      POSTGRES_USER: tradepulse_user
+      POSTGRES_PASSWORD: tradepulse_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+
+  # Redis Cache (Optional)
+  redis:
+    image: redis:7-alpine
+    container_name: tradepulse_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  tradepulse_network:
+    driver: bridge
+    name: stock_analyzer_network
