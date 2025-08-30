@@ -1,0 +1,109 @@
+{
+  "database": {
+    "type": "duckdb",
+    "path": "./data/redline_data.duckdb",
+    "sqlite_path": "./data/stock_data.db",
+    "postgresql": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "tradepulse",
+      "username": "tradepulse_user",
+      "password": "your_password_here"
+    }
+  },
+  "redline": {
+    "utility_path": "./redline_utility",
+    "output_format": "duckdb",
+    "data_path": "./data/redline_data.duckdb"
+  },
+  "live_feed": {
+    "enabled": true,
+    "api_endpoint": "https://api.schwab.com",
+    "update_interval": 5,
+    "max_tickers": 100
+  },
+  "broker": {
+    "type": "alpaca",
+    "live_feed_api": "https://api.schwab.com",
+    "demo_mode": true,
+    "api_key": "your_api_key_here",
+    "secret_key": "your_secret_key_here",
+    "base_url": "https://paper-api.alpaca.markets"
+  },
+  "models": {
+    "enabled_models": ["lstm", "xgboost", "random_forest", "linear_regression", "adm", "cipo", "bicipo", "prophet", "arima", "transformer", "lightgbm", "garch"],
+    "training": {
+      "test_size": 0.2,
+      "validation_size": 0.1,
+      "random_state": 42,
+      "max_features": 50
+    },
+    "prediction": {
+      "horizon": 5,
+      "confidence_threshold": 0.7
+    }
+  },
+  "visualization": {
+    "theme": "plotly_white",
+    "candlestick_charts": true,
+    "3d_plots": true,
+    "interactive": true,
+    "export_formats": ["png", "html", "pdf"]
+  },
+  "alerts": {
+    "enabled": true,
+    "desktop_notifications": true,
+    "email_notifications": false,
+    "price_thresholds": {
+      "default": 0.05
+    },
+    "indicator_signals": {
+      "rsi_overbought": 70,
+      "rsi_oversold": 30
+    }
+  },
+  "backtest": {
+    "enabled": true,
+    "initial_capital": 100000,
+    "commission": 0.001,
+    "slippage": 0.0005
+  },
+  "sentiment": {
+    "enabled": true,
+    "sources": ["twitter", "news"],
+    "update_interval": 15
+  },
+  "portfolio": {
+    "max_positions": 20,
+    "position_sizing": 0.05,
+    "risk_management": {
+      "max_drawdown": 0.15,
+      "stop_loss": 0.02,
+      "take_profit": 0.06
+    }
+  },
+  "ai_module": {
+    "enabled": true,
+    "strategies": ["trend_following", "mean_reversion", "momentum", "risk_parity"],
+    "risk_management": {
+      "max_correlation": 0.7,
+      "volatility_target": 0.15
+    }
+  },
+  "message_bus": {
+    "host": "localhost",
+    "port": 5555,
+    "timeout": 5000
+  },
+  "logging": {
+    "level": "INFO",
+    "file_path": "./logs",
+    "max_size": "10MB",
+    "backup_count": 5
+  },
+  "performance": {
+    "cache_size": 1000,
+    "max_workers": 4,
+    "batch_size": 100
+  }
+}
