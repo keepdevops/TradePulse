@@ -1,0 +1,226 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \{\
+  "message_bus": \{\
+    "pub_endpoint": "tcp://*:5555",\
+    "sub_endpoint": "tcp://localhost:5555",\
+    "enabled": true\
+  \},\
+  "database": \{\
+    "type": "duckdb",\
+    "path": "/data/redline_data.duckdb",\
+    "sqlite_path": "/data/tradepulse.sqlite",\
+    "postgres_url": "postgresql://user:pass@localhost:5432/tradepulse",\
+    "cache_size_mb": 100,\
+    "connection_pool_size": 10\
+  \},\
+  "redline": \{\
+    "data_path": "/data/redline_data.duckdb",\
+    "input_formats": ["csv", "json", "parquet"],\
+    "preprocessing": \{\
+      "scaler": "MinMaxScaler",\
+      "missing_value_strategy": "forward_fill"\
+    \}\
+  \},\
+  "live_feed": \{\
+    "provider": "schwab",  // Options: "schwab", "fidelity", "mock"\
+    "api_key": "<secure_key>",  // To be stored in vault\
+    "endpoint": "https://api.schwab.com/v1/marketdata",\
+    "refresh_rate_seconds": 60\
+  \},\
+  "data_grid": \{\
+    "enabled": true,\
+    "tickers": ["AAPL", "BTC-USD", "EUR-USD", "GOLD"],\
+    "default_date_range": \{\
+      "start": "2025-01-01",\
+      "end": "2025-08-29"\
+    \},\
+    "export_formats": ["csv", "json", "excel"],\
+    "visualization": \{\
+      "chart_type": "candlestick",\
+      "library": "plotly",\
+      "theme": "dark"\
+    \}\
+  \},\
+  "analysis_grid": \{\
+    "enabled": true,\
+    "indicators": ["rsi", "ma50", "macd", "bollinger_bands"],\
+    "parameters": \{\
+      "rsi_period": 14,\
+      "ma50_period": 50,\
+      "macd_fast": 12,\
+      "macd_slow": 26,\
+      "macd_signal": 9\
+    \},\
+    "visualization": \{\
+      "chart_type": "line",\
+      "library": "mplfinance"\
+    \}\
+  \},\
+  "models_grid": \{\
+    "enabled": true,\
+    "models": ["linear_regression", "random_forest", "lstm", "xgboost", "adm", "cipo", "bicipo", "prophet", "arima", "transformer", "lightgbm", "garch"],\
+    "parameters": \{\
+      "lstm": \{\
+        "units": [50, 100, 200],\
+        "learning_rate": [0.001, 0.01],\
+        "epochs": [10, 50]\
+      \},\
+      "prophet": \{\
+        "changepoint_prior_scale": [0.01, 0.05, 0.1],\
+        "seasonality_mode": ["additive", "multiplicative"]\
+      \},\
+      "arima": \{\
+        "order": [0, 1, 2]\
+      \},\
+      "transformer": \{\
+        "num_layers": [2, 4],\
+        "heads": [4, 8]\
+      \},\
+      "lightgbm": \{\
+        "num_leaves": [31, 63],\
+        "learning_rate": [0.01, 0.1]\
+      \},\
+      "garch": \{\
+        "p": [1, 2],\
+        "q": [1, 2]\
+      \}\
+    \},\
+    "features": ["open", "close", "volume", "rsi", "ma50", "sentiment_score"],\
+    "visualization": \{\
+      "type": "3d_scatter",\
+      "library": "plotly",\
+      "theme": "dark"\
+    \},\
+    "stock_selection": \{\
+      "enabled": true,\
+      "max_assets": 10,\
+      "variance_threshold": 0.05,\
+      "prediction_horizon_days": 30\
+    \}\
+  \},\
+  "trading_grid": \{\
+    "enabled": true,\
+    "risk_management": \{\
+      "max_risk_per_trade_percent": 1,\
+      "stop_loss_percent": 2,\
+      "take_profit_percent": 4,\
+      "risk_reward_ratio": 2\
+    \}\
+  \},\
+  "portfolio_grid": \{\
+    "enabled": true,\
+    "risk_simulation": \{\
+      "method": "monte_carlo",\
+      "iterations": 1000\
+    \}\
+  \},\
+  "rl_module": \{\
+    "enabled": true,\
+    "algorithms": ["q_learning", "dqn", "a2c", "ppo", "ddpg"],\
+    "parameters": \{\
+      "ppo": \{\
+        "learning_rate": [0.0001, 0.001],\
+        "gamma": 0.99,\
+        "episodes": 1000\
+      \},\
+      "dqn": \{\
+        "epsilon": [0.1, 0.5],\
+        "learning_rate": [0.0001, 0.001]\
+      \}\
+    \},\
+    "reward_function": "sharpe_ratio",\
+    "state_features": ["price", "volume", "rsi", "sentiment_score"]\
+  \},\
+  "ai_module": \{\
+    "enabled": true,\
+    "strategies": ["trend_following", "ai_agentic", "risk_management", "diversification"],\
+    "trend_following": \{\
+      "indicators": ["ma_crossover", "fvg", "order_blocks"],\
+      "ma_short_period": 21,\
+      "ma_long_period": 50,\
+      "risk_reward_ratio": 2\
+    \},\
+    "ai_agentic": \{\
+      "model": "lstm_cnn",\
+      "accuracy_threshold": 0.94,\
+      "sentiment_sources": ["x", "news"],\
+      "fomo_detection": true\
+    \},\
+    "risk_management": \{\
+      "max_risk_per_trade_percent": 1,\
+      "leverage_max": 5,\
+      "position_sizing": "dynamic"\
+    \},\
+    "diversification": \{\
+      "asset_classes": ["stocks", "crypto", "forex", "commodities"],\
+      "max_allocation_percent_per_asset": 20\
+    \},\
+    "visualization": \{\
+      "type": "decision_boundary",\
+      "library": "plotly",\
+      "theme": "dark"\
+    \}\
+  \},\
+  "alerts": \{\
+    "enabled": true,\
+    "thresholds": \{\
+      "rsi_overbought": 70,\
+      "rsi_oversold": 30,\
+      "price_drop_percent": 5\
+    \},\
+    "notification_types": ["desktop", "email"]\
+  \},\
+  "backtest": \{\
+    "enabled": true,\
+    "metrics": ["sharpe_ratio", "max_drawdown", "win_rate"],\
+    "default_period_years": 5\
+  \},\
+  "sentiment": \{\
+    "enabled": true,\
+    "sources": ["x", "news"],\
+    "nlp_model": "transformers"\
+  \},\
+  "dashboards": \{\
+    "enabled": true,\
+    "theme": "dark",\
+    "export_format": "html"\
+  \},\
+  "broker_integration": \{\
+    "enabled": true,\
+    "provider": "schwab",\
+    "api_key": "<secure_key>",\
+    "demo_mode": false\
+  \},\
+  "cloud_sync": \{\
+    "enabled": true,\
+    "provider": "aws_s3",\
+    "bucket": "tradepulse-data",\
+    "sync_interval_minutes": 15\
+  \},\
+  "auth": \{\
+    "enabled": true,\
+    "method": "jwt",\
+    "role": ["trader", "viewer"]\
+  \},\
+  "kubernetes": \{\
+    "enabled": false,\
+    "namespace": "tradepulse",\
+    "replicas": \{\
+      "data_grid": 3,\
+      "models_grid": 2,\
+      "ai_module": 2\
+    \},\
+    "autoscaling": \{\
+      "enabled": true,\
+      "min_replicas": 1,\
+      "max_replicas": 10,\
+      "cpu_utilization_target": 50\
+    \}\
+  \}\
+\}}
