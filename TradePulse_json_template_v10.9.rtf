@@ -1,0 +1,692 @@
+TradePulse Configuration Template v10.9
+===========================================
+
+This template provides the complete configuration structure for TradePulse v10.9, including all refactored modules, comprehensive component architecture, and the completed Phase 6 refactoring eliminating duplicate code and breaking down all files over 200 lines into focused, modular components.
+
+{
+  "version": "10.9",
+  "name": "TradePulse",
+  "description": "Advanced Trading and Portfolio Management Platform with Complete Modular Refactoring",
+  "last_updated": "2025-08-31",
+  "author": "Bret Kuhne",
+  "maintainer": "Grok (xAI)",
+
+  "system_info": {
+    "architecture": "microservices",
+    "deployment": "docker",
+    "ui_framework": "panel",
+    "message_bus": "zeromq",
+    "primary_database": "duckdb",
+    "cache_layer": "redis",
+    "monitoring": "prometheus_grafana",
+    "refactoring_status": "COMPLETED_PHASE_6"
+  },
+
+  "refactoring_summary": {
+    "phases_completed": 6,
+    "total_files_refactored": 11,
+    "components_created": 55,
+    "duplicate_code_eliminated": true,
+    "max_file_size_enforced": 200,
+    "single_responsibility_principle": "implemented",
+    "comprehensive_testing": "verified"
+  },
+
+  "docker_config": {
+    "development_profile": {
+      "services": [
+        "message_bus",
+        "database", 
+        "modular_panel_ui",
+        "redis"
+      ],
+      "ports": {
+        "ui": 5006,
+        "message_bus_pub": 5555,
+        "message_bus_sub": 5556,
+        "database": 5432,
+        "duckdb_http": 8000,
+        "redis": 6379
+      },
+      "volumes": [
+        "./data:/app/data",
+        "./config:/app/config", 
+        "./logs:/app/logs",
+        ".:/app"
+      ]
+    },
+    "production_profile": {
+      "services": [
+        "message_bus",
+        "database",
+        "modular_panel_ui", 
+        "nginx",
+        "redis",
+        "prometheus",
+        "grafana"
+      ],
+      "ports": {
+        "ui": 5006,
+        "nginx_http": 80,
+        "nginx_https": 443,
+        "message_bus_pub": 5555,
+        "message_bus_sub": 5556,
+        "database": 5432,
+        "duckdb_http": 8000,
+        "redis": 6379,
+        "prometheus": 9090,
+        "grafana": 3000
+      },
+      "ssl": {
+        "enabled": true,
+        "cert_path": "./ssl/cert.pem",
+        "key_path": "./ssl/key.pem"
+      }
+    },
+    "networks": {
+      "development": "172.21.0.0/16",
+      "production": "172.20.0.0/16"
+    },
+    "health_checks": {
+      "enabled": true,
+      "interval": "30s",
+      "timeout": "10s",
+      "retries": 3
+    }
+  },
+
+  "refactored_modules": {
+    "alerts_module": {
+      "path": "modular_panels/alerts/",
+      "components": [
+        "alert_manager.py",
+        "alert_conditions.py", 
+        "alert_notifications.py",
+        "alerts_panel.py"
+      ],
+      "responsibilities": [
+        "Alert creation and management",
+        "Condition evaluation logic",
+        "Notification delivery system",
+        "UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "charts_module": {
+      "path": "modular_panels/charts/",
+      "components": [
+        "chart_manager.py",
+        "chart_data_processor.py",
+        "chart_export.py",
+        "charts_panel.py"
+      ],
+      "responsibilities": [
+        "Chart lifecycle management",
+        "Data preparation for visualization",
+        "Export and saving functionality",
+        "UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "ai_module": {
+      "path": "modular_panels/ai/",
+      "components": [
+        "model_manager.py",
+        "training_engine.py",
+        "prediction_engine.py",
+        "ai_panel.py"
+      ],
+      "responsibilities": [
+        "AI model configuration and management",
+        "Model training operations",
+        "Prediction generation and management",
+        "UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "portfolio_module": {
+      "path": "modular_panels/portfolio/",
+      "components": [
+        "portfolio_manager.py",
+        "portfolio_optimizer.py",
+        "portfolio_risk.py",
+        "portfolio_panel.py"
+      ],
+      "responsibilities": [
+        "Portfolio data and position management",
+        "Optimization strategies (Markowitz, Risk Parity)",
+        "Risk calculations (VaR, Max Drawdown)",
+        "UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "data_module": {
+      "path": "ui_components/data/",
+      "components": [
+        "dataset_registry.py",
+        "data_manager.py",
+        "data_processor.py",
+        "data_metrics.py"
+      ],
+      "responsibilities": [
+        "Dataset metadata and availability management",
+        "Core data operations and lifecycle",
+        "Data cleaning and transformation",
+        "Comprehensive dataset metrics calculation"
+      ],
+      "status": "refactored"
+    },
+
+    "dataset_selector_module": {
+      "path": "modular_panels/dataset_selector/",
+      "components": [
+        "dataset_browser.py",
+        "dataset_activator.py",
+        "dataset_preview.py",
+        "dataset_selector_component.py"
+      ],
+      "responsibilities": [
+        "Dataset discovery and navigation",
+        "Dataset activation and loading",
+        "Data preview and validation",
+        "UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "data_upload_module": {
+      "path": "modular_panels/data_upload/",
+      "components": [
+        "format_detector.py",
+        "file_processor.py",
+        "upload_manager.py",
+        "data_upload_component.py"
+      ],
+      "responsibilities": [
+        "File format detection and validation",
+        "Multi-format file processing",
+        "Upload UI and workflow management",
+        "UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "ui_panels_module": {
+      "path": "ui_panels/",
+      "components": [
+        "header_component.py",
+        "control_panel.py",
+        "data_displays.py",
+        "chart_manager.py",
+        "portfolio_widgets.py",
+        "panel_ui.py"
+      ],
+      "responsibilities": [
+        "Application header and navigation",
+        "Trading controls and symbol selection",
+        "Market data and price displays",
+        "Chart management and updates",
+        "Portfolio summary and metrics",
+        "Main UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "modular_panels_module": {
+      "path": "modular_panels/",
+      "components": [
+        "base_component.py",
+        "component_registry.py",
+        "module_integration.py",
+        "ui_factory.py",
+        "modular_panel_ui.py"
+      ],
+      "responsibilities": [
+        "Abstract base class for all UI components",
+        "Component registration and duplicate detection",
+        "Cross-module integration management",
+        "Factory pattern for UI component creation",
+        "Main modular UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "integrated_panels_module": {
+      "path": "integrated_panels/",
+      "components": [
+        "tradepulse_integration.py",
+        "ui_orchestrator.py",
+        "system_monitor.py",
+        "performance_tracker.py",
+        "integrated_panel_ui.py"
+      ],
+      "responsibilities": [
+        "Core system integration management",
+        "UI component orchestration and layout",
+        "System health monitoring and metrics",
+        "Performance tracking and optimization",
+        "Main integrated UI orchestration"
+      ],
+      "status": "refactored"
+    },
+
+    "demo_panels_module": {
+      "path": "demo_panels/",
+      "components": [
+        "demo_data_generator.py",
+        "demo_ui_components.py",
+        "demo_chart_manager.py",
+        "demo_controller.py",
+        "demo_panel_ui.py"
+      ],
+      "responsibilities": [
+        "Sample data generation and management",
+        "Demo-specific UI component management",
+        "Demo chart creation and updates",
+        "Demo system lifecycle management",
+        "Main demo UI orchestration"
+      ],
+      "status": "refactored"
+    }
+  },
+
+  "modular_panel_ui": {
+    "panels": {
+      "data_panel": {
+        "name": "Data Management",
+        "description": "Data fetching, symbol selection, and data preview",
+        "features": [
+          "symbol_selector",
+          "timeframe_selector", 
+          "data_source_selector",
+          "data_preview_table",
+          "data_statistics",
+          "export_functionality"
+        ],
+        "data_sources": [
+          "redline_data",
+          "live_feeds",
+          "csv_files",
+          "json_files",
+          "excel_files"
+        ],
+        "status": "refactored"
+      },
+
+      "models_panel": {
+        "name": "AI/ML Models",
+        "description": "Machine learning model management and predictions",
+        "features": [
+          "model_selection",
+          "training_interface",
+          "prediction_display",
+          "performance_metrics",
+          "model_comparison"
+        ],
+        "models": [
+          "ADM",
+          "CIPO", 
+          "BICIPO",
+          "Prophet",
+          "ARIMA",
+          "Transformer",
+          "LightGBM",
+          "GARCH"
+        ],
+        "status": "refactored"
+      },
+
+      "portfolio_panel": {
+        "name": "Portfolio Management",
+        "description": "Portfolio tracking, optimization, and risk management",
+        "features": [
+          "portfolio_overview",
+          "position_tracking",
+          "performance_metrics",
+          "risk_analysis",
+          "optimization_tools"
+        ],
+        "optimization_strategies": [
+          "markowitz",
+          "risk_parity",
+          "black_litterman"
+        ],
+        "status": "refactored"
+      },
+
+      "alerts_panel": {
+        "name": "Alert Management",
+        "description": "Real-time alerts and notifications",
+        "features": [
+          "alert_creation",
+          "condition_setup",
+          "notification_delivery",
+          "alert_history",
+          "escalation_rules"
+        ],
+        "alert_types": [
+          "price_alerts",
+          "volume_alerts",
+          "technical_indicator_alerts",
+          "portfolio_alerts"
+        ],
+        "status": "refactored"
+      },
+
+      "charts_panel": {
+        "name": "Advanced Charting",
+        "description": "Interactive charts and technical analysis",
+        "features": [
+          "candlestick_charts",
+          "technical_indicators",
+          "drawing_tools",
+          "chart_export",
+          "multi_timeframe"
+        ],
+        "chart_types": [
+          "line",
+          "candlestick",
+          "bar",
+          "scatter",
+          "heatmap"
+        ],
+        "status": "refactored"
+      },
+
+      "system_panel": {
+        "name": "System Monitoring",
+        "description": "System health, performance, and configuration",
+        "features": [
+          "system_status",
+          "performance_metrics",
+          "log_viewer",
+          "configuration_editor",
+          "health_checks"
+        ],
+        "monitoring": [
+          "cpu_usage",
+          "memory_usage",
+          "disk_usage",
+          "network_usage"
+        ],
+        "status": "refactored"
+      }
+    },
+
+    "core_components": {
+      "base_component": {
+        "description": "Abstract base class for all UI components",
+        "features": [
+          "standardized_initialization",
+          "callback_management",
+          "metadata_handling",
+          "validation_support",
+          "refresh_clear_export"
+        ]
+      },
+
+      "component_registry": {
+        "description": "Component registration and duplicate detection",
+        "features": [
+          "component_tracking",
+          "duplicate_detection",
+          "usage_statistics",
+          "template_management",
+          "cleanup_utilities"
+        ]
+      },
+
+      "module_integration": {
+        "description": "Cross-module integration management",
+        "features": [
+          "dependency_management",
+          "shared_component_access",
+          "communication_orchestration",
+          "state_synchronization"
+        ]
+      }
+    }
+  },
+
+  "data_management": {
+    "supported_formats": [
+      "csv",
+      "json", 
+      "excel",
+      "parquet",
+      "feather",
+      "duckdb",
+      "sqlite"
+    ],
+    "data_sources": {
+      "redline": {
+        "description": "Data conversion utility",
+        "supported_inputs": ["txt", "csv"],
+        "supported_outputs": ["duckdb", "sqlite", "json"],
+        "features": ["format_detection", "validation", "conversion"]
+      },
+      "live_feeds": {
+        "description": "Real-time market data",
+        "protocols": ["websocket", "rest_api"],
+        "update_frequency": "real_time",
+        "features": ["streaming", "historical", "snapshots"]
+      }
+    },
+    "processing": {
+      "validation": ["data_types", "ranges", "completeness"],
+      "cleaning": ["missing_values", "outliers", "duplicates"],
+      "transformation": ["normalization", "scaling", "encoding"],
+      "quality": ["metrics", "monitoring", "alerts"]
+    }
+  },
+
+  "ai_ml_models": {
+    "time_series": {
+      "prophet": {
+        "description": "Facebook's time series forecasting",
+        "use_case": "long_term_forecasting",
+        "parameters": ["changepoint_prior_scale", "seasonality_prior_scale"]
+      },
+      "arima": {
+        "description": "Autoregressive Integrated Moving Average",
+        "use_case": "short_term_forecasting",
+        "parameters": ["p", "d", "q"]
+      },
+      "transformer": {
+        "description": "Attention-based neural network",
+        "use_case": "complex_pattern_recognition",
+        "parameters": ["n_heads", "n_layers", "d_model"]
+      }
+    },
+    "gradient_boosting": {
+      "lightgbm": {
+        "description": "Microsoft's gradient boosting framework",
+        "use_case": "structured_data_prediction",
+        "parameters": ["num_leaves", "learning_rate", "n_estimators"]
+      }
+    },
+    "volatility": {
+      "garch": {
+        "description": "Generalized Autoregressive Conditional Heteroskedasticity",
+        "use_case": "volatility_forecasting",
+        "parameters": ["p", "q"]
+      }
+    },
+    "custom_models": {
+      "adm": {
+        "description": "Custom trading model",
+        "use_case": "price_direction_prediction",
+        "status": "integrated"
+      },
+      "cipo": {
+        "description": "Custom optimization model", 
+        "use_case": "portfolio_optimization",
+        "status": "integrated"
+      },
+      "bicip": {
+        "description": "Custom risk model",
+        "use_case": "risk_assessment",
+        "status": "integrated"
+      }
+    }
+  },
+
+  "portfolio_management": {
+    "optimization_strategies": {
+      "markowitz": {
+        "description": "Modern Portfolio Theory",
+        "objective": "maximize_return_minimize_risk",
+        "constraints": ["budget", "long_only", "sector_limits"]
+      },
+      "risk_parity": {
+        "description": "Equal risk contribution",
+        "objective": "equalize_risk_contribution",
+        "constraints": ["budget", "long_only"]
+      },
+      "black_litterman": {
+        "description": "Bayesian portfolio optimization",
+        "objective": "incorporate_views",
+        "constraints": ["budget", "long_only"]
+      }
+    },
+    "risk_metrics": {
+      "var": {
+        "description": "Value at Risk",
+        "confidence_levels": [0.95, 0.99],
+        "time_horizons": ["1d", "1w", "1m"]
+      },
+      "max_drawdown": {
+        "description": "Maximum historical drawdown",
+        "calculation": "peak_to_trough",
+        "time_period": "rolling"
+      },
+      "sharpe_ratio": {
+        "description": "Risk-adjusted return",
+        "risk_free_rate": "configurable",
+        "time_period": "annualized"
+      }
+    }
+  },
+
+  "testing_configuration": {
+    "test_suites": {
+      "unit_tests": {
+        "framework": "pytest",
+        "coverage_target": "90%",
+        "components": "all_refactored_modules"
+      },
+      "integration_tests": {
+        "framework": "pytest",
+        "focus": "cross_module_communication",
+        "components": "module_interactions"
+      },
+      "performance_tests": {
+        "framework": "custom",
+        "metrics": ["response_time", "throughput", "memory_usage"],
+        "targets": ["sub_second_queries", "1000_concurrent_users"]
+      }
+    },
+    "test_data": {
+      "synthetic_data": "generated_for_testing",
+      "historical_data": "redline_converted",
+      "mock_services": "for_isolated_testing"
+    }
+  },
+
+  "deployment_configuration": {
+    "environments": {
+      "development": {
+        "docker_profile": "development",
+        "logging_level": "DEBUG",
+        "monitoring": "basic",
+        "data_persistence": "local"
+      },
+      "staging": {
+        "docker_profile": "production",
+        "logging_level": "INFO", 
+        "monitoring": "comprehensive",
+        "data_persistence": "shared"
+      },
+      "production": {
+        "docker_profile": "production",
+        "logging_level": "WARNING",
+        "monitoring": "enterprise",
+        "data_persistence": "distributed"
+      }
+    },
+    "scaling": {
+      "auto_scaling": true,
+      "min_instances": 2,
+      "max_instances": 10,
+      "scale_up_threshold": "70%_cpu",
+      "scale_down_threshold": "30%_cpu"
+    }
+  },
+
+  "monitoring_configuration": {
+    "metrics_collection": {
+      "prometheus": {
+        "port": 9090,
+        "scrape_interval": "15s",
+        "metrics": ["cpu", "memory", "disk", "network", "custom"]
+      }
+    },
+    "visualization": {
+      "grafana": {
+        "port": 3000,
+        "dashboards": ["system_overview", "performance", "business_metrics"],
+        "alerts": ["threshold_based", "anomaly_detection"]
+      }
+    },
+    "logging": {
+      "centralized": true,
+      "format": "structured_json",
+      "retention": "90_days",
+      "search": "elasticsearch"
+    }
+  },
+
+  "security_configuration": {
+    "authentication": {
+      "method": "jwt",
+      "expiry": "24h",
+      "refresh": true,
+      "mfa": "optional"
+    },
+    "authorization": {
+      "rbac": true,
+      "roles": ["user", "analyst", "admin"],
+      "permissions": "granular"
+    },
+    "encryption": {
+      "in_transit": "TLS_1.3",
+      "at_rest": "AES_256",
+      "key_management": "aws_kms"
+    }
+  },
+
+  "performance_configuration": {
+    "optimization": {
+      "m3_silicon": true,
+      "arm64_optimization": true,
+      "vectorization": "enabled",
+      "parallel_processing": "enabled"
+    },
+    "caching": {
+      "redis": {
+        "max_memory": "2gb",
+        "eviction_policy": "lru",
+        "persistence": "rdb_aof"
+      },
+      "application": {
+        "data_cache": "enabled",
+        "query_cache": "enabled",
+        "session_cache": "enabled"
+      }
+    }
+  }
+}

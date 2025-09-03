@@ -1,111 +1,171 @@
 #!/usr/bin/env python3
 """
-Message Bus Server
-Simple ZeroMQ broker that routes messages between modules.
+TradePulse Message Bus Server v10.11
+ZeroMQ-based message bus for inter-service communication
 """
 
 import zmq
 import json
+import logging
+import os
 import time
-import threading
-from typing import Dict, Set
-from utils.logger import setup_logger
+from datetime import datetime
+from typing import Dict, Any, Optional
 
-logger = setup_logger(__name__)
-
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 class MessageBusServer:
-    """Simple ZeroMQ message broker for routing messages between modules."""
+    """ZeroMQ-based message bus server for inter-service communication"""
     
-    def __init__(self, host: str = "localhost", port: int = 5555):
-        """Initialize the message bus server."""
-        self.host = host
+    def __init__(self, port: int = 5555):
         self.port = port
         self.context = zmq.Context()
-        
-        # Socket for receiving from publishers
-        self.publisher_socket = self.context.socket(zmq.SUB)
-        self.publisher_socket.bind(f"tcp://{host}:{port}")
-        self.publisher_socket.setsockopt_string(zmq.SUBSCRIBE, "")
-        
-        # Socket for sending to subscribers
-        self.subscriber_socket = self.context.socket(zmq.PUB)
-        self.subscriber_socket.bind(f"tcp://{host}:{port + 1}")
-        
+        self.socket = self.context.socket(zmq.REP)
         self.running = False
+        self.subscribers: Dict[str, list] = {}
+        self.message_history: list = []
         
-        logger.info(f"Message Bus Server initialized on {host}:{port} (publishers) and {host}:{port + 1} (subscribers)")
-    
     def start(self):
-        """Start the message bus server."""
-        if self.running:
-            logger.warning("Message Bus Server already running")
-            return
-        
-        self.running = True
-        logger.info("Starting Message Bus Server...")
-        
-        # Start message routing thread
-        self.routing_thread = threading.Thread(target=self._route_messages, daemon=True)
-        self.routing_thread.start()
-        
-        logger.info("Message Bus Server started successfully")
-    
-    def stop(self):
-        """Stop the message bus server."""
-        self.running = False
-        if hasattr(self, 'routing_thread'):
-            self.routing_thread.join(timeout=5)
-        
-        self.publisher_socket.close()
-        self.subscriber_socket.close()
-        self.context.term()
-        
-        logger.info("Message Bus Server stopped")
-    
-    def _route_messages(self):
-        """Route messages from publishers to subscribers."""
-        logger.info("Message routing started")
-        
-        while self.running:
-            try:
-                # Receive message from publisher
-                message = self.publisher_socket.recv_string(flags=zmq.NOBLOCK)
-                if message:
-                    logger.info(f"📥 Received from publisher: {message}")
-                    
-                    # Forward to all subscribers
-                    self.subscriber_socket.send_string(message)
-                    logger.info(f"📤 Forwarded to subscribers: {message}")
-                
-            except zmq.Again:
-                # No message available
-                pass
-            except Exception as e:
-                if self.running:
-                    logger.error(f"Error in message routing: {e}")
-                time.sleep(0.1)
-    
-    def run_forever(self):
-        """Run the server forever."""
+        """Start the message bus server"""
         try:
-            self.start()
-            logger.info("Message Bus Server running. Press Ctrl+C to stop.")
+            self.socket.bind(f"tcp://*:{self.port}")
+            logger.info(f"Message Bus Server started on port {self.port}")
+            self.running = True
             
-            while True:
-                time.sleep(1)
-                
-        except KeyboardInterrupt:
-            logger.info("Received interrupt signal")
+            while self.running:
+                try:
+                    # Wait for message with timeout
+                    message = self.socket.recv_json(flags=zmq.NOBLOCK)
+                    response = self._handle_message(message)
+                    self.socket.send_json(response)
+                except zmq.Again:
+                    # No message received, continue
+                    time.sleep(0.1)
+                except Exception as e:
+                    logger.error(f"Error handling message: {e}")
+                    self.socket.send_json({"status": "error", "message": str(e)})
+                    
+        except Exception as e:
+            logger.error(f"Failed to start Message Bus Server: {e}")
+            raise
         finally:
             self.stop()
-
+    
+    def stop(self):
+        """Stop the message bus server"""
+        self.running = False
+        if self.socket:
+            self.socket.close()
+        if self.context:
+            self.context.term()
+        logger.info("Message Bus Server stopped")
+    
+    def _handle_message(self, message: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle incoming messages"""
+        try:
+            msg_type = message.get("type", "")
+            msg_data = message.get("data", {})
+            
+            logger.info(f"Received message type: {msg_type}")
+            
+            if msg_type == "subscribe":
+                return self._handle_subscribe(msg_data)
+            elif msg_type == "publish":
+                return self._handle_publish(msg_data)
+            elif msg_type == "request":
+                return self._handle_request(msg_data)
+            elif msg_type == "ping":
+                return {"status": "success", "message": "pong", "timestamp": datetime.now().isoformat()}
+            else:
+                return {"status": "error", "message": f"Unknown message type: {msg_type}"}
+                
+        except Exception as e:
+            logger.error(f"Error handling message: {e}")
+            return {"status": "error", "message": str(e)}
+    
+    def _handle_subscribe(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle subscription requests"""
+        topic = data.get("topic", "")
+        if topic:
+            if topic not in self.subscribers:
+                self.subscribers[topic] = []
+            # In a real implementation, you'd store the subscriber's address
+            logger.info(f"Subscription to topic: {topic}")
+            return {"status": "success", "message": f"Subscribed to {topic}"}
+        return {"status": "error", "message": "No topic specified"}
+    
+    def _handle_publish(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle publish requests"""
+        topic = data.get("topic", "")
+        message = data.get("message", {})
+        
+        if topic and message:
+            # Store message in history
+            self.message_history.append({
+                "topic": topic,
+                "message": message,
+                "timestamp": datetime.now().isoformat()
+            })
+            
+            # Keep only last 1000 messages
+            if len(self.message_history) > 1000:
+                self.message_history = self.message_history[-1000:]
+            
+            logger.info(f"Published to topic: {topic}")
+            return {"status": "success", "message": f"Published to {topic}"}
+        
+        return {"status": "error", "message": "Topic and message required"}
+    
+    def _handle_request(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle general requests"""
+        request_type = data.get("request_type", "")
+        
+        if request_type == "status":
+            return {
+                "status": "success",
+                "data": {
+                    "running": self.running,
+                    "port": self.port,
+                    "subscribers_count": len(self.subscribers),
+                    "message_history_count": len(self.message_history),
+                    "timestamp": datetime.now().isoformat()
+                }
+            }
+        elif request_type == "history":
+            return {
+                "status": "success",
+                "data": {
+                    "history": self.message_history[-100:]  # Last 100 messages
+                }
+            }
+        else:
+            return {"status": "error", "message": f"Unknown request type: {request_type}"}
 
 def main():
-    """Main entry point for the Message Bus Server."""
-    server = MessageBusServer()
-    server.run_forever()
-
+    """Main entry point for the message bus server"""
+    # Get port from environment or use default
+    port = int(os.getenv("ZMQ_PORT", "5555"))
+    
+    # Create and start server
+    server = MessageBusServer(port=port)
+    
+    try:
+        logger.info("Starting TradePulse Message Bus Server v10.11")
+        server.start()
+    except KeyboardInterrupt:
+        logger.info("Received interrupt signal, shutting down...")
+    except Exception as e:
+        logger.error(f"Fatal error: {e}")
+        raise
+    finally:
+        server.stop()
 
 if __name__ == "__main__":
     main()
+
+

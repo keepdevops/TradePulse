@@ -1,0 +1,256 @@
+services:
+  # Message Bus Service - Core communication hub
+  message_bus:
+    build:
+      context: .
+      dockerfile: Dockerfile.message_bus
+    container_name: tradepulse_message_bus
+    ports:
+      - "5555:5555"
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import zmq; print('Message Bus healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=message_bus
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - ZMQ_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+
+  # AI Module Service
+  ai_module:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai_module
+    container_name: tradepulse_ai_module
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('AI Module healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=ai_module
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./data:/app/data
+
+  # Data Grid Service
+  data_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.data_grid
+    container_name: tradepulse_data_grid
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('Data Grid healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=data_grid
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./data:/app/data
+
+  # Models Grid Service
+  models_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.models_grid
+    container_name: tradepulse_models_grid
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('Models Grid healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=models_grid
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./data:/app/data
+
+  # Analysis Grid Service
+  analysis_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.analysis_grid
+    container_name: tradepulse_analysis_grid
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('Analysis Grid healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=analysis_grid
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./data:/app/data
+
+  # Trading Grid Service
+  trading_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.trading_grid
+    container_name: tradepulse_trading_grid
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('Trading Grid healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=trading_grid
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./data:/app/data
+
+  # Portfolio Grid Service
+  portfolio_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.portfolio_grid
+    container_name: tradepulse_portfolio_grid
+    depends_on:
+      - message_bus
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('Portfolio Grid healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=portfolio_grid
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./data:/app/data
+
+  # Testing Service
+  testing:
+    build:
+      context: .
+      dockerfile: Dockerfile.testing
+    container_name: tradepulse_testing
+    depends_on:
+      - message_bus
+      - ai_module
+      - data_grid
+      - models_grid
+    networks:
+      - tradepulse_network
+    restart: "no"
+    environment:
+      - SERVICE_NAME=testing
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./tests:/app/tests
+
+  # Main Application Service
+  main_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.main
+    container_name: tradepulse_main_app
+    depends_on:
+      - message_bus
+      - ai_module
+      - data_grid
+      - models_grid
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('Main App healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=main_app
+      - VERSION=10.11
+      - LOG_LEVEL=INFO
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PORT=5555
+    volumes:
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+      - ./data:/app/data
+
+networks:
+  tradepulse_network:
+    driver: bridge
+    name: tradepulse_network_v10_11_full
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  tradepulse_data:
+    driver: local
+  tradepulse_logs:
+    driver: local

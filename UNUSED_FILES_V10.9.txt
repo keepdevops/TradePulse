@@ -1,0 +1,594 @@
+================================================================================
+                    UNUSED FILES IN V10.9 SCRIPT
+================================================================================
+
+SUMMARY:
+- Total Python files: 497
+- V10.9 refactored files: 229
+- Unused files: 268
+- Unused percentage: 53.9%
+
+================================================================================
+                                CATEGORIES
+================================================================================
+
+
+OLD MONOLITHIC FILES (1 files):
+------------------------------------------------------------
+  1. modular_panel_ui_main.py
+
+OLD TEST FILES (40 files):
+------------------------------------------------------------
+  1. test_all_modules_integration.py
+  2. test_communication.py
+  3. test_communication_manager.py
+  4. test_components.py
+  5. test_data_creator.py
+  6. test_data_integration.py
+  7. test_docker_ui.py
+  8. test_enhanced_data_upload.py
+  9. test_integration_ai.py
+ 10. test_integration_alerts.py
+ 11. test_integration_charts.py
+ 12. test_integration_data_sharing.py
+ 13. test_integration_portfolio.py
+ 14. test_integration_workflow.py
+ 15. test_interactive_communication.py
+ 16. test_message_handler.py
+ 17. test_messaging_comprehensive.py
+ 18. test_modular_ui.py
+ 19. test_modules/__init__.py
+ 20. test_modules/messaging_test_utils.py
+ 21. test_modules/messaging_tester.py
+ 22. test_modules/portfolio_optimization_tester.py
+ 23. test_modules/risk_assessment_tester.py
+ 24. test_modules/strategy_tester.py
+ 25. test_panel_ui.py
+ 26. test_portfolio_optimization.py
+ 27. tests/portfolio_optimization/test_logger.py
+ 28. tests/portfolio_optimization/test_portfolio_optimization.py
+ 29. tests/portfolio_optimization/test_request_creator.py
+ 30. tests/portfolio_optimization/test_response_validator.py
+ 31. tests/portfolio_optimization/test_results_manager.py
+ 32. tests/portfolio_optimization/test_risk_assessment.py
+ 33. tests/portfolio_optimization/test_runner.py
+ 34. tests/portfolio_optimization/test_strategy_generation.py
+ 35. tests/portfolio_optimization/test_utilities.py
+ 36. tests/portfolio_optimization/test_validator.py
+ 37. tests/test_components.py
+ 38. tests/test_data_creator.py
+ 39. tests/test_integration.py
+ 40. tests/test_utilities.py
+
+OLD DEMO FILES (3 files):
+------------------------------------------------------------
+  1. demo_components/chart_creator.py
+  2. demo_components/data_manager.py
+  3. demo_components/event_handler.py
+
+OLD INTEGRATION FILES (4 files):
+------------------------------------------------------------
+  1. tests/integration_testers/__init__.py
+  2. tests/integration_testers/config_integration_tester.py
+  3. tests/integration_testers/database_integration_tester.py
+  4. tests/integration_testers/message_bus_integration_tester.py
+
+OLD UTILITY FILES (18 files):
+------------------------------------------------------------
+  1. tests/utility_helpers/__init__.py
+  2. tests/utility_helpers/cleanup_helper.py
+  3. tests/utility_helpers/config_creator.py
+  4. tests/utility_helpers/data_creator_helper.py
+  5. tests/utility_helpers/performance_validator.py
+  6. utils/__init__.py
+  7. utils/config_file_manager.py
+  8. utils/config_loader.py
+  9. utils/config_validator.py
+ 10. utils/database.py
+ 11. utils/database_connections.py
+ 12. utils/database_implementations.py
+ 13. utils/logger.py
+ 14. utils/message_bus_client.py
+ 15. utils/message_handlers.py
+ 16. utils/performance_metrics.py
+ 17. utils/subscription_manager.py
+ 18. utils/table_manager.py
+
+OLD ANALYSIS FILES (8 files):
+------------------------------------------------------------
+  1. adm_analyzer.py
+  2. ai_module/strategy_analyzer.py
+  3. bicipo_analyzer.py
+  4. cipo_analyzer.py
+  5. models_grid/adm_analyzer.py
+  6. models_grid/bicipo_analyzer.py
+  7. models_grid/cipo_analyzer.py
+  8. strategy_analyzer.py
+
+OLD AI MODULE FILES (57 files):
+------------------------------------------------------------
+  1. ai_module/__init__.py
+  2. ai_module/__main__.py
+  3. ai_module/handlers/__init__.py
+  4. ai_module/handlers/base_handler.py
+  5. ai_module/handlers/data_handler.py
+  6. ai_module/handlers/json_serializer.py
+  7. ai_module/handlers/market_conditions_generator.py
+  8. ai_module/handlers/market_data_generator.py
+  9. ai_module/handlers/market_data_handler.py
+ 10. ai_module/handlers/message_handler.py
+ 11. ai_module/handlers/mock_data_generator.py
+ 12. ai_module/handlers/portfolio_data_generator.py
+ 13. ai_module/handlers/portfolio_handler.py
+ 14. ai_module/handlers/portfolio_optimization_handler.py
+ 15. ai_module/handlers/returns_data_generator.py
+ 16. ai_module/handlers/risk_assessment_handler.py
+ 17. ai_module/handlers/risk_calculator.py
+ 18. ai_module/handlers/risk_handler.py
+ 19. ai_module/handlers/risk_metrics_calculator.py
+ 20. ai_module/handlers/risk_profile_manager.py
+ 21. ai_module/handlers/risk_validator.py
+ 22. ai_module/handlers/strategy_handler.py
+ 23. ai_module/message_handler.py
+ 24. ai_module/message_utilities.py
+ 25. ai_module/mock_data_generator.py
+ 26. ai_module/portfolio/__init__.py
+ 27. ai_module/portfolio/base_optimizer.py
+ 28. ai_module/portfolio/black_litterman.py
+ 29. ai_module/portfolio/black_litterman_optimizer_core.py
+ 30. ai_module/portfolio/black_litterman_views.py
+ 31. ai_module/portfolio/constraint_creators/__init__.py
+ 32. ai_module/portfolio/constraint_creators/optimization_constraint_creator.py
+ 33. ai_module/portfolio/constraint_creators/risk_budget_constraint_creator.py
+ 34. ai_module/portfolio/constraint_creators/sector_constraint_creator.py
+ 35. ai_module/portfolio/constraint_validator.py
+ 36. ai_module/portfolio/hierarchical_risk_parity.py
+ 37. ai_module/portfolio/markowitz_optimizer.py
+ 38. ai_module/portfolio/markowitz_sharpe_optimizer.py
+ 39. ai_module/portfolio/markowitz_target_optimizer.py
+ 40. ai_module/portfolio/metrics_calculators/__init__.py
+ 41. ai_module/portfolio/metrics_calculators/basic_metrics_calculator.py
+ 42. ai_module/portfolio/metrics_calculators/diversification_calculator.py
+ 43. ai_module/portfolio/metrics_calculators/risk_metrics_calculator.py
+ 44. ai_module/portfolio/metrics_calculators/rolling_metrics_calculator.py
+ 45. ai_module/portfolio/optimization_orchestrator.py
+ 46. ai_module/portfolio/portfolio_metrics.py
+ 47. ai_module/portfolio/portfolio_optimizer.py
+ 48. ai_module/portfolio/portfolio_validator.py
+ 49. ai_module/portfolio/risk_constraints.py
+ 50. ai_module/portfolio/risk_parity_core.py
+ 51. ai_module/portfolio/risk_parity_optimizer.py
+ 52. ai_module/portfolio_optimizer.py
+ 53. ai_module/risk_manager.py
+ 54. ai_module/signal_generators.py
+ 55. ai_module/strategy_calculations.py
+ 56. ai_module/strategy_generator.py
+ 57. ai_module/strategy_implementations.py
+
+OLD PORTFOLIO FILES (14 files):
+------------------------------------------------------------
+  1. portfolio_metrics.py
+  2. portfolio_optimizer.py
+  3. portfolio_rebalancer.py
+  4. portfolio_strategies/__init__.py
+  5. portfolio_strategies/black_litterman_optimizer.py
+  6. portfolio_strategies/hrp_optimizer.py
+  7. portfolio_strategies/markowitz_optimizer.py
+  8. portfolio_strategies/risk_parity_optimizer.py
+  9. portfolio_strategies/sharpe_optimizer.py
+ 10. tests/portfolio_optimization/__init__.py
+ 11. tests/portfolio_optimization/base_test.py
+ 12. tests/portfolio_optimization/main.py
+ 13. tests/portfolio_optimization/message_bus_manager.py
+ 14. tests/portfolio_optimization/response_validator.py
+
+OLD CHART FILES (14 files):
+------------------------------------------------------------
+  1. candlestick_chart_creator.py
+  2. chart_creators.py
+  3. chart_exporter.py
+  4. chart_implementations.py
+  5. chart_manager.py
+  6. chart_utilities.py
+  7. data_grid/candlestick_chart_creator.py
+  8. data_grid/chart_creators.py
+  9. data_grid/chart_exporter.py
+ 10. data_grid/chart_implementations.py
+ 11. data_grid/chart_manager.py
+ 12. data_grid/chart_utilities.py
+ 13. data_grid/simple_chart_creator.py
+ 14. simple_chart_creator.py
+
+OLD DATA FILES (19 files):
+------------------------------------------------------------
+  1. data_exporter.py
+  2. data_grid/__init__.py
+  3. data_grid/__main__.py
+  4. data_grid/dashboard_creator.py
+  5. data_grid/data_exporter.py
+  6. data_grid/data_operations.py
+  7. data_grid/data_sources.py
+  8. data_grid/fetcher.py
+  9. data_grid/message_handler.py
+ 10. data_grid/visualizer.py
+ 11. data_operations.py
+ 12. data_sources.py
+ 13. database.py
+ 14. database_connections.py
+ 15. database_implementations.py
+ 16. models_grid/visualizers/comparison_data_validator.py
+ 17. models_grid/visualizers/feature_data_validator.py
+ 18. models_grid/visualizers/training_data_validator.py
+ 19. workflow_testers/data_workflow_tester.py
+
+OLD MESSAGE FILES (5 files):
+------------------------------------------------------------
+  1. message_bus_client.py
+  2. message_bus_server.py
+  3. message_format_test.py
+  4. message_handler.py
+  5. message_handlers.py
+
+OLD WORKFLOW FILES (3 files):
+------------------------------------------------------------
+  1. workflow_testers/__init__.py
+  2. workflow_testers/ai_workflow_tester.py
+  3. workflow_testers/ml_workflow_tester.py
+
+MISCELLANEOUS (82 files):
+------------------------------------------------------------
+  1. __init__.py
+  2. __main__.py
+  3. adm.py
+  4. bicipo.py
+  5. bicipo_reporter.py
+  6. bicipo_utilities.py
+  7. cipo.py
+  8. cipo_metrics.py
+  9. cipo_utilities.py
+ 10. comprehensive_debug_test.py
+ 11. dashboard_creator.py
+ 12. debug_test.py
+ 13. end_to_end_tester.py
+ 14. fetcher.py
+ 15. logger.py
+ 16. main.py
+ 17. models_grid/__init__.py
+ 18. models_grid/__main__.py
+ 19. models_grid/adm.py
+ 20. models_grid/bicipo.py
+ 21. models_grid/bicipo_reporter.py
+ 22. models_grid/bicipo_utilities.py
+ 23. models_grid/cipo.py
+ 24. models_grid/cipo_metrics.py
+ 25. models_grid/cipo_utilities.py
+ 26. models_grid/forward_pass/__init__.py
+ 27. models_grid/forward_pass/batch_processor.py
+ 28. models_grid/forward_pass/core_forward_pass.py
+ 29. models_grid/forward_pass/uncertainty_estimator.py
+ 30. models_grid/forward_pass_adm.py
+ 31. models_grid/forward_pass_manager.py
+ 32. models_grid/predictor.py
+ 33. models_grid/trainer.py
+ 34. models_grid/visualizer.py
+ 35. models_grid/visualizers/__init__.py
+ 36. models_grid/visualizers/base_visualizer.py
+ 37. models_grid/visualizers/comparison_metrics_manager.py
+ 38. models_grid/visualizers/comparison_results_publisher.py
+ 39. models_grid/visualizers/dashboard_creator.py
+ 40. models_grid/visualizers/dashboard_layouts.py
+ 41. models_grid/visualizers/dashboard_plots.py
+ 42. models_grid/visualizers/feature_filter.py
+ 43. models_grid/visualizers/feature_results_publisher.py
+ 44. models_grid/visualizers/feature_visualizer.py
+ 45. models_grid/visualizers/model_comparison_visualizer.py
+ 46. models_grid/visualizers/model_visualizer.py
+ 47. models_grid/visualizers/plot_helpers/__init__.py
+ 48. models_grid/visualizers/plot_helpers/bar_label_helper.py
+ 49. models_grid/visualizers/plot_helpers/color_manager.py
+ 50. models_grid/visualizers/plot_helpers/metric_formatter.py
+ 51. models_grid/visualizers/plot_helpers/prediction_line_helper.py
+ 52. models_grid/visualizers/plot_helpers/styling_helper.py
+ 53. models_grid/visualizers/plot_helpers/subplot_manager.py
+ 54. models_grid/visualizers/plot_helpers/text_annotator.py
+ 55. models_grid/visualizers/plot_utilities.py
+ 56. models_grid/visualizers/prediction_visualizer.py
+ 57. models_grid/visualizers/training_plot_enhancer.py
+ 58. models_grid/visualizers/training_results_publisher.py
+ 59. models_grid/visualizers/training_visualizer.py
+ 60. models_grid/visualizers/visualizer_manager.py
+ 61. module_manager.py
+ 62. performance_metrics.py
+ 63. predictor.py
+ 64. risk_manager.py
+ 65. signal_generators.py
+ 66. simple_test.py
+ 67. strategy_calculations.py
+ 68. strategy_generator.py
+ 69. strategy_implementations.py
+ 70. subscription_manager.py
+ 71. table_manager.py
+ 72. test_refactored_components.py
+ 73. test_refactored_modules.py
+ 74. tests/end_to_end_tester.py
+ 75. trainer.py
+ 76. visualization_components/__init__.py
+ 77. visualization_components/dashboard_creator.py
+ 78. visualization_components/feature_importance_plotter.py
+ 79. visualization_components/model_comparison_plotter.py
+ 80. visualization_components/predictions_plotter.py
+ 81. visualization_components/training_history_plotter.py
+ 82. visualizer.py
+
+================================================================================
+                                ALL UNUSED FILES
+================================================================================
+
+  1. __init__.py
+  2. __main__.py
+  3. adm.py
+  4. adm_analyzer.py
+  5. ai_module/__init__.py
+  6. ai_module/__main__.py
+  7. ai_module/handlers/__init__.py
+  8. ai_module/handlers/base_handler.py
+  9. ai_module/handlers/data_handler.py
+ 10. ai_module/handlers/json_serializer.py
+ 11. ai_module/handlers/market_conditions_generator.py
+ 12. ai_module/handlers/market_data_generator.py
+ 13. ai_module/handlers/market_data_handler.py
+ 14. ai_module/handlers/message_handler.py
+ 15. ai_module/handlers/mock_data_generator.py
+ 16. ai_module/handlers/portfolio_data_generator.py
+ 17. ai_module/handlers/portfolio_handler.py
+ 18. ai_module/handlers/portfolio_optimization_handler.py
+ 19. ai_module/handlers/returns_data_generator.py
+ 20. ai_module/handlers/risk_assessment_handler.py
+ 21. ai_module/handlers/risk_calculator.py
+ 22. ai_module/handlers/risk_handler.py
+ 23. ai_module/handlers/risk_metrics_calculator.py
+ 24. ai_module/handlers/risk_profile_manager.py
+ 25. ai_module/handlers/risk_validator.py
+ 26. ai_module/handlers/strategy_handler.py
+ 27. ai_module/message_handler.py
+ 28. ai_module/message_utilities.py
+ 29. ai_module/mock_data_generator.py
+ 30. ai_module/portfolio/__init__.py
+ 31. ai_module/portfolio/base_optimizer.py
+ 32. ai_module/portfolio/black_litterman.py
+ 33. ai_module/portfolio/black_litterman_optimizer_core.py
+ 34. ai_module/portfolio/black_litterman_views.py
+ 35. ai_module/portfolio/constraint_creators/__init__.py
+ 36. ai_module/portfolio/constraint_creators/optimization_constraint_creator.py
+ 37. ai_module/portfolio/constraint_creators/risk_budget_constraint_creator.py
+ 38. ai_module/portfolio/constraint_creators/sector_constraint_creator.py
+ 39. ai_module/portfolio/constraint_validator.py
+ 40. ai_module/portfolio/hierarchical_risk_parity.py
+ 41. ai_module/portfolio/markowitz_optimizer.py
+ 42. ai_module/portfolio/markowitz_sharpe_optimizer.py
+ 43. ai_module/portfolio/markowitz_target_optimizer.py
+ 44. ai_module/portfolio/metrics_calculators/__init__.py
+ 45. ai_module/portfolio/metrics_calculators/basic_metrics_calculator.py
+ 46. ai_module/portfolio/metrics_calculators/diversification_calculator.py
+ 47. ai_module/portfolio/metrics_calculators/risk_metrics_calculator.py
+ 48. ai_module/portfolio/metrics_calculators/rolling_metrics_calculator.py
+ 49. ai_module/portfolio/optimization_orchestrator.py
+ 50. ai_module/portfolio/portfolio_metrics.py
+ 51. ai_module/portfolio/portfolio_optimizer.py
+ 52. ai_module/portfolio/portfolio_validator.py
+ 53. ai_module/portfolio/risk_constraints.py
+ 54. ai_module/portfolio/risk_parity_core.py
+ 55. ai_module/portfolio/risk_parity_optimizer.py
+ 56. ai_module/portfolio_optimizer.py
+ 57. ai_module/risk_manager.py
+ 58. ai_module/signal_generators.py
+ 59. ai_module/strategy_analyzer.py
+ 60. ai_module/strategy_calculations.py
+ 61. ai_module/strategy_generator.py
+ 62. ai_module/strategy_implementations.py
+ 63. bicipo.py
+ 64. bicipo_analyzer.py
+ 65. bicipo_reporter.py
+ 66. bicipo_utilities.py
+ 67. candlestick_chart_creator.py
+ 68. chart_creators.py
+ 69. chart_exporter.py
+ 70. chart_implementations.py
+ 71. chart_manager.py
+ 72. chart_utilities.py
+ 73. cipo.py
+ 74. cipo_analyzer.py
+ 75. cipo_metrics.py
+ 76. cipo_utilities.py
+ 77. comprehensive_debug_test.py
+ 78. dashboard_creator.py
+ 79. data_exporter.py
+ 80. data_grid/__init__.py
+ 81. data_grid/__main__.py
+ 82. data_grid/candlestick_chart_creator.py
+ 83. data_grid/chart_creators.py
+ 84. data_grid/chart_exporter.py
+ 85. data_grid/chart_implementations.py
+ 86. data_grid/chart_manager.py
+ 87. data_grid/chart_utilities.py
+ 88. data_grid/dashboard_creator.py
+ 89. data_grid/data_exporter.py
+ 90. data_grid/data_operations.py
+ 91. data_grid/data_sources.py
+ 92. data_grid/fetcher.py
+ 93. data_grid/message_handler.py
+ 94. data_grid/simple_chart_creator.py
+ 95. data_grid/visualizer.py
+ 96. data_operations.py
+ 97. data_sources.py
+ 98. database.py
+ 99. database_connections.py
+100. database_implementations.py
+101. debug_test.py
+102. demo_components/chart_creator.py
+103. demo_components/data_manager.py
+104. demo_components/event_handler.py
+105. end_to_end_tester.py
+106. fetcher.py
+107. logger.py
+108. main.py
+109. message_bus_client.py
+110. message_bus_server.py
+111. message_format_test.py
+112. message_handler.py
+113. message_handlers.py
+114. models_grid/__init__.py
+115. models_grid/__main__.py
+116. models_grid/adm.py
+117. models_grid/adm_analyzer.py
+118. models_grid/bicipo.py
+119. models_grid/bicipo_analyzer.py
+120. models_grid/bicipo_reporter.py
+121. models_grid/bicipo_utilities.py
+122. models_grid/cipo.py
+123. models_grid/cipo_analyzer.py
+124. models_grid/cipo_metrics.py
+125. models_grid/cipo_utilities.py
+126. models_grid/forward_pass/__init__.py
+127. models_grid/forward_pass/batch_processor.py
+128. models_grid/forward_pass/core_forward_pass.py
+129. models_grid/forward_pass/uncertainty_estimator.py
+130. models_grid/forward_pass_adm.py
+131. models_grid/forward_pass_manager.py
+132. models_grid/predictor.py
+133. models_grid/trainer.py
+134. models_grid/visualizer.py
+135. models_grid/visualizers/__init__.py
+136. models_grid/visualizers/base_visualizer.py
+137. models_grid/visualizers/comparison_data_validator.py
+138. models_grid/visualizers/comparison_metrics_manager.py
+139. models_grid/visualizers/comparison_results_publisher.py
+140. models_grid/visualizers/dashboard_creator.py
+141. models_grid/visualizers/dashboard_layouts.py
+142. models_grid/visualizers/dashboard_plots.py
+143. models_grid/visualizers/feature_data_validator.py
+144. models_grid/visualizers/feature_filter.py
+145. models_grid/visualizers/feature_results_publisher.py
+146. models_grid/visualizers/feature_visualizer.py
+147. models_grid/visualizers/model_comparison_visualizer.py
+148. models_grid/visualizers/model_visualizer.py
+149. models_grid/visualizers/plot_helpers/__init__.py
+150. models_grid/visualizers/plot_helpers/bar_label_helper.py
+151. models_grid/visualizers/plot_helpers/color_manager.py
+152. models_grid/visualizers/plot_helpers/metric_formatter.py
+153. models_grid/visualizers/plot_helpers/prediction_line_helper.py
+154. models_grid/visualizers/plot_helpers/styling_helper.py
+155. models_grid/visualizers/plot_helpers/subplot_manager.py
+156. models_grid/visualizers/plot_helpers/text_annotator.py
+157. models_grid/visualizers/plot_utilities.py
+158. models_grid/visualizers/prediction_visualizer.py
+159. models_grid/visualizers/training_data_validator.py
+160. models_grid/visualizers/training_plot_enhancer.py
+161. models_grid/visualizers/training_results_publisher.py
+162. models_grid/visualizers/training_visualizer.py
+163. models_grid/visualizers/visualizer_manager.py
+164. modular_panel_ui_main.py
+165. module_manager.py
+166. performance_metrics.py
+167. portfolio_metrics.py
+168. portfolio_optimizer.py
+169. portfolio_rebalancer.py
+170. portfolio_strategies/__init__.py
+171. portfolio_strategies/black_litterman_optimizer.py
+172. portfolio_strategies/hrp_optimizer.py
+173. portfolio_strategies/markowitz_optimizer.py
+174. portfolio_strategies/risk_parity_optimizer.py
+175. portfolio_strategies/sharpe_optimizer.py
+176. predictor.py
+177. risk_manager.py
+178. signal_generators.py
+179. simple_chart_creator.py
+180. simple_test.py
+181. strategy_analyzer.py
+182. strategy_calculations.py
+183. strategy_generator.py
+184. strategy_implementations.py
+185. subscription_manager.py
+186. table_manager.py
+187. test_all_modules_integration.py
+188. test_communication.py
+189. test_communication_manager.py
+190. test_components.py
+191. test_data_creator.py
+192. test_data_integration.py
+193. test_docker_ui.py
+194. test_enhanced_data_upload.py
+195. test_integration_ai.py
+196. test_integration_alerts.py
+197. test_integration_charts.py
+198. test_integration_data_sharing.py
+199. test_integration_portfolio.py
+200. test_integration_workflow.py
+201. test_interactive_communication.py
+202. test_message_handler.py
+203. test_messaging_comprehensive.py
+204. test_modular_ui.py
+205. test_modules/__init__.py
+206. test_modules/messaging_test_utils.py
+207. test_modules/messaging_tester.py
+208. test_modules/portfolio_optimization_tester.py
+209. test_modules/risk_assessment_tester.py
+210. test_modules/strategy_tester.py
+211. test_panel_ui.py
+212. test_portfolio_optimization.py
+213. test_refactored_components.py
+214. test_refactored_modules.py
+215. tests/end_to_end_tester.py
+216. tests/integration_testers/__init__.py
+217. tests/integration_testers/config_integration_tester.py
+218. tests/integration_testers/database_integration_tester.py
+219. tests/integration_testers/message_bus_integration_tester.py
+220. tests/portfolio_optimization/__init__.py
+221. tests/portfolio_optimization/base_test.py
+222. tests/portfolio_optimization/main.py
+223. tests/portfolio_optimization/message_bus_manager.py
+224. tests/portfolio_optimization/response_validator.py
+225. tests/portfolio_optimization/test_logger.py
+226. tests/portfolio_optimization/test_portfolio_optimization.py
+227. tests/portfolio_optimization/test_request_creator.py
+228. tests/portfolio_optimization/test_response_validator.py
+229. tests/portfolio_optimization/test_results_manager.py
+230. tests/portfolio_optimization/test_risk_assessment.py
+231. tests/portfolio_optimization/test_runner.py
+232. tests/portfolio_optimization/test_strategy_generation.py
+233. tests/portfolio_optimization/test_utilities.py
+234. tests/portfolio_optimization/test_validator.py
+235. tests/test_components.py
+236. tests/test_data_creator.py
+237. tests/test_integration.py
+238. tests/test_utilities.py
+239. tests/utility_helpers/__init__.py
+240. tests/utility_helpers/cleanup_helper.py
+241. tests/utility_helpers/config_creator.py
+242. tests/utility_helpers/data_creator_helper.py
+243. tests/utility_helpers/performance_validator.py
+244. trainer.py
+245. utils/__init__.py
+246. utils/config_file_manager.py
+247. utils/config_loader.py
+248. utils/config_validator.py
+249. utils/database.py
+250. utils/database_connections.py
+251. utils/database_implementations.py
+252. utils/logger.py
+253. utils/message_bus_client.py
+254. utils/message_handlers.py
+255. utils/performance_metrics.py
+256. utils/subscription_manager.py
+257. utils/table_manager.py
+258. visualization_components/__init__.py
+259. visualization_components/dashboard_creator.py
+260. visualization_components/feature_importance_plotter.py
+261. visualization_components/model_comparison_plotter.py
+262. visualization_components/predictions_plotter.py
+263. visualization_components/training_history_plotter.py
+264. visualizer.py
+265. workflow_testers/__init__.py
+266. workflow_testers/ai_workflow_tester.py
+267. workflow_testers/data_workflow_tester.py
+268. workflow_testers/ml_workflow_tester.py

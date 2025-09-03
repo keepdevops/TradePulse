@@ -1,0 +1,53 @@
+# TradePulse Panel UI Requirements
+# Core Panel and UI Framework
+panel>=1.3.0
+bokeh>=3.3.0
+param>=1.13.0
+
+# Data Processing and Analysis
+pandas>=2.1.0
+numpy>=1.25.0
+plotly>=5.17.0
+plotly-express>=0.4.1
+openpyxl>=3.1.0  # For Excel file support
+
+# Visualization and Charts
+matplotlib>=3.8.0
+seaborn>=0.13.0
+# mplfinance>=0.12.0  # Not compatible with Python 3.11
+
+# Real-time Data and APIs
+websocket-client>=1.6.0
+requests>=2.31.0
+yfinance>=0.2.0
+
+# Technical Analysis
+ta>=0.10.0
+empyrical>=0.5.5
+
+# Database and Storage
+duckdb>=0.9.0
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+pyarrow>=12.0.0  # For Feather format support
+feather-format>=0.4.1  # Alternative Feather support
+
+# Messaging and Communication
+pyzmq>=25.0.0
+
+# Development and Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Additional UI Enhancements
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+streamlit>=1.28.0
+
+# Performance and Optimization
+numba>=0.58.0
+cython>=3.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyjwt>=2.8.0

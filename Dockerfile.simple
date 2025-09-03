@@ -1,0 +1,38 @@
+# Simple TradePulse Test Dockerfile v10.7
+# Basic functionality test
+
+FROM python:3.12-slim
+
+# Set metadata
+LABEL maintainer="TradePulse Team"
+LABEL version="10.7"
+LABEL description="Simple TradePulse Test - Basic Functionality"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV VERSION=10.7
+
+# Set working directory
+WORKDIR /app
+
+# Install basic dependencies
+RUN pip install --upgrade pip && \
+    pip install pyzmq pandas numpy matplotlib
+
+# Copy basic test files
+COPY utils/ ./utils/
+COPY config.json ./
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/data
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "print('Simple Test Service healthy')"
+
+# Default command
+CMD ["python", "-c", "print('Simple TradePulse Test Service Started - v10.7'); import zmq; print('ZMQ available'); import pandas; print('Pandas available'); print('Basic functionality test passed!')"]

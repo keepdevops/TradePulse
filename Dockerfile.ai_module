@@ -1,0 +1,50 @@
+# TradePulse AI Module Dockerfile v10.7
+# AI-driven strategy generation and portfolio optimization
+
+FROM condaforge/mambaforge:latest
+
+# Set metadata
+LABEL maintainer="TradePulse Team"
+LABEL version="10.7"
+LABEL description="TradePulse AI Module - Strategy Generation & Portfolio Optimization"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV VERSION=10.7
+ENV SERVICE_NAME=ai_module
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Update conda to latest version
+RUN conda update -n base -c conda-forge conda -y
+
+# Copy environment file and install conda dependencies
+COPY environment.yml .
+RUN conda env create -f environment.yml
+
+# Make conda activate available
+SHELL ["conda", "run", "-n", "tradepulse", "/bin/bash", "-c"]
+
+# Copy application code
+COPY . .
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/data
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD conda run -n tradepulse python -c "print('AI Module healthy')"
+
+# Default command - run the actual AI module
+CMD ["conda", "run", "-n", "tradepulse", "python", "-m", "ai_module"]

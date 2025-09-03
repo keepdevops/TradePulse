@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Simple Test Service
+  simple_test:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: tradepulse_simple_test
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json
+    networks:
+      - tradepulse_network
+    restart: "no"
+    environment:
+      - PYTHONPATH=/app
+      - SERVICE_NAME=simple_test
+      - VERSION=10.7
+
+  # Message Bus Service - Core communication hub
+  message_bus:
+    image: condaforge/mambaforge:latest
+    container_name: tradepulse_message_bus
+    command: >
+      bash -c "
+        conda install -c conda-forge pyzmq>=25.0.0 -y &&
+        python -c 'import zmq; context = zmq.Context(); socket = context.socket(zmq.PUB); socket.bind(\"tcp://*:5555\"); print(\"🚀 TradePulse v10.7 Message Bus started on port 5555\"); import time; [time.sleep(1) for _ in iter(int, 1)]'
+      "
+    ports:
+      - "5555:5555"
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import zmq; print('Message Bus healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - SERVICE_NAME=message_bus
+      - VERSION=10.7
+      - LOG_LEVEL=INFO
+
+networks:
+  tradepulse_network:
+    driver: bridge
+    name: tradepulse_network_v10_7_simple
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

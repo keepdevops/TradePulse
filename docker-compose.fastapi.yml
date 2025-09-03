@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  tradepulse-fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
+    container_name: tradepulse-fastapi
+    ports:
+      - "8000:8000"  # Unified API + Panel UI
+    environment:
+      - PYTHONUNBUFFERED=1
+      - FASTAPI_HOST=0.0.0.0
+      - FASTAPI_PORT=8000
+      - PANEL_HOST=0.0.0.0
+      - PANEL_PORT=8000
+    volumes:
+      # Mount data directories for persistence
+      - ./uploads:/app/uploads
+      - ./upload_data:/app/upload_data
+      - ./model_training_data:/app/model_training_data
+      # Mount logs directory
+      - ./logs:/app/logs
+    networks:
+      - tradepulse-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/app/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: tradepulse-redis
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - tradepulse-network
+  #   restart: unless-stopped
+
+  # Optional: PostgreSQL for database (uncomment if needed)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: tradepulse-postgres
+  #   environment:
+  #     POSTGRES_DB: tradepulse
+  #     POSTGRES_USER: tradepulse
+  #     POSTGRES_PASSWORD: tradepulse123
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - tradepulse-network
+  #   restart: unless-stopped
+
+networks:
+  tradepulse-network:
+    driver: bridge

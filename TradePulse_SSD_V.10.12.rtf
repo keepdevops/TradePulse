@@ -1,0 +1,486 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 TradePulse - Software Design Document\
+Version: 10.12\
+Date: September 3, 2025\
+Author: Bret Kuhne\
+Updated by: Grok (xAI)\
+
+0. Version History\
+Version\
+Date\
+Author/Updater\
+Key Changes\
+1.0\
+Jan 1, 2025\
+Bret Kuhne\
+Initial draft with core architecture.\
+10.0\
+Aug 28, 2025\
+Grok (xAI)\
+Added Message Bus with ZeroMQ implementation.\
+10.1\
+Aug 29, 2025\
+Grok (xAI)\
+Expanded Models Grid with time series models.\
+10.2\
+Aug 29, 2025\
+Grok (xAI)\
+Added Reinforcement Learning Module.\
+10.3\
+Aug 29, 2025\
+Grok (xAI)\
+Added Version History, Requirements, Risk Analysis, API Specifications.\
+10.4\
+Aug 29, 2025\
+Grok (xAI)\
+Added stock selection feature in Models Grid.\
+10.5\
+Aug 29, 2025\
+Grok (xAI)\
+Expanded asset support to include currencies, cryptocurrencies, and commodities.\
+10.6\
+Aug 29, 2025\
+Grok (xAI)\
+Added AI Module for Trading Strategies.\
+10.7\
+Aug 30, 2025\
+Grok (xAI)\
+Major code refactoring and modularization.\
+10.8\
+Aug 30, 2025\
+Grok (xAI)\
+Complete UI refactoring and Docker integration.\
+10.9\
+Aug 31, 2025\
+Grok (xAI)\
+COMPREHENSIVE REFACTORING COMPLETED.\
+10.10\
+Sep 1, 2025\
+Grok (xAI)\
+ENHANCED DATA PERSISTENCE AND SEARCH FUNCTIONALITY.\
+10.11\
+Sep 2, 2025\
+Grok (xAI)\
+Redesigned UI dashboard layouts with role-specific customizations.\
+10.12\
+Sep 3, 2025\
+Grok (xAI)\
+FASTAPI INTEGRATION AND ENHANCED DATA ACCESS: Implemented comprehensive FastAPI backend with unified server architecture; enhanced data access with hard drive scanning and multi-format support (CSV, JSON, Feather, Parquet, DuckDB, Keras); added enhanced date range functionality with extended historical periods; implemented hybrid deployment (FastAPI in Docker, Panel UI locally); resolved data access manager availability issues and NaTType errors; updated terminology from "redline data" to "upload data"; comprehensive file organization with ~190 total files supporting both Panel UI (~150 files) and FastAPI (~10 files) systems.\
+
+1. System Overview\
+1.1 Purpose\
+TradePulse is a comprehensive trading and portfolio management platform designed to empower day traders and financial analysts with advanced tools for market analysis, AI-driven trading strategies, and portfolio optimization. The application provides actionable insights through a modular panel-based interface, robust backend processing with FastAPI integration, and advanced visualization using Panel, Plotly, and matplotlib. It supports historical financial data from multiple sources including hard drive scanning and live feed data for machine learning (ML) training and predictions. Optimized for M3 Silicon (ARM64) compatibility, TradePulse supports deployment via Conda Forge or Docker containers, with features like real-time alerts, backtesting, sentiment analysis, interactive dashboards, portfolio management, broker integration, cloud sync, and user authentication.\
+
+1.2 Target Audience and Use Cases\
+Target Audience\
+Day Traders: Individuals who engage in high-frequency, short-term trading to capitalize on intraday price movements. They require real-time data, volatility analysis, and automated trading tools to execute rapid trades.\
+Financial Analysts: Professionals who perform in-depth market analysis to identify investment opportunities, focusing on long-term value and portfolio optimization. They need advanced analytics, visualization, and risk assessment tools.\
+Quantitative Traders: Traders who rely on mathematical models and algorithms for trading decisions, requiring robust backtesting frameworks, risk management tools, and performance analytics.\
+
+Use Cases\
+Identifying Undervalued Stocks:\
+Users leverage technical indicators and ML predictions to identify stocks trading below their intrinsic value.\
+The Data and Models panels provide interactive visualizations to highlight undervalued opportunities.\
+Detecting Volatile Stocks:\
+Day traders use real-time data from live feeds and historical volatility analysis to identify stocks with high price swings for intraday trading.\
+Sentiment analysis from X posts and news feeds enhances volatility predictions.\
+Portfolio Optimization:\
+Users employ the Portfolio panel to optimize asset allocation using modern portfolio theory, risk-adjusted returns, and AI-driven rebalancing strategies.\
+The AI panel provides automated trading strategies and risk management recommendations.\
+Real-time Market Monitoring:\
+Traders use the Alerts panel to set up custom notifications for price movements, volume spikes, and technical indicator crossovers.\
+The Charts panel provides real-time visualization of market data with interactive technical analysis tools.\
+
+1.3 Requirements\
+Functional Requirements\
+Data Management:\
+- Support for multiple data formats (CSV, JSON, DuckDB, SQLite, Feather, Parquet, Excel, Keras HDF5)\
+- Real-time data streaming from multiple sources (Yahoo Finance, Alpha Vantage, IEX Cloud)\
+- Global data persistence across all modules\
+- Advanced dataset search and filtering capabilities\
+- Enhanced date range functionality with extended historical periods\
+- Hard drive scanning for data discovery\
+- Export functionality with multiple format options\
+Machine Learning:\
+- Training of multiple model types (ADM, CIPO, BICIPO, Ensemble)\
+- Hyperparameter tuning with configurable parameters\
+- Model performance tracking and metrics storage\
+- Persistent model storage with metadata\
+- Real-time prediction capabilities\
+Portfolio Management:\
+- Portfolio optimization using modern portfolio theory\
+- Risk assessment and management tools\
+- Performance tracking and analytics\
+- Rebalancing recommendations\
+User Interface:\
+- Modular panel-based interface with dedicated modules\
+- Interactive charts and visualizations\
+- Real-time data updates\
+- Responsive design for different screen sizes\
+- Role-based dashboard customization\
+API Integration:\
+- FastAPI backend with comprehensive endpoints\
+- Unified server architecture (FastAPI + Panel)\
+- Hybrid deployment capabilities\
+- RESTful API design with JSON responses\
+- Comprehensive API documentation\
+
+Non-Functional Requirements\
+Performance:\
+- Sub-second response times for data queries\
+- Support for real-time data processing\
+- Efficient memory usage for large datasets\
+- Optimized for M3 Silicon (ARM64) architecture\
+Scalability:\
+- Modular architecture supporting component addition\
+- Docker containerization for easy deployment\
+- Horizontal scaling capabilities\
+- FastAPI backend for high-performance API serving\
+Reliability:\
+- Robust error handling and recovery\
+- Data persistence and backup mechanisms\
+- Comprehensive logging and monitoring\
+- NaTType error resolution and data validation\
+Security:\
+- User authentication and authorization\
+- Secure data transmission\
+- Input validation and sanitization\
+
+2. System Architecture\
+2.1 High-Level Architecture\
+TradePulse follows a modular, microservices-inspired architecture with the following key components:\
+
+Core Components:\
+- modular_panel_ui_main_refactored.py: Main application entry point\
+- ui_components/: Core UI components and data management\
+- modular_panels/: Modular panel implementations\
+- api/: FastAPI backend components\
+- data_grid/: Data processing and management\
+- models_grid/: Machine learning models and training\
+- ai_module/: AI-driven trading strategies\
+- auth/: Authentication and authorization\
+- utils/: Utility functions and helpers\
+
+2.2 FastAPI Integration Architecture\
+Unified Server Implementation:\
+- fastapi_panel_advanced_integration.py: Advanced FastAPI + Panel integration\
+- fastapi_panel_integration.py: Basic FastAPI + Panel integration\
+- api/fastapi_server.py: Main FastAPI server\
+- api/fastapi_client.py: FastAPI client for API interactions\
+- api/models.py: Pydantic models for data validation\
+- api/endpoints/: Modular API endpoints\
+  - data_endpoints.py: Data management APIs\
+  - model_endpoints.py: Model training APIs\
+  - portfolio_endpoints.py: Portfolio management APIs\
+  - alert_endpoints.py: Alert management APIs\
+  - system_endpoints.py: System monitoring APIs\
+  - file_upload_endpoints.py: File upload APIs\
+
+2.3 Modular Panel Architecture\
+The application uses a modular panel system with the following structure:\
+
+modular_panels/:\
+- data_panel.py: Data management and visualization\
+- models_panel.py: Machine learning model training and prediction\
+- portfolio_panel.py: Portfolio management and optimization\
+- ai_panel.py: AI-driven trading strategies\
+- charts_panel.py: Interactive charting and visualization\
+- alerts_panel.py: Real-time alerts and notifications\
+- system_panel.py: System monitoring and control\
+
+Each panel follows the Single Responsibility Principle and is limited to 200 lines of code for maintainability.\
+
+2.4 Enhanced Data Access Architecture\
+Comprehensive Data Access System:\
+- ui_components/data_access.py: Enhanced data access with hard drive scanning\
+- ui_components/module_data_access.py: Module-specific data access wrapper\
+- ui_components/data_manager.py: Enhanced data manager with upload support\
+- ui_components/global_data_store.py: Global data persistence\
+- Support for multiple file formats: CSV, JSON, Feather, Parquet, DuckDB, Keras HDF5\
+- Hard drive scanning across multiple directories\
+- Enhanced date range functionality with extended historical periods\
+
+2.5 File Structure (Version 10.12)\
+Complete file organization with ~190 total files:\
+
+Panel UI Files (~150 files):\
+- Main entry points: 4 files (launchers)\
+- Core panel components: ~80 files (data, models, portfolio, AI, charts, alerts, system)\
+- UI components: ~40 files (data management, dashboard, specialized components)\
+- Model management: 7 files\
+- Integration & analysis: 4 files\
+- Launchers: 5 files\
+
+FastAPI Files (~10 files):\
+- Main entry points: 4 files (integration servers)\
+- Core FastAPI: 4 files (server, client, models)\
+- API endpoints: 7 files (data, models, portfolio, alerts, system, file upload)\
+- Documentation: 1 file\
+
+Configuration Files (~15 files):\
+- Requirements: 4 files (FastAPI, Panel, Docker, general)\
+- Environment: 2 files (conda environments)\
+- Docker: 5 files (Dockerfiles, compose files, scripts)\
+- Launchers: 4 files (hybrid setup)\
+
+Test & Utility Files (~10 files):\
+- Test files: 5 files (Panel, data access, date ranges)\
+- Utility files: 5 files (data upload utilities)\
+
+Documentation Files (~5 files):\
+- Panel documentation: 3 files\
+- API documentation: 2 files\
+
+2.6 Hybrid Deployment Architecture\
+Flexible Deployment Options:\
+- Unified Server: FastAPI + Panel on single port\
+- Hybrid Setup: FastAPI in Docker, Panel UI locally\
+- Docker-only: Complete containerized deployment\
+- Local Development: Full local development environment\
+
+3. Data Management\
+3.1 Data Sources\
+Primary Data Sources:\
+- Yahoo Finance API: Real-time and historical stock data\
+- Alpha Vantage API: Technical indicators and fundamental data\
+- IEX Cloud API: Market data and financial statements\
+- File Uploads: CSV, JSON, DuckDB, SQLite, Feather, Parquet, Excel, Keras HDF5 files\
+- Hard Drive Scanning: Automatic discovery of data files across multiple directories\
+- Mock Data: Generated data for testing and demonstration\
+
+3.2 Enhanced Data Access Implementation\
+Comprehensive Data Access System:\
+- Multi-format Support: CSV, JSON, Feather, Parquet, DuckDB, Keras HDF5\
+- Hard Drive Scanning: Automatic discovery across uploads/, data/, model_training_data/, Downloads/, Documents/, Desktop/\
+- Enhanced Date Range: Support for extended historical periods with dynamic frequency adjustment\
+- Data Validation: Robust error handling for NaTType and invalid date scenarios\
+- Metadata Management: Comprehensive metadata tracking for all data sources\
+
+3.3 Data Processing Pipeline\
+Enhanced Data Processing:\
+1. Data Discovery: Automatic scanning of multiple directories\
+2. Format Detection: Automatic format detection and loading\
+3. Data Validation: Input validation and error handling\
+4. Metadata Extraction: Automatic metadata generation\
+5. Global Storage: Data stored in Global Data Store\
+6. Module Registration: Data registered with relevant modules\
+7. Access Control: Module-specific data access permissions\
+8. Export Capabilities: Multiple export formats with timestamps\
+
+3.4 Enhanced Date Range Functionality\
+Extended Historical Support:\
+- Dynamic Date Ranges: Support for years, months, days\
+- Frequency Adjustment: Automatic frequency adjustment for long periods\
+- Statistics Calculation: Enhanced statistics with duration and frequency\
+- Error Handling: Robust handling of NaTType and invalid dates\
+- UI Integration: Date picker widgets with preset options\
+
+4. User Interface\
+4.1 Panel-Based Interface\
+Modular Panel System:\
+- Data Panel: Data management, upload, search, and export with enhanced date ranges\
+- Models Panel: Model training, prediction, and performance tracking\
+- Portfolio Panel: Portfolio management and optimization\
+- AI Panel: AI-driven trading strategies and analysis\
+- Charts Panel: Interactive charting and visualization\
+- Alerts Panel: Real-time alerts and notifications\
+- System Panel: System monitoring and control\
+
+4.2 Role-Based Dashboard Layouts\
+Customized Interface for Different User Types:\
+
+Day Traders Dashboard Layout:\
+- Layout Structure: 3-column grid dashboard optimized for real-time action\
+- Primary Focus: Charts Panel with real-time candlestick charts\
+- Monitoring: Alerts Panel with customizable thresholds\
+- Insights: Data Panel streamlined for live feeds\
+- Optimizations: High refresh rates, touch-friendly interface, color-coded indicators\
+
+ML AI Trend Analysts Dashboard Layout:\
+- Layout Structure: Tabbed dashboard with expandable sections\
+- Data and Models: Expanded data panel with advanced search/filtering\
+- Analysis: AI Panel with trend strategies and backtesting\
+- Outputs: Portfolio Panel with detailed optimization views\
+- Optimizations: Larger canvas for complex visualizations, persistent model history\
+
+4.3 FastAPI Integration UI\
+Unified Interface:\
+- Single Port Access: Both Panel UI and FastAPI served from unified server\
+- API Documentation: Auto-generated API docs at /api/docs\
+- Health Monitoring: System health checks and status endpoints\
+- Hybrid Deployment: Flexible deployment options for different environments\
+
+5. Machine Learning Models\
+5.1 Model Types\
+Supported Models:\
+- ADM (Adaptive Dynamic Model): Adaptive time series modeling\
+- CIPO (Comprehensive Investment Portfolio Optimizer): Portfolio optimization\
+- BICIPO (Bayesian Investment Comprehensive Investment Portfolio Optimizer): Bayesian portfolio optimization\
+- Ensemble: Combined model predictions\
+
+5.2 Enhanced Training System\
+Comprehensive Training Process:\
+1. Data Preparation: Training data validation and preprocessing\
+2. Hyperparameter Configuration: Configurable training parameters\
+3. Model Training: Training execution with progress tracking\
+4. Performance Evaluation: Metrics calculation and validation\
+5. Model Storage: Persistent storage of training metadata\
+6. UI Updates: Real-time progress and result display\
+7. Error Handling: Robust error handling for training failures\
+
+6. Portfolio Management\
+6.1 Portfolio Optimization\
+Modern Portfolio Theory Implementation:\
+- Risk-Return Optimization: Efficient frontier calculation\
+- Asset Allocation: Optimal weight determination\
+- Rebalancing: Automated portfolio rebalancing\
+- Risk Assessment: Comprehensive risk metrics\
+
+6.2 Enhanced Risk Management\
+Risk Analysis Tools:\
+- Value at Risk (VaR): Risk measurement\
+- Sharpe Ratio: Risk-adjusted returns\
+- Maximum Drawdown: Loss measurement\
+- Correlation Analysis: Asset correlation assessment\
+- Enhanced Statistics: Duration and frequency analysis\
+
+7. API Integration\
+7.1 FastAPI Backend\
+Comprehensive API System:\
+- RESTful Design: Standard HTTP methods and JSON responses\
+- Modular Endpoints: Organized by functionality\
+- Data Validation: Pydantic models for request/response validation\
+- Error Handling: Proper HTTP status codes and error messages\
+- Documentation: Auto-generated API documentation\
+
+7.2 API Endpoints\
+Data Management APIs:\
+- Dataset Upload: File upload and processing\
+- Dataset Search: Advanced search and filtering\
+- Dataset Export: Multiple format export\
+- Metadata Access: Dataset metadata retrieval\
+- Hard Drive Scanning: Automatic data discovery\
+
+Model Training APIs:\
+- Model Training: Training initiation and monitoring\
+- Performance Tracking: Metrics retrieval and storage\
+- Model Storage: Model metadata management\
+- Prediction APIs: Real-time prediction services\
+
+Portfolio Management APIs:\
+- Portfolio Optimization: Portfolio optimization calculations\
+- Risk Assessment: Risk metrics calculation\
+- Performance Analysis: Performance tracking and analysis\
+
+Alert Management APIs:\
+- Alert Creation: Custom alert setup\
+- Alert Monitoring: Real-time alert monitoring\
+- Alert History: Alert history and statistics\
+
+System Management APIs:\
+- Health Checks: System health monitoring\
+- Status Information: System status and metrics\
+- Configuration: System configuration management\
+
+8. Deployment Architecture\
+8.1 Deployment Options\
+Flexible Deployment:\
+- Unified Server: Single port serving both FastAPI and Panel\
+- Hybrid Setup: FastAPI in Docker, Panel UI locally\
+- Docker-only: Complete containerized deployment\
+- Local Development: Full local development environment\
+
+8.2 Docker Integration\
+Containerized Deployment:\
+- Multi-Stage Builds: Optimized Docker images\
+- Environment Profiles: Development and production configs\
+- Health Checks: Application health monitoring\
+- Resource Limits: Memory and CPU constraints\
+- FastAPI Integration: FastAPI server in Docker containers\
+
+9. Testing Strategy\
+9.1 Comprehensive Testing\
+Testing Coverage:\
+- Unit Testing: Individual component testing\
+- Integration Testing: Cross-module interaction testing\
+- API Testing: FastAPI endpoint testing\
+- UI Testing: Panel interface testing\
+- Data Access Testing: Enhanced data access testing\
+- Date Range Testing: Extended date range functionality testing\
+
+9.2 Test Files\
+Comprehensive Test Suite:\
+- test_panel.py: Panel UI testing\
+- test_data_access_manager.py: Data access manager testing\
+- test_date_ranges.py: Date range functionality testing\
+- test_enhanced_data_access.py: Enhanced data access testing\
+- test_enhanced_date_range.py: Extended date range testing\
+
+10. Code Quality\
+10.1 Enhanced Coding Standards\
+Quality Standards:\
+- Single Responsibility Principle: Maximum 200 lines per file\
+- Modular Design: Component-based architecture\
+- Documentation: Comprehensive code documentation\
+- Error Handling: Robust error handling and logging\
+- FastAPI Integration: RESTful API design patterns\
+- Data Validation: Comprehensive data validation and error handling\
+
+10.2 File Organization\
+Comprehensive File Structure:\
+- Panel UI Files: ~150 files organized by functionality\
+- FastAPI Files: ~10 files with modular endpoints\
+- Configuration Files: ~15 files for deployment and setup\
+- Test Files: ~10 files for comprehensive testing\
+- Documentation Files: ~5 files for system documentation\
+
+11. Future Enhancements\
+11.1 Planned Features\
+Upcoming Enhancements:\
+- Advanced Analytics: Enhanced analytical capabilities\
+- Real-time Trading: Live trading integration\
+- Mobile Application: Native mobile app\
+- Cloud Integration: Cloud-based deployment options\
+- Enhanced API: Additional API endpoints and functionality\
+
+11.2 Scalability Improvements\
+Scalability Enhancements:\
+- Microservices Architecture: Service decomposition\
+- Database Integration: Persistent database storage\
+- Caching Layer: Performance optimization\
+- Load Balancing: Horizontal scaling support\
+- API Gateway: Centralized API management\
+
+12. Glossary\
+ADM: Adaptive Dynamic Model - A time series model that adapts to changing market conditions.\
+BICIPO: Bayesian Investment Comprehensive Investment Portfolio Optimizer - A Bayesian approach to portfolio optimization.\
+CIPO: Comprehensive Investment Portfolio Optimizer - A comprehensive portfolio optimization model.\
+DuckDB: An in-process SQL OLAP database management system.\
+Ensemble: A machine learning technique that combines multiple models for improved predictions.\
+FastAPI: A modern, fast web framework for building APIs with Python.\
+Global Data Store: A singleton pattern implementation for cross-module data persistence.\
+ModuleDataAccess: A wrapper class providing module-specific data access capabilities.\
+NaTType: Pandas Not-a-Time type for handling invalid datetime values.\
+Panel: A Python library for creating interactive web applications and dashboards.\
+Pydantic: A data validation library using Python type annotations.\
+Single Responsibility Principle: A software design principle stating that each module should have only one reason to change.\
+Upload Data: Enhanced terminology replacing "redline data" for data upload functionality.\
+
+13. Appendices\
+13.1 Complete File Listing\
+Comprehensive file listing with ~190 total files supporting both Panel UI and FastAPI systems.\
+13.2 Configuration Files\
+Docker, requirements, and environment configuration files.\
+13.3 Test Files\
+Comprehensive test suite covering all modules and functionality.\
+13.4 Documentation Files\
+Status reports, implementation summaries, and technical documentation.\
+13.5 API Documentation\
+Complete FastAPI endpoint documentation and usage examples.\
+}

@@ -1,0 +1,791 @@
+TradePulse Configuration Template v10.8
+===========================================
+
+This template provides the complete configuration structure for TradePulse v10.8, including the new modular panel UI, Docker integration, and all refactored components.
+
+{
+  "version": "10.8",
+  "name": "TradePulse",
+  "description": "Advanced Trading and Portfolio Management Platform with Modular Panel UI",
+  "last_updated": "2025-08-30",
+  "author": "Bret Kuhne",
+  "maintainer": "Grok (xAI)",
+
+  "system_info": {
+    "architecture": "microservices",
+    "deployment": "docker",
+    "ui_framework": "panel",
+    "message_bus": "zeromq",
+    "primary_database": "duckdb",
+    "cache_layer": "redis",
+    "monitoring": "prometheus_grafana"
+  },
+
+  "docker_config": {
+    "development_profile": {
+      "services": [
+        "message_bus",
+        "database", 
+        "modular_panel_ui",
+        "redis"
+      ],
+      "ports": {
+        "ui": 5006,
+        "message_bus_pub": 5555,
+        "message_bus_sub": 5556,
+        "database": 5432,
+        "duckdb_http": 8000,
+        "redis": 6379
+      },
+      "volumes": [
+        "./data:/app/data",
+        "./config:/app/config", 
+        "./logs:/app/logs",
+        ".:/app"
+      ]
+    },
+    "production_profile": {
+      "services": [
+        "message_bus",
+        "database",
+        "modular_panel_ui", 
+        "nginx",
+        "redis",
+        "prometheus",
+        "grafana"
+      ],
+      "ports": {
+        "ui": 5006,
+        "nginx_http": 80,
+        "nginx_https": 443,
+        "message_bus_pub": 5555,
+        "message_bus_sub": 5556,
+        "database": 5432,
+        "duckdb_http": 8000,
+        "redis": 6379,
+        "prometheus": 9090,
+        "grafana": 3000
+      },
+      "ssl": {
+        "enabled": true,
+        "cert_path": "./ssl/cert.pem",
+        "key_path": "./ssl/key.pem"
+      }
+    },
+    "networks": {
+      "development": "172.21.0.0/16",
+      "production": "172.20.0.0/16"
+    },
+    "health_checks": {
+      "enabled": true,
+      "interval": "30s",
+      "timeout": "10s",
+      "retries": 3
+    }
+  },
+
+  "modular_panel_ui": {
+    "panels": {
+      "data_panel": {
+        "name": "Data Management",
+        "description": "Data fetching, symbol selection, and data preview",
+        "features": [
+          "symbol_selector",
+          "timeframe_selector", 
+          "data_source_selector",
+          "data_preview_table",
+          "data_statistics",
+          "export_functionality"
+        ],
+        "data_sources": [
+          "Yahoo Finance",
+          "Alpha Vantage", 
+          "IEX Cloud",
+          "Mock Data"
+        ],
+        "timeframes": ["1m", "5m", "15m", "1h", "1d", "1w"]
+      },
+      "models_panel": {
+        "name": "ML Models Management",
+        "description": "Machine learning model training and prediction",
+        "features": [
+          "model_selector",
+          "training_parameters",
+          "training_progress",
+          "performance_metrics",
+          "prediction_generation"
+        ],
+        "models": [
+          "ADM",
+          "CIPO", 
+          "BICIPO",
+          "Ensemble"
+        ],
+        "training_params": {
+          "epochs": [50, 100, 200, 500],
+          "learning_rate": [0.0001, 0.001, 0.01, 0.1],
+          "batch_size": [16, 32, 64, 128]
+        }
+      },
+      "portfolio_panel": {
+        "name": "Portfolio Management",
+        "description": "Portfolio optimization and position management",
+        "features": [
+          "portfolio_summary",
+          "optimization_strategies",
+          "risk_tolerance",
+          "positions_table",
+          "order_entry",
+          "rebalancing"
+        ],
+        "optimization_strategies": [
+          "Markowitz",
+          "Risk Parity",
+          "Sharpe Ratio",
+          "Black-Litterman",
+          "HRP"
+        ],
+        "risk_tolerance": [
+          "Conservative",
+          "Moderate", 
+          "Aggressive"
+        ]
+      },
+      "ai_panel": {
+        "name": "AI Strategy Generation",
+        "description": "AI-driven trading strategy generation and execution",
+        "features": [
+          "strategy_selector",
+          "confidence_threshold",
+          "strategy_generation",
+          "performance_metrics",
+          "risk_assessment"
+        ],
+        "strategies": [
+          "Momentum",
+          "Mean Reversion",
+          "Arbitrage",
+          "Sentiment",
+          "Multi-Factor"
+        ]
+      },
+      "charts_panel": {
+        "name": "Advanced Charting",
+        "description": "Interactive charts and technical analysis",
+        "features": [
+          "chart_type_selector",
+          "timeframe_selector",
+          "indicator_overlay",
+          "volume_charts",
+          "rsi_charts",
+          "export_functionality"
+        ],
+        "chart_types": [
+          "Candlestick",
+          "Line",
+          "Bar",
+          "Scatter",
+          "Heatmap"
+        ],
+        "indicators": [
+          "SMA",
+          "EMA", 
+          "RSI",
+          "MACD",
+          "Bollinger Bands",
+          "Volume"
+        ]
+      },
+      "alerts_panel": {
+        "name": "Alert System",
+        "description": "Market alerts and notification management",
+        "features": [
+          "alert_type_selector",
+          "symbol_selector",
+          "threshold_setting",
+          "alert_history",
+          "notification_preferences"
+        ],
+        "alert_types": [
+          "Price",
+          "Volume",
+          "Technical",
+          "News",
+          "Portfolio"
+        ]
+      },
+      "system_panel": {
+        "name": "System Management",
+        "description": "System status monitoring and configuration",
+        "features": [
+          "service_status",
+          "system_metrics",
+          "service_control",
+          "configuration_management",
+          "log_viewing"
+        ],
+        "monitored_services": [
+          "Message Bus",
+          "Database",
+          "ML Models",
+          "Data Feed",
+          "Web Server"
+        ]
+      }
+    },
+    "theme": {
+      "primary": "dark",
+      "accent_colors": ["#00ff88", "#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4"],
+      "font_family": "Helvetica, Arial, sans-serif",
+      "responsive_breakpoints": {
+        "mobile": 768,
+        "tablet": 1024,
+        "desktop": 1200
+      }
+    },
+    "real_time_updates": {
+      "enabled": true,
+      "update_interval": "1000ms",
+      "websocket_enabled": true,
+      "fallback_polling": true
+    }
+  },
+
+  "message_bus": {
+    "type": "zeromq",
+    "architecture": "dual_port",
+    "ports": {
+      "publisher": 5555,
+      "subscriber": 5556
+    },
+    "patterns": [
+      "PUB/SUB",
+      "REQ/REP", 
+      "PUSH/PULL",
+      "XPUB/XSUB"
+    ],
+    "compression": "lz4",
+    "max_message_size": "100MB",
+    "heartbeat_interval": "30s",
+    "topics": {
+      "data": [
+        "data_request",
+        "data_response",
+        "data_update"
+      ],
+      "models": [
+        "training_request",
+        "training_response",
+        "prediction_request",
+        "prediction_response"
+      ],
+      "portfolio": [
+        "optimization_request",
+        "optimization_response",
+        "rebalancing_request",
+        "rebalancing_response"
+      ],
+      "ai": [
+        "strategy_request",
+        "strategy_response",
+        "execution_request",
+        "execution_response"
+      ],
+      "system": [
+        "status_update",
+        "health_check",
+        "alert_notification"
+      ]
+    }
+  },
+
+  "database": {
+    "primary": {
+      "type": "duckdb",
+      "path": "./data/tradepulse.duckdb",
+      "compression": "zstd",
+      "max_memory": "8GB",
+      "threads": "auto"
+    },
+    "secondary": {
+      "postgresql": {
+        "enabled": true,
+        "host": "localhost",
+        "port": 5432,
+        "database": "tradepulse",
+        "user": "tradepulse",
+        "password": "encrypted_password",
+        "pool_size": 20,
+        "max_overflow": 30
+      },
+      "sqlite": {
+        "enabled": true,
+        "path": "./data/cache.db",
+        "max_size": "1GB"
+      }
+    },
+    "redis": {
+      "enabled": true,
+      "host": "localhost",
+      "port": 6379,
+      "database": 0,
+      "max_memory": "2GB",
+      "eviction_policy": "allkeys-lru"
+    },
+    "backup": {
+      "enabled": true,
+      "schedule": "daily",
+      "time": "02:00",
+      "retention": "30_days",
+      "compression": true,
+      "encryption": true
+    }
+  },
+
+  "ml_models": {
+    "adm": {
+      "enabled": true,
+      "version": "2.1",
+      "hyperparameters": {
+        "learning_rate": 0.001,
+        "batch_size": 64,
+        "epochs": 200,
+        "hidden_layers": [128, 64, 32]
+      },
+      "retraining": {
+        "enabled": true,
+        "interval": "weekly",
+        "min_accuracy": 0.75
+      }
+    },
+    "cipo": {
+      "enabled": true,
+      "version": "1.8",
+      "hyperparameters": {
+        "learning_rate": 0.0005,
+        "batch_size": 32,
+        "epochs": 150,
+        "regularization": 0.01
+      },
+      "retraining": {
+        "enabled": true,
+        "interval": "weekly",
+        "min_accuracy": 0.80
+      }
+    },
+    "bicipo": {
+      "enabled": true,
+      "version": "1.5",
+      "hyperparameters": {
+        "learning_rate": 0.0001,
+        "batch_size": 16,
+        "epochs": 300,
+        "bayesian_samples": 1000
+      },
+      "retraining": {
+        "enabled": true,
+        "interval": "weekly",
+        "min_accuracy": 0.82
+      }
+    },
+    "ensemble": {
+      "enabled": true,
+      "version": "1.2",
+      "methods": ["voting", "stacking", "bagging"],
+      "weights": {
+        "adm": 0.3,
+        "cipo": 0.3,
+        "bicipo": 0.4
+      }
+    }
+  },
+
+  "portfolio_optimization": {
+    "strategies": {
+      "markowitz": {
+        "enabled": true,
+        "risk_free_rate": 0.02,
+        "max_iterations": 1000,
+        "constraint_tolerance": 1e-6
+      },
+      "risk_parity": {
+        "enabled": true,
+        "target_risk": 0.15,
+        "max_iterations": 500,
+        "convergence_tolerance": 1e-4
+      },
+      "sharpe_ratio": {
+        "enabled": true,
+        "risk_free_rate": 0.02,
+        "max_iterations": 1000,
+        "constraint_tolerance": 1e-6
+      },
+      "black_litterman": {
+        "enabled": true,
+        "equilibrium_returns": "market_cap_weighted",
+        "confidence_level": 0.8,
+        "tau": 0.05
+      },
+      "hrp": {
+        "enabled": true,
+        "linkage_method": "ward",
+        "distance_metric": "correlation",
+        "max_clusters": 10
+      }
+    },
+    "constraints": {
+      "min_weight": 0.01,
+      "max_weight": 0.25,
+      "sector_limits": {
+        "technology": 0.30,
+        "healthcare": 0.25,
+        "financial": 0.20,
+        "energy": 0.15,
+        "other": 0.10
+      },
+      "risk_constraints": {
+        "max_volatility": 0.20,
+        "max_drawdown": 0.15,
+        "var_confidence": 0.95,
+        "var_limit": 0.10
+      }
+    },
+    "rebalancing": {
+      "enabled": true,
+      "frequency": "monthly",
+      "threshold": 0.05,
+      "transaction_cost": 0.001,
+      "tax_consideration": true
+    }
+  },
+
+  "data_sources": {
+    "yahoo_finance": {
+      "enabled": true,
+      "api_key": "not_required",
+      "rate_limit": "unlimited",
+      "data_types": ["ohlcv", "fundamentals", "options", "dividends"]
+    },
+    "alpha_vantage": {
+      "enabled": true,
+      "api_key": "your_api_key_here",
+      "rate_limit": "500_per_day",
+      "data_types": ["technical_indicators", "fundamentals", "forex", "crypto"]
+    },
+    "iex_cloud": {
+      "enabled": true,
+      "api_key": "your_api_key_here",
+      "rate_limit": "1000_per_minute",
+      "data_types": ["real_time", "historical", "news", "sentiment"]
+    },
+    "redline_data": {
+      "enabled": true,
+      "supported_formats": ["txt", "csv", "json"],
+      "output_formats": ["duckdb", "sqlite", "json"],
+      "compression": true
+    }
+  },
+
+  "api_endpoints": {
+    "internal": {
+      "message_bus": {
+        "host": "localhost",
+        "pub_port": 5555,
+        "sub_port": 5556
+      },
+      "database": {
+        "host": "localhost",
+        "port": 5432,
+        "duckdb_http": 8000
+      },
+      "ui": {
+        "host": "localhost",
+        "port": 5006
+      }
+    },
+    "external": {
+      "broker_integration": {
+        "enabled": false,
+        "supported_brokers": ["interactive_brokers", "td_ameritrade", "robinhood"],
+        "paper_trading": true,
+        "real_trading": false
+      },
+      "cloud_storage": {
+        "enabled": false,
+        "providers": ["aws_s3", "google_cloud", "azure_blob"],
+        "sync_frequency": "daily"
+      }
+    }
+  },
+
+  "logging_config": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "handlers": {
+      "file": {
+        "enabled": true,
+        "path": "./logs/tradepulse.log",
+        "max_size": "100MB",
+        "backup_count": 10
+      },
+      "console": {
+        "enabled": true,
+        "level": "INFO"
+      },
+      "syslog": {
+        "enabled": false,
+        "host": "localhost",
+        "port": 514
+      }
+    },
+    "loggers": {
+      "tradepulse": {
+        "level": "INFO",
+        "propagate": false
+      },
+      "zeromq": {
+        "level": "WARNING",
+        "propagate": false
+      },
+      "sqlalchemy": {
+        "level": "WARNING",
+        "propagate": false
+      }
+    }
+  },
+
+  "testing_framework": {
+    "unit_testing": {
+      "framework": "pytest",
+      "coverage_target": 85,
+      "test_discovery": "tests/",
+      "parallel_execution": true
+    },
+    "integration_testing": {
+      "framework": "pytest",
+      "test_database": "test_tradepulse",
+      "mock_external_apis": true,
+      "test_message_bus": true
+    },
+    "performance_testing": {
+      "framework": "locust",
+      "target_users": 100,
+      "spawn_rate": 10,
+      "run_time": "5m"
+    },
+    "ui_testing": {
+      "framework": "selenium",
+      "browser": "chrome",
+      "headless": true,
+      "screenshot_on_failure": true
+    }
+  },
+
+  "security_features": {
+    "authentication": {
+      "enabled": false,
+      "method": "oauth2",
+      "providers": ["google", "github", "microsoft"],
+      "session_timeout": "24h"
+    },
+    "authorization": {
+      "enabled": false,
+      "rbac": true,
+      "default_role": "user",
+      "admin_roles": ["admin", "superuser"]
+    },
+    "encryption": {
+      "data_at_rest": true,
+      "data_in_transit": true,
+      "algorithm": "AES-256",
+      "key_rotation": "90d"
+    },
+    "audit_logging": {
+      "enabled": true,
+      "log_level": "INFO",
+      "retention": "1_year",
+      "sensitive_data_masking": true
+    }
+  },
+
+  "performance_metrics": {
+    "targets": {
+      "ui_response_time": "<100ms",
+      "api_response_time": "<50ms",
+      "database_query_time": "<10ms",
+      "message_bus_latency": "<5ms"
+    },
+    "monitoring": {
+      "enabled": true,
+      "collection_interval": "15s",
+      "retention": "30d",
+      "alerts": {
+        "response_time_threshold": "200ms",
+        "error_rate_threshold": "1%",
+        "memory_usage_threshold": "80%"
+      }
+    },
+    "optimization": {
+      "caching": {
+        "enabled": true,
+        "ttl": "300s",
+        "max_size": "1GB"
+      },
+      "connection_pooling": {
+        "enabled": true,
+        "min_connections": 5,
+        "max_connections": 50
+      },
+      "async_processing": {
+        "enabled": true,
+        "worker_threads": 8,
+        "queue_size": 1000
+      }
+    }
+  },
+
+  "deployment": {
+    "environments": {
+      "development": {
+        "docker_profile": "development",
+        "debug_mode": true,
+        "hot_reload": true,
+        "log_level": "DEBUG"
+      },
+      "staging": {
+        "docker_profile": "production",
+        "debug_mode": false,
+        "monitoring": true,
+        "log_level": "INFO"
+      },
+      "production": {
+        "docker_profile": "production",
+        "debug_mode": false,
+        "monitoring": true,
+        "ssl": true,
+        "log_level": "WARNING"
+      }
+    },
+    "scaling": {
+      "auto_scaling": {
+        "enabled": true,
+        "min_instances": 1,
+        "max_instances": 10,
+        "cpu_threshold": 70,
+        "memory_threshold": 80
+      },
+      "load_balancing": {
+        "enabled": true,
+        "algorithm": "round_robin",
+        "health_check_path": "/health",
+        "session_sticky": false
+      }
+    }
+  },
+
+  "maintenance": {
+    "backup": {
+      "schedule": "daily",
+      "time": "02:00",
+      "retention": "30_days",
+      "verification": true,
+      "encryption": true
+    },
+    "updates": {
+      "auto_update": false,
+      "maintenance_window": "sunday_02:00",
+      "rollback_enabled": true,
+      "health_check_required": true
+    },
+    "monitoring": {
+      "uptime_monitoring": true,
+      "performance_monitoring": true,
+      "error_tracking": true,
+      "alerting": true
+    }
+  }
+}
+
+===========================================
+Configuration Notes:
+===========================================
+
+1. DOCKER DEPLOYMENT:
+   - Use docker_management_modular.sh for easy management
+   - Development: ./docker_management_modular.sh start-dev
+   - Production: ./docker_management_modular.sh start-prod
+
+2. MODULAR PANEL UI:
+   - 7 dedicated panels for each TradePulse module
+   - Responsive design with dark theme
+   - Real-time updates via WebSocket
+   - Mobile-friendly interface
+
+3. MESSAGE BUS:
+   - ZeroMQ-based communication
+   - Dual-port architecture (PUB/SUB)
+   - LZ4 compression for efficiency
+   - 100MB max message size
+
+4. DATABASE:
+   - DuckDB primary for analytics
+   - PostgreSQL for transactions
+   - Redis for caching
+   - Automated daily backups
+
+5. SECURITY:
+   - SSL/TLS in production
+   - OAuth2 authentication ready
+   - Role-based access control
+   - Audit logging enabled
+
+6. MONITORING:
+   - Prometheus metrics collection
+   - Grafana dashboards
+   - Health checks and alerting
+   - Performance monitoring
+
+7. TESTING:
+   - pytest for unit/integration tests
+   - Locust for performance testing
+   - Selenium for UI testing
+   - 85% code coverage target
+
+===========================================
+Quick Start Commands:
+===========================================
+
+# Development Environment
+./docker_management_modular.sh start-dev
+
+# Production Environment  
+./docker_management_modular.sh start-prod
+
+# Check Status
+./docker_management_modular.sh status
+
+# View Logs
+./docker_management_modular.sh logs modular_panel_ui
+
+# Stop Services
+./docker_management_modular.sh stop
+
+# Clean Up
+./docker_management_modular.sh cleanup
+
+===========================================
+Access URLs:
+===========================================
+
+Development:
+- UI: http://localhost:5006
+- Database: localhost:5432
+- Message Bus: localhost:5555/5556
+
+Production:
+- UI: http://localhost:5006
+- Nginx: http://localhost:80, https://localhost:443
+- Grafana: http://localhost:3000 (admin/admin)
+- Prometheus: http://localhost:9090
+
+===========================================

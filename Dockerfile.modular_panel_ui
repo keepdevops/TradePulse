@@ -1,0 +1,47 @@
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PANEL_PORT=5006
+ENV PANEL_HOST=0.0.0.0
+ENV TRADEPULSE_VERSION=v10.9
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY requirements_refactored_v10.9.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements_refactored_v10.9.txt
+
+# Copy the application code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/data /app/config
+
+# Set permissions
+RUN chmod +x launch_modular_ui.py
+RUN chmod +x launch_comprehensive_ui.py
+RUN chmod +x launch_integrated_ui.py
+RUN chmod +x launch_demo_ui.py
+RUN chmod +x modular_panel_ui_main_refactored.py
+
+# Expose the Panel port
+EXPOSE 5006
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5006/ || exit 1
+
+# Set the default command to launch the refactored modular UI
+CMD ["python", "launch_modular_ui.py"]

@@ -1,0 +1,50 @@
+# TradePulse Message Bus Dockerfile v10.11
+# ZeroMQ-based message bus for inter-service communication
+
+FROM condaforge/mambaforge:latest
+
+# Set metadata
+LABEL maintainer="TradePulse Team"
+LABEL version="10.11"
+LABEL description="TradePulse Message Bus - Inter-Service Communication Hub"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV VERSION=10.11
+ENV SERVICE_NAME=message_bus
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Update conda to latest version
+RUN conda update -n base -c conda-forge conda -y
+
+# Copy environment file and install conda dependencies
+COPY environment.yml .
+RUN conda env create -f environment.yml
+
+# Make conda activate available
+SHELL ["conda", "run", "-n", "tradepulse", "/bin/bash", "-c"]
+
+# Copy application code
+COPY . .
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/data
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD conda run -n tradepulse python -c "import zmq; print('Message Bus healthy')"
+
+# Default command - run the message bus server
+CMD ["conda", "run", "-n", "tradepulse", "python", "message_bus_server.py"]

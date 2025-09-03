@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-09-02T09:47:03.466350",
+  "version": "10.11",
+  "duration_seconds": 4.52485,
+  "total_tests": 9,
+  "passed": 9,
+  "failed": 0,
+  "success_rate": 100.0,
+  "test_results": {
+    "comprehensive": {
+      "success": true,
+      "stdout": "",
+      "stderr": "2025-09-02 09:47:03,726 - INFO - \ud83d\ude80 Starting TradePulse v10.11 Comprehensive Test Suite\n2025-09-02 09:47:03,726 - INFO - ============================================================\ntest_rbac_system (__main__.TestAuthenticationSystem)\nTest Role-Based Access Control system ... 2025-09-02 09:47:03,734 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:03,734 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:03,734 - WARNING - \u26a0\ufe0f RBAC module not available: No module named 'auth'\nok\ntest_security_utils (__main__.TestAuthenticationSystem)\nTest security utilities ... 2025-09-02 09:47:03,736 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:03,736 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:03,736 - WARNING - \u26a0\ufe0f Security utils module not available: No module named 'auth'\nok\ntest_data_manager (__main__.TestDataManagement)\nTest enhanced data manager ... 2025-09-02 09:47:03,738 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:03,738 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,141 - WARNING - \u26a0\ufe0f Data Manager module not available: No module named 'ui_components.data_manager_refactored'; 'ui_components' is not a package\nok\ntest_global_data_store (__main__.TestDataManagement)\nTest Global Data Store implementation ... 2025-09-02 09:47:04,144 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,144 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,144 - WARNING - \u26a0\ufe0f Global Data Store module not available: No module named 'ui_components.global_data_store'; 'ui_components' is not a package\nok\ntest_model_manager (__main__.TestAIModules)\nTest AI model management ... 2025-09-02 09:47:04,145 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,145 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,146 - WARNING - \u26a0\ufe0f Model Manager module not available: No module named 'modular_panels'\nok\ntest_prediction_engine (__main__.TestAIModules)\nTest prediction engine ... 2025-09-02 09:47:04,147 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,147 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,147 - WARNING - \u26a0\ufe0f Prediction Engine module not available: No module named 'modular_panels'\nok\ntest_portfolio_optimizer (__main__.TestPortfolioManagement)\nTest portfolio optimization ... 2025-09-02 09:47:04,149 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,149 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,149 - WARNING - \u26a0\ufe0f Portfolio Optimizer module not available: No module named 'modular_panels'\nok\ntest_portfolio_panel (__main__.TestPortfolioManagement)\nTest portfolio panel functionality ... 2025-09-02 09:47:04,151 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,151 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,151 - WARNING - \u26a0\ufe0f Portfolio Panel module not available: No module named 'modular_panels'\nok\ntest_alert_creator (__main__.TestAlertSystem)\nTest alert creation and management ... 2025-09-02 09:47:04,153 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,153 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,153 - WARNING - \u26a0\ufe0f Alert Creator module not available: No module named 'modular_panels'\nok\ntest_alerts_panel (__main__.TestAlertSystem)\nTest alerts panel functionality ... 2025-09-02 09:47:04,154 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,155 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,155 - WARNING - \u26a0\ufe0f Alerts Panel module not available: No module named 'modular_panels'\nok\ntest_chart_factory (__main__.TestChartSystem)\nTest chart factory functionality ... 2025-09-02 09:47:04,156 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,156 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,157 - WARNING - \u26a0\ufe0f Chart Factory module not available: No module named 'demo_panels'\nok\ntest_charts_panel (__main__.TestChartSystem)\nTest charts panel functionality ... 2025-09-02 09:47:04,159 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,159 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,159 - WARNING - \u26a0\ufe0f Charts Panel module not available: No module named 'modular_panels'\nok\ntest_performance_display (__main__.TestSystemMonitoring)\nTest performance display functionality ... 2025-09-02 09:47:04,161 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,161 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,161 - WARNING - \u26a0\ufe0f Performance Display module not available: No module named 'integrated_panels'\nok\ntest_system_monitor (__main__.TestSystemMonitoring)\nTest system monitoring functionality ... 2025-09-02 09:47:04,163 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,163 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,164 - WARNING - \u26a0\ufe0f System Monitor module not available: No module named 'integrated_panels'\nok\ntest_dashboard_manager (__main__.TestUIComponents)\nTest dashboard management ... 2025-09-02 09:47:04,166 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,166 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,166 - WARNING - \u26a0\ufe0f Dashboard Manager module not available: No module named 'ui_components.dashboard_manager_refactored'; 'ui_components' is not a package\nok\ntest_data_metrics (__main__.TestUIComponents)\nTest data metrics functionality ... 2025-09-02 09:47:04,168 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,168 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,168 - WARNING - \u26a0\ufe0f Data Metrics module not available: No module named 'ui_components.data'; 'ui_components' is not a package\nok\ntest_data_persistence (__main__.TestIntegrationFeatures)\nTest data persistence across modules ... 2025-09-02 09:47:04,170 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,170 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,170 - WARNING - \u26a0\ufe0f Data Persistence module not available: No module named 'ui_components.global_data_store'; 'ui_components' is not a package\nok\ntest_module_integration (__main__.TestIntegrationFeatures)\nTest module integration ... 2025-09-02 09:47:04,171 - INFO - \u2705 Test data created successfully\n2025-09-02 09:47:04,171 - INFO - \ud83e\uddea Setting up TradePulse v10.11 test environment\n2025-09-02 09:47:04,172 - WARNING - \u26a0\ufe0f Module Integration module not available: No module named 'modular_panels'\nok\n\n----------------------------------------------------------------------\nRan 18 tests in 0.445s\n\nOK\n2025-09-02 09:47:04,172 - INFO - \ud83d\udcca Generating Test Report\n2025-09-02 09:47:04,172 - INFO - ============================================================\n2025-09-02 09:47:04,172 - INFO - \ud83d\udcc8 Test Results Summary:\n2025-09-02 09:47:04,172 - INFO -    Total Tests: 18\n2025-09-02 09:47:04,172 - INFO -    Passed: 18\n2025-09-02 09:47:04,172 - INFO -    Failed: 0\n2025-09-02 09:47:04,172 - INFO -    Errors: 0\n2025-09-02 09:47:04,172 - INFO -    Skipped: 0\n2025-09-02 09:47:04,172 - INFO -    Success Rate: 100.0%\n2025-09-02 09:47:04,172 - INFO - \ud83d\udcc4 Detailed report saved to: test_report_v10_11.json\n2025-09-02 09:47:04,172 - INFO - \u2705 All tests passed successfully!\n",
+      "returncode": 0
+    },
+    "authentication": {
+      "success": true,
+      "stdout": "",
+      "stderr": "2025-09-02 09:47:05,320 - INFO - \ud83d\udd10 Starting TradePulse v10.11 Authentication Test Suite\n2025-09-02 09:47:05,320 - INFO - ============================================================\ntest_auth_service (__main__.TestAuthenticationV10_11)\nTest Authentication Service ... 2025-09-02 09:47:05,320 - INFO - \ud83e\uddea Setting up authentication test environment\n2025-09-02 09:47:05,320 - WARNING - \u26a0\ufe0f Auth Service module not available: No module named 'auth'\nok\ntest_rbac_manager (__main__.TestAuthenticationV10_11)\nTest RBAC Manager functionality ... 2025-09-02 09:47:05,320 - INFO - \ud83e\uddea Setting up authentication test environment\n2025-09-02 09:47:05,320 - WARNING - \u26a0\ufe0f RBAC Manager module not available: No module named 'auth'\nok\ntest_role_based_access (__main__.TestAuthenticationV10_11)\nTest role-based access control ... 2025-09-02 09:47:05,320 - INFO - \ud83e\uddea Setting up authentication test environment\n2025-09-02 09:47:05,320 - WARNING - \u26a0\ufe0f RBAC module not available: No module named 'auth'\nok\ntest_security_utils (__main__.TestAuthenticationV10_11)\nTest Security Utilities ... 2025-09-02 09:47:05,321 - INFO - \ud83e\uddea Setting up authentication test environment\n2025-09-02 09:47:05,321 - WARNING - \u26a0\ufe0f Security Utils module not available: No module named 'auth'\nok\ntest_session_manager (__main__.TestAuthenticationV10_11)\nTest Session Manager functionality ... 2025-09-02 09:47:05,321 - INFO - \ud83e\uddea Setting up authentication test environment\n2025-09-02 09:47:05,321 - WARNING - \u26a0\ufe0f Session Manager module not available: No module named 'auth'\nok\ntest_user_manager (__main__.TestAuthenticationV10_11)\nTest User Manager functionality ... 2025-09-02 09:47:05,321 - INFO - \ud83e\uddea Setting up authentication test environment\n2025-09-02 09:47:05,321 - WARNING - \u26a0\ufe0f User Manager module not available: No module named 'auth'\nok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nOK\n2025-09-02 09:47:05,321 - INFO - \ud83d\udcca Generating Authentication Test Report\n2025-09-02 09:47:05,321 - INFO - ============================================================\n2025-09-02 09:47:05,321 - INFO - \ud83d\udd10 Authentication Test Results:\n2025-09-02 09:47:05,321 - INFO -    Total Tests: 6\n2025-09-02 09:47:05,321 - INFO -    Passed: 6\n2025-09-02 09:47:05,321 - INFO -    Failed: 0\n2025-09-02 09:47:05,321 - INFO -    Errors: 0\n2025-09-02 09:47:05,321 - INFO -    Success Rate: 100.0%\n2025-09-02 09:47:05,321 - INFO - \ud83d\udcc4 Authentication test report saved to: auth_test_report_v10_11.json\n2025-09-02 09:47:05,321 - INFO - \u2705 All authentication tests passed!\n",
+      "returncode": 0
+    },
+    "ai_ml": {
+      "success": true,
+      "stdout": "",
+      "stderr": "2025-09-02 09:47:06,650 - INFO - \ud83e\udd16 Starting TradePulse v10.11 AI/ML Test Suite\n2025-09-02 09:47:06,650 - INFO - ============================================================\ntest_ai_panel (__main__.TestAIMLV10_11)\nTest AI Panel functionality ... 2025-09-02 09:47:06,658 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,658 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,658 - WARNING - \u26a0\ufe0f AI Panel module not available: No module named 'modular_panels'\nok\ntest_ensemble_models (__main__.TestAIMLV10_11)\nTest Ensemble Model functionality ... 2025-09-02 09:47:06,664 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,664 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,664 - WARNING - \u26a0\ufe0f Model Manager module not available: No module named 'modular_panels'\nok\ntest_model_manager (__main__.TestAIMLV10_11)\nTest Model Manager functionality ... 2025-09-02 09:47:06,669 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,669 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,669 - WARNING - \u26a0\ufe0f Model Manager module not available: No module named 'modular_panels'\nok\ntest_model_performance (__main__.TestAIMLV10_11)\nTest Model Performance tracking ... 2025-09-02 09:47:06,674 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,674 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,674 - WARNING - \u26a0\ufe0f Model Performance module not available: No module named 'modular_panels'\nok\ntest_model_storage (__main__.TestAIMLV10_11)\nTest Model Storage functionality ... 2025-09-02 09:47:06,679 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,679 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,679 - WARNING - \u26a0\ufe0f Model Storage module not available: No module named 'modular_panels'\nok\ntest_model_visualization (__main__.TestAIMLV10_11)\nTest Model Visualization functionality ... 2025-09-02 09:47:06,684 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,684 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,684 - WARNING - \u26a0\ufe0f Model Manager module not available: No module named 'modular_panels'\nok\ntest_prediction_engine (__main__.TestAIMLV10_11)\nTest Prediction Engine functionality ... 2025-09-02 09:47:06,689 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,689 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,689 - WARNING - \u26a0\ufe0f Prediction Engine module not available: No module named 'modular_panels'\nok\ntest_training_engine (__main__.TestAIMLV10_11)\nTest Training Engine functionality ... 2025-09-02 09:47:06,694 - INFO - \u2705 Training data created successfully\n2025-09-02 09:47:06,694 - INFO - \ud83e\uddea Setting up AI/ML test environment\n2025-09-02 09:47:06,694 - WARNING - \u26a0\ufe0f Training Engine module not available: No module named 'modular_panels'\nok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.044s\n\nOK\n2025-09-02 09:47:06,694 - INFO - \ud83d\udcca Generating AI/ML Test Report\n2025-09-02 09:47:06,694 - INFO - ============================================================\n2025-09-02 09:47:06,694 - INFO - \ud83e\udd16 AI/ML Test Results:\n2025-09-02 09:47:06,694 - INFO -    Total Tests: 8\n2025-09-02 09:47:06,694 - INFO -    Passed: 8\n2025-09-02 09:47:06,694 - INFO -    Failed: 0\n2025-09-02 09:47:06,694 - INFO -    Errors: 0\n2025-09-02 09:47:06,694 - INFO -    Success Rate: 100.0%\n2025-09-02 09:47:06,694 - INFO - \ud83d\udcc4 AI/ML test report saved to: ai_ml_test_report_v10_11.json\n2025-09-02 09:47:06,694 - INFO - \u2705 All AI/ML tests passed!\n",
+      "returncode": 0
+    },
+    "data_management": {
+      "success": true,
+      "data_shape": [
+        5,
+        3
+      ],
+      "columns": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "portfolio_management": {
+      "success": true,
+      "total_value": 177500,
+      "positions": 3
+    },
+    "alert_system": {
+      "success": true,
+      "alert_count": 2,
+      "alert_types": [
+        "price",
+        "volume"
+      ]
+    },
+    "chart_system": {
+      "success": true,
+      "chart_types": [
+        "line",
+        "bar",
+        "candlestick",
+        "scatter"
+      ],
+      "supported_formats": [
+        "png",
+        "jpg",
+        "svg",
+        "html"
+      ]
+    },
+    "system_monitoring": {
+      "success": true,
+      "cpu_percent": 0.0,
+      "memory_percent": 46.9,
+      "memory_available": 20507738112
+    },
+    "ui_components": {
+      "success": true,
+      "component_count": 5,
+      "components": [
+        "dashboard",
+        "data_table",
+        "chart",
+        "alert_panel",
+        "portfolio_view"
+      ]
+    }
+  },
+  "summary": {
+    "comprehensive_suite": true,
+    "authentication": true,
+    "ai_ml": true,
+    "data_management": true,
+    "portfolio_management": true,
+    "alert_system": true,
+    "chart_system": true,
+    "system_monitoring": true,
+    "ui_components": true
+  }
+}

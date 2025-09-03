@@ -1,0 +1,106 @@
+# TradePulse FastAPI + Panel Dockerfile
+# Multi-stage build with conda for optimal performance
+
+FROM continuumio/miniconda3:latest
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV CONDA_ENV_NAME=tradepulse-fastapi
+ENV CONDA_DEFAULT_ENV=tradepulse-fastapi
+
+# Set working directory
+WORKDIR /app
+
+# Copy conda environment file
+COPY environment_fastapi.yml /app/
+
+# Copy installation script
+COPY install_fastapi_conda.sh /app/
+RUN chmod +x /app/install_fastapi_conda.sh
+
+# Copy Panel dependencies (existing environment)
+COPY environment.yml /app/
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create conda environment with FastAPI dependencies
+RUN conda env create -f environment_fastapi.yml
+
+# Create Panel environment (if environment.yml exists)
+RUN if [ -f environment.yml ]; then \
+        conda env create -f environment.yml; \
+    fi
+
+# Make conda environment available
+RUN echo "conda activate ${CONDA_ENV_NAME}" >> ~/.bashrc
+
+# Copy application files
+COPY api/ /app/api/
+COPY modular_panels/ /app/modular_panels/
+COPY ui_components/ /app/ui_components/
+COPY modular_panel_ui_main_refactored.py /app/
+COPY launch_modular_ui.py /app/
+COPY launch_fastapi_server.py /app/
+COPY fastapi_panel_advanced_integration.py /app/
+COPY launch_unified_server.py /app/
+COPY upload_data.py /app/
+
+# Copy requirements files
+COPY requirements_fastapi.txt /app/
+COPY requirements_docker.txt /app/
+
+# Create necessary directories
+RUN mkdir -p /app/uploads /app/redline_data /app/model_training_data
+
+# Set permissions
+RUN chmod +x /app/launch_fastapi_server.py
+RUN chmod +x /app/launch_modular_ui.py
+RUN chmod +x /app/launch_unified_server.py
+RUN chmod +x /app/upload_data.py
+
+# Install additional pip packages if needed
+RUN conda run -n ${CONDA_ENV_NAME} pip install --no-cache-dir -r requirements_fastapi.txt
+
+# Install Docker-specific requirements
+RUN if [ -f requirements_docker.txt ]; then \
+        conda run -n ${CONDA_ENV_NAME} pip install --no-cache-dir -r requirements_docker.txt; \
+    fi
+
+# Create startup script
+RUN echo '#!/bin/bash' > /app/start.sh && \
+    echo 'set -e' >> /app/start.sh && \
+    echo 'echo "🚀 Starting TradePulse Unified API + Panel Server..."' >> /app/start.sh && \
+    echo 'echo "📊 Panel UI will be available at: http://localhost:8000"' >> /app/start.sh && \
+    echo 'echo "📡 API will be available at: http://localhost:8000/api"' >> /app/start.sh && \
+    echo 'echo "📚 API Documentation: http://localhost:8000/api/docs"' >> /app/start.sh && \
+    echo 'echo "🔍 Health Check: http://localhost:8000/health"' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo '# Start unified server' >> /app/start.sh && \
+    echo 'conda run -n ${CONDA_ENV_NAME} python launch_unified_server.py' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
+# Create health check script
+RUN echo '#!/bin/bash' > /app/healthcheck.sh && \
+    echo 'curl -f http://localhost:8000/health || exit 1' >> /app/healthcheck.sh && \
+    chmod +x /app/healthcheck.sh
+
+# Expose ports
+EXPOSE 8000
+
+# Set environment variables for services
+ENV FASTAPI_HOST=0.0.0.0
+ENV FASTAPI_PORT=8000
+ENV PANEL_HOST=0.0.0.0
+ENV PANEL_PORT=8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD /app/healthcheck.sh
+
+# Default command
+CMD ["/app/start.sh"]

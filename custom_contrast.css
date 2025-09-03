@@ -1,0 +1,214 @@
+/* High Contrast Dark Theme for TradePulse */
+body, html {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Panel root styling */
+.bk-root {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+/* Tabs styling with high contrast */
+.bk-Tabs {
+    background-color: #2d2d2d !important;
+    border: 3px solid #404040 !important;
+    border-radius: 10px !important;
+    margin: 10px !important;
+}
+
+.bk-Tabs-header {
+    background-color: #2d2d2d !important;
+    border-bottom: 3px solid #404040 !important;
+    padding: 15px !important;
+}
+
+.bk-Tabs-header .bk-Tabs-tab {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border: 3px solid #404040 !important;
+    margin-right: 8px !important;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+}
+
+.bk-Tabs-header .bk-Tabs-tab.bk-active {
+    background-color: #007acc !important;
+    color: #ffffff !important;
+    border-color: #007acc !important;
+    box-shadow: 0 4px 8px rgba(0, 122, 204, 0.4) !important;
+}
+
+.bk-Tabs-header .bk-Tabs-tab:hover {
+    background-color: #4d4d4d !important;
+    border-color: #007acc !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Panel content styling */
+.bk-panel-models {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 3px solid #404040 !important;
+    padding: 20px !important;
+    border-radius: 10px !important;
+    margin: 15px 0 !important;
+}
+
+/* Markdown styling */
+.bk-Markdown {
+    color: #ffffff !important;
+    background-color: #2d2d2d !important;
+    padding: 20px !important;
+    border-radius: 10px !important;
+    border: 2px solid #404040 !important;
+}
+
+.bk-Markdown h1, .bk-Markdown h2, .bk-Markdown h3 {
+    color: #007acc !important;
+    border-bottom: 3px solid #007acc !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 15px !important;
+}
+
+/* Widget styling */
+.bk-Input {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border: 3px solid #404040 !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+}
+
+.bk-Input:focus {
+    border-color: #007acc !important;
+    box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.3) !important;
+}
+
+.bk-Button {
+    background-color: #007acc !important;
+    color: #ffffff !important;
+    border: 3px solid #007acc !important;
+    border-radius: 8px !important;
+    padding: 12px 20px !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+}
+
+.bk-Button:hover {
+    background-color: #005a9e !important;
+    border-color: #005a9e !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 90, 158, 0.3) !important;
+}
+
+/* Column and Row styling */
+.bk-Column, .bk-Row {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    padding: 15px !important;
+    margin: 5px !important;
+}
+
+/* DataTable styling */
+.bk-DataTable {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 3px solid #404040 !important;
+    border-radius: 10px !important;
+}
+
+.bk-DataTable .slick-header {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border-bottom: 3px solid #404040 !important;
+}
+
+.bk-DataTable .slick-row {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid #404040 !important;
+}
+
+.bk-DataTable .slick-row:nth-child(even) {
+    background-color: #252525 !important;
+}
+
+.bk-DataTable .slick-row:hover {
+    background-color: #3d3d3d !important;
+}
+
+/* Chart styling */
+.bk-Plot {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 3px solid #404040 !important;
+    border-radius: 10px !important;
+    padding: 15px !important;
+}
+
+/* Select widget styling */
+.bk-Select {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border: 3px solid #404040 !important;
+    border-radius: 8px !important;
+}
+
+/* TextArea styling */
+.bk-TextArea {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border: 3px solid #404040 !important;
+    border-radius: 8px !important;
+}
+
+/* Progress bar styling */
+.bk-Progress {
+    background-color: #2d2d2d !important;
+    border: 3px solid #404040 !important;
+    border-radius: 8px !important;
+}
+
+.bk-Progress .bk-bar {
+    background-color: #007acc !important;
+}
+
+/* Additional high contrast elements */
+.bk-panel {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 2px solid #404040 !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 10px 0 !important;
+}
+
+.bk-pane {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 2px solid #404040 !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+}
+
+/* Force all text to be visible */
+* {
+    color: #ffffff !important;
+}
+
+/* Ensure backgrounds are dark */
+div, section, article {
+    background-color: #1a1a1a !important;
+}
+
+/* Override any light backgrounds */
+.bk-root * {
+    background-color: inherit !important;
+}

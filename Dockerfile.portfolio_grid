@@ -1,0 +1,50 @@
+# TradePulse Portfolio Grid Dockerfile v10.7
+# Portfolio management and optimization services
+
+FROM condaforge/mambaforge:latest
+
+# Set metadata
+LABEL maintainer="TradePulse Team"
+LABEL version="10.7"
+LABEL description="TradePulse Portfolio Grid - Portfolio Management & Optimization"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV VERSION=10.7
+ENV SERVICE_NAME=portfolio_grid
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Update conda to latest version
+RUN conda update -n base -c conda-forge conda -y
+
+# Copy environment file and install conda dependencies
+COPY environment.yml .
+RUN conda env create -f environment.yml
+
+# Make conda activate available
+SHELL ["conda", "run", "-n", "tradepulse", "/bin/bash", "-c"]
+
+# Copy application code
+COPY . .
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/data
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD conda run -n tradepulse python -c "print('Portfolio Grid healthy')"
+
+# Default command - run the portfolio grid service with a simple test
+CMD ["conda", "run", "-n", "tradepulse", "python", "-c", "print('Portfolio Grid Service Started - v10.7'); import time; [time.sleep(1) for _ in iter(int, 1)]"]

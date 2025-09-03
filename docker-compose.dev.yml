@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # Message Bus Service
+  message_bus:
+    build:
+      context: .
+      dockerfile: Dockerfile.message_bus
+    container_name: tradepulse_message_bus_dev
+    ports:
+      - "5555:5555"  # PUB port
+      - "5556:5556"  # SUB port
+    environment:
+      - ZMQ_PUB_PORT=5555
+      - ZMQ_SUB_PORT=5556
+    networks:
+      - tradepulse_dev_network
+    restart: unless-stopped
+
+  # Database Service (PostgreSQL + DuckDB)
+  database:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: tradepulse_database_dev
+    ports:
+      - "5432:5432"  # PostgreSQL
+      - "8000:8000"  # DuckDB HTTP
+    environment:
+      - POSTGRES_DB=tradepulse_dev
+      - POSTGRES_USER=tradepulse
+      - POSTGRES_PASSWORD=tradepulse123
+      - DUCKDB_PORT=8000
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    networks:
+      - tradepulse_dev_network
+    restart: unless-stopped
+
+  # Modular Panel UI Service (Main focus)
+  modular_panel_ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.modular_panel_ui
+    container_name: tradepulse_modular_panel_ui_dev
+    ports:
+      - "5006:5006"  # Panel UI
+    environment:
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PUB_PORT=5555
+      - MESSAGE_BUS_SUB_PORT=5556
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+      - PANEL_PORT=5006
+      - PANEL_HOST=0.0.0.0
+      - ENVIRONMENT=development
+      - DEBUG=true
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - .:/app  # Mount source code for development
+    networks:
+      - tradepulse_dev_network
+    restart: unless-stopped
+    depends_on:
+      - message_bus
+      - database
+    stdin_open: true
+    tty: true
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:alpine
+    container_name: tradepulse_redis_dev
+    ports:
+      - "6379:6379"
+    networks:
+      - tradepulse_dev_network
+    restart: unless-stopped
+
+networks:
+  tradepulse_dev_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+
+volumes:
+  data:
+    driver: local
+  logs:
+    driver: local

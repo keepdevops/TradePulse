@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Modular Panel UI Service (Main focus for testing)
+  modular_panel_ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.modular_panel_ui
+    container_name: tradepulse_ui_test
+    ports:
+      - "5006:5006"  # Panel UI
+    environment:
+      - PANEL_PORT=5006
+      - PANEL_HOST=0.0.0.0
+      - ENVIRONMENT=testing
+      - DEBUG=true
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - .:/app  # Mount source code for development
+    networks:
+      - tradepulse_test_network
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5006/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  tradepulse_test_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+
+volumes:
+  logs:
+    driver: local

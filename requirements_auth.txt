@@ -1,0 +1,29 @@
+# TradePulse Authentication System Requirements
+# Core security and authentication libraries
+
+# JWT token handling
+PyJWT>=2.8.0
+
+# Cryptography for password hashing and encryption
+cryptography>=41.0.0
+
+# Password validation and security
+passlib>=1.7.4
+
+# Secure random number generation
+secrets>=1.0.0
+
+# Database connectivity
+sqlite3
+
+# Logging and utilities
+python-dateutil>=2.8.2
+
+# Type hints support
+typing-extensions>=4.0.0
+
+# Data validation
+pydantic>=2.0.0
+
+# Environment variable management
+python-dotenv>=1.0.0

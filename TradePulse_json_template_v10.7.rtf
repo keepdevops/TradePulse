@@ -1,0 +1,435 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \{\
+  "version": "10.7",\
+  "system_info": \{\
+    "name": "TradePulse",\
+    "description": "Advanced AI-Powered Trading System with Real-Time Analytics",\
+    "last_updated": "2025-08-30",\
+    "architecture": "modular_microservices"\
+  \},\
+  "message_bus": \{\
+    "type": "zeromq",\
+    "pub_endpoint": "tcp://*:5555",\
+    "sub_endpoint": "tcp://localhost:5556",\
+    "enabled": true,\
+    "heartbeat_interval_seconds": 30,\
+    "max_message_size_mb": 100,\
+    "compression": "lz4",\
+    "security": \{\
+      "authentication": false,\
+      "encryption": false\
+    \}\
+  \},\
+  "database": \{\
+    "primary": "duckdb",\
+    "connections": \{\
+      "duckdb": \{\
+        "path": "./data/redline_data.duckdb",\
+        "cache_size_mb": 1000,\
+        "memory_limit_gb": 8\
+      \},\
+      "sqlite": \{\
+        "path": "./data/tradepulse.sqlite",\
+        "cache_size_mb": 100\
+      \},\
+      "postgresql": \{\
+        "url": "postgresql://user:pass@localhost:5432/tradepulse",\
+        "pool_size": 20,\
+        "max_overflow": 30\
+      \}\
+    \},\
+    "backup": \{\
+      "enabled": true,\
+      "schedule": "daily",\
+      "retention_days": 30\
+    \}\
+  \},\
+  "redline": \{\
+    "data_path": "./data/redline_data.duckdb",\
+    "input_formats": ["csv", "json", "parquet", "feather", "hdf5"],\
+    "preprocessing": \{\
+      "scaler": "RobustScaler",\
+      "missing_value_strategy": "interpolate",\
+      "outlier_detection": "isolation_forest",\
+      "feature_engineering": true\
+    \},\
+    "performance": \{\
+      "parallel_processing": true,\
+      "chunk_size": 10000\
+    \}\
+  \},\
+  "live_feed": \{\
+    "provider": "schwab",\
+    "api_key": "<secure_key>",\
+    "endpoint": "https://api.schwab.com/v1/marketdata",\
+    "refresh_rate_seconds": 30,\
+    "websocket": true,\
+    "fallback_providers": ["fidelity", "mock"],\
+    "data_quality": \{\
+      "validation": true,\
+      "anomaly_detection": true\
+    \}\
+  \},\
+  "data_grid": \{\
+    "enabled": true,\
+    "tickers": ["AAPL", "GOOGL", "MSFT", "TSLA", "BTC-USD", "ETH-USD", "EUR-USD", "GOLD", "SPY", "QQQ"],\
+    "default_date_range": \{\
+      "start": "2025-01-01",\
+      "end": "2025-08-30"\
+    \},\
+    "export_formats": ["csv", "json", "excel", "parquet", "html"],\
+    "visualization": \{\
+      "chart_type": "candlestick",\
+      "library": "plotly",\
+      "theme": "dark",\
+      "interactive": true,\
+      "real_time_updates": true\
+    \},\
+    "data_processing": \{\
+      "batch_size": 1000,\
+      "parallel_workers": 4,\
+      "caching": true\
+    \}\
+  \},\
+  "analysis_grid": \{\
+    "enabled": true,\
+    "indicators": ["rsi", "ma20", "ma50", "ma200", "macd", "bollinger_bands", "stochastic", "williams_r", "cci", "adx"],\
+    "parameters": \{\
+      "rsi_period": 14,\
+      "ma20_period": 20,\
+      "ma50_period": 50,\
+      "ma200_period": 200,\
+      "macd_fast": 12,\
+      "macd_slow": 26,\
+      "macd_signal": 9,\
+      "bollinger_period": 20,\
+      "bollinger_std": 2\
+    \},\
+    "visualization": \{\
+      "chart_type": "multi_panel",\
+      "library": "mplfinance",\
+      "custom_styles": true\
+    \},\
+    "pattern_recognition": \{\
+      "enabled": true,\
+      "patterns": ["head_shoulders", "double_top", "triangle", "flag"]\
+    \}\
+  \},\
+  "models_grid": \{\
+    "enabled": true,\
+    "models": ["linear_regression", "random_forest", "lstm", "xgboost", "adm", "cipo", "bicipo", "prophet", "arima", "transformer", "lightgbm", "garch", "catboost", "neural_prophet"],\
+    "parameters": \{\
+      "lstm": \{\
+        "units": [50, 100, 200, 300],\
+        "layers": [1, 2, 3],\
+        "learning_rate": [0.001, 0.01, 0.1],\
+        "epochs": [50, 100, 200],\
+        "dropout": [0.1, 0.2, 0.3]\
+      \},\
+      "transformer": \{\
+        "num_layers": [2, 4, 6],\
+        "heads": [4, 8, 16],\
+        "d_model": [128, 256, 512],\
+        "learning_rate": [0.0001, 0.001]\
+      \},\
+      "xgboost": \{\
+        "max_depth": [3, 6, 9],\
+        "learning_rate": [0.01, 0.1, 0.3],\
+        "n_estimators": [100, 300, 500]\
+      \},\
+      "lightgbm": \{\
+        "num_leaves": [31, 63, 127],\
+        "learning_rate": [0.01, 0.1, 0.2],\
+        "max_depth": [3, 6, 9]\
+      \}\
+    \},\
+    "features": ["open", "close", "high", "low", "volume", "rsi", "ma20", "ma50", "macd", "bollinger_upper", "bollinger_lower", "sentiment_score", "volatility", "momentum"],\
+    "feature_selection": \{\
+      "method": "mutual_info",\
+      "threshold": 0.01,\
+      "max_features": 50\
+    \},\
+    "hyperparameter_optimization": \{\
+      "method": "optuna",\
+      "trials": 100,\
+      "timeout_hours": 2\
+    \},\
+    "visualization": \{\
+      "type": "3d_scatter",\
+      "library": "plotly",\
+      "theme": "dark",\
+      "interactive": true\
+    \},\
+    "stock_selection": \{\
+      "enabled": true,\
+      "max_assets": 20,\
+      "variance_threshold": 0.05,\
+      "prediction_horizon_days": 30,\
+      "correlation_threshold": 0.7\
+    \},\
+    "ensemble_methods": \{\
+      "enabled": true,\
+      "methods": ["voting", "stacking", "bagging"],\
+      "cross_validation_folds": 5\
+    \}\
+  \},\
+  "trading_grid": \{\
+    "enabled": true,\
+    "risk_management": \{\
+      "max_risk_per_trade_percent": 1,\
+      "stop_loss_percent": 2,\
+      "take_profit_percent": 4,\
+      "risk_reward_ratio": 2,\
+      "max_drawdown_percent": 10,\
+      "position_sizing": "kelly_criterion"\
+    \},\
+    "execution": \{\
+      "slippage_tolerance": 0.1,\
+      "market_impact_analysis": true,\
+      "execution_algorithm": "twap"\
+    \},\
+    "compliance": \{\
+      "enabled": true,\
+      "wash_trading_detection": true,\
+      "position_limits": true\
+    \}\
+  \},\
+  "portfolio_grid": \{\
+    "enabled": true,\
+    "optimization_strategies": ["markowitz", "risk_parity", "sharpe", "black_litterman", "hrp"],\
+    "risk_simulation": \{\
+      "method": "monte_carlo",\
+      "iterations": 10000,\
+      "confidence_level": 0.95\
+    \},\
+    "rebalancing": \{\
+      "frequency": "weekly",\
+      "threshold": 0.05,\
+      "transaction_costs": true\
+    \},\
+    "performance_metrics": ["sharpe_ratio", "sortino_ratio", "calmar_ratio", "information_ratio", "max_drawdown", "var_95", "cvar_95"]\
+  \},\
+  "rl_module": \{\
+    "enabled": true,\
+    "algorithms": ["q_learning", "dqn", "a2c", "ppo", "ddpg", "sac", "td3"],\
+    "parameters": \{\
+      "ppo": \{\
+        "learning_rate": [0.0001, 0.001, 0.01],\
+        "gamma": 0.99,\
+        "episodes": 10000,\
+        "batch_size": 64\
+      \},\
+      "dqn": \{\
+        "epsilon": [0.1, 0.3, 0.5],\
+        "learning_rate": [0.0001, 0.001],\
+        "memory_size": 100000\
+      \},\
+      "sac": \{\
+        "learning_rate": [0.0001, 0.001],\
+        "temperature": [0.1, 0.2]\
+      \}\
+    \},\
+    "reward_function": "sharpe_ratio",\
+    "state_features": ["price", "volume", "rsi", "macd", "bollinger_position", "sentiment_score", "volatility"],\
+    "environment": \{\
+      "type": "continuous",\
+      "action_space": "discrete",\
+      "observation_space": "continuous"\
+    \}\
+  \},\
+  "ai_module": \{\
+    "enabled": true,\
+    "strategies": ["trend_following", "ai_agentic", "risk_management", "diversification", "mean_reversion", "momentum", "arbitrage"],\
+    "trend_following": \{\
+      "indicators": ["ma_crossover", "fvg", "order_blocks", "support_resistance"],\
+      "ma_short_period": 21,\
+      "ma_long_period": 50,\
+      "risk_reward_ratio": 2,\
+      "trend_strength_threshold": 0.7\
+    \},\
+    "ai_agentic": \{\
+      "model": "lstm_cnn_transformer",\
+      "accuracy_threshold": 0.94,\
+      "sentiment_sources": ["x", "news", "reddit", "earnings_calls"],\
+      "fomo_detection": true,\
+      "market_regime_detection": true,\
+      "adaptive_learning": true\
+    \},\
+    "risk_management": \{\
+      "max_risk_per_trade_percent": 1,\
+      "leverage_max": 3,\
+      "position_sizing": "dynamic",\
+      "correlation_analysis": true,\
+      "stress_testing": true\
+    \},\
+    "diversification": \{\
+      "asset_classes": ["stocks", "crypto", "forex", "commodities", "bonds", "real_estate"],\
+      "max_allocation_percent_per_asset": 15,\
+      "geographic_diversification": true,\
+      "sector_rotation": true\
+    \},\
+    "visualization": \{\
+      "type": "decision_boundary",\
+      "library": "plotly",\
+      "theme": "dark",\
+      "interactive": true,\
+      "real_time_updates": true\
+    \},\
+    "natural_language_processing": \{\
+      "enabled": true,\
+      "models": ["gpt4", "claude", "llama"],\
+      "sentiment_analysis": true,\
+      "news_impact_analysis": true\
+    \}\
+  \},\
+  "alerts": \{\
+    "enabled": true,\
+    "thresholds": \{\
+      "rsi_overbought": 70,\
+      "rsi_oversold": 30,\
+      "price_drop_percent": 5,\
+      "volume_spike_percent": 200,\
+      "volatility_threshold": 0.3\
+    \},\
+    "notification_types": ["desktop", "email", "sms", "webhook"],\
+    "smart_alerts": \{\
+      "enabled": true,\
+      "ai_generated": true,\
+      "personalization": true\
+    \}\
+  \},\
+  "backtest": \{\
+    "enabled": true,\
+    "metrics": ["sharpe_ratio", "sortino_ratio", "calmar_ratio", "max_drawdown", "win_rate", "profit_factor", "recovery_factor", "ulcer_index"],\
+    "default_period_years": 5,\
+    "walk_forward_analysis": true,\
+    "monte_carlo_simulation": true,\
+    "transaction_costs": true,\
+    "slippage_modeling": true,\
+    "reporting": \{\
+      "format": "html",\
+      "charts": true,\
+      "tables": true,\
+      "export": true\
+    \}\
+  \},\
+  "sentiment": \{\
+    "enabled": true,\
+    "sources": ["x", "news", "reddit", "earnings_calls", "analyst_reports", "social_media"],\
+    "nlp_model": "transformers",\
+    "languages": ["en", "es", "fr", "de", "zh"],\
+    "real_time_processing": true,\
+    "sentiment_aggregation": "weighted_average",\
+    "impact_analysis": true\
+  \},\
+  "dashboards": \{\
+    "enabled": true,\
+    "theme": "dark",\
+    "export_format": "html",\
+    "real_time_updates": true,\
+    "customization": true,\
+    "mobile_responsive": true,\
+    "widgets": ["portfolio_overview", "market_heatmap", "risk_metrics", "performance_charts", "alerts_panel"]\
+  \},\
+  "broker_integration": \{\
+    "enabled": true,\
+    "provider": "schwab",\
+    "api_key": "<secure_key>",\
+    "demo_mode": false,\
+    "paper_trading": true,\
+    "order_types": ["market", "limit", "stop", "stop_limit", "trailing_stop"],\
+    "risk_checks": true\
+  \},\
+  "cloud_sync": \{\
+    "enabled": true,\
+    "provider": "aws_s3",\
+    "bucket": "tradepulse-data-v10-7",\
+    "sync_interval_minutes": 15,\
+    "versioning": true,\
+    "encryption": true,\
+    "backup_strategy": "incremental"\
+  \},\
+  "auth": \{\
+    "enabled": true,\
+    "method": "jwt",\
+    "role": ["admin", "trader", "viewer", "analyst"],\
+    "mfa": true,\
+    "session_timeout_hours": 24,\
+    "audit_logging": true\
+  \},\
+  "kubernetes": \{\
+    "enabled": false,\
+    "namespace": "tradepulse-v10-7",\
+    "replicas": \{\
+      "data_grid": 3,\
+      "models_grid": 2,\
+      "ai_module": 2,\
+      "message_bus": 2\
+    \},\
+    "autoscaling": \{\
+      "enabled": true,\
+      "min_replicas": 1,\
+      "max_replicas": 20,\
+      "cpu_utilization_target": 50,\
+      "memory_utilization_target": 70\
+    \},\
+    "monitoring": \{\
+      "prometheus": true,\
+      "grafana": true,\
+      "jaeger": true\
+    \}\
+  \},\
+  "performance": \{\
+    "caching": \{\
+      "enabled": true,\
+      "strategy": "redis",\
+      "ttl_seconds": 3600\
+    \},\
+    "optimization": \{\
+      "parallel_processing": true,\
+      "gpu_acceleration": true,\
+      "memory_optimization": true\
+    \},\
+    "monitoring": \{\
+      "enabled": true,\
+      "metrics": ["cpu", "memory", "disk", "network"],\
+      "alerting": true\
+    \}\
+  \},\
+  "security": \{\
+    "encryption": \{\
+      "at_rest": true,\
+      "in_transit": true,\
+      "algorithm": "aes-256"\
+    \},\
+    "access_control": \{\
+      "ip_whitelist": true,\
+      "rate_limiting": true,\
+      "brute_force_protection": true\
+    \},\
+    "compliance": \{\
+      "gdpr": true,\
+      "sox": true,\
+      "pci_dss": false\
+    \}\
+  \},\
+  "integration": \{\
+    "third_party": \{\
+      "trading_view": true,\
+      "bloomberg": false,\
+      "reuters": false,\
+      "yahoo_finance": true\
+    \},\
+    "apis": \{\
+      "rest_api": true,\
+      "websocket_api": true,\
+      "graphql": false\
+    \}\
+  \}\
+\}}

@@ -1,0 +1,232 @@
+version: '3.8'
+
+services:
+  # Message Bus Service
+  message_bus:
+    build:
+      context: .
+      dockerfile: Dockerfile.message_bus
+    container_name: tradepulse_message_bus
+    ports:
+      - "5555:5555"  # PUB port
+      - "5556:5556"  # SUB port
+    environment:
+      - ZMQ_PUB_PORT=5555
+      - ZMQ_SUB_PORT=5556
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import zmq; print('ZMQ OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Database Service
+  database:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: tradepulse_database
+    ports:
+      - "5432:5432"  # PostgreSQL
+      - "8000:8000"  # DuckDB HTTP
+    environment:
+      - POSTGRES_DB=tradepulse
+      - POSTGRES_USER=tradepulse
+      - POSTGRES_PASSWORD=tradepulse123
+      - DUCKDB_PORT=8000
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    depends_on:
+      - message_bus
+
+  # Data Grid Service
+  data_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.data_grid
+    container_name: tradepulse_data_grid
+    environment:
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PUB_PORT=5555
+      - MESSAGE_BUS_SUB_PORT=5556
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    depends_on:
+      - message_bus
+      - database
+
+  # Models Grid Service
+  models_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.models_grid
+    container_name: tradepulse_models_grid
+    environment:
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PUB_PORT=5555
+      - MESSAGE_BUS_SUB_PORT=5556
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    depends_on:
+      - message_bus
+      - database
+
+  # AI Module Service
+  ai_module:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai_module
+    container_name: tradepulse_ai_module
+    environment:
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PUB_PORT=5555
+      - MESSAGE_BUS_SUB_PORT=5556
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    depends_on:
+      - message_bus
+      - database
+
+  # Portfolio Grid Service
+  portfolio_grid:
+    build:
+      context: .
+      dockerfile: Dockerfile.portfolio_grid
+    container_name: tradepulse_portfolio_grid
+    environment:
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PUB_PORT=5555
+      - MESSAGE_BUS_SUB_PORT=5556
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    depends_on:
+      - message_bus
+      - database
+
+  # Modular Panel UI Service
+  modular_panel_ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.modular_panel_ui
+    container_name: tradepulse_modular_panel_ui
+    ports:
+      - "5006:5006"  # Panel UI
+    environment:
+      - MESSAGE_BUS_HOST=message_bus
+      - MESSAGE_BUS_PUB_PORT=5555
+      - MESSAGE_BUS_SUB_PORT=5556
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+      - PANEL_PORT=5006
+      - PANEL_HOST=0.0.0.0
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    depends_on:
+      - message_bus
+      - database
+      - data_grid
+      - models_grid
+      - ai_module
+      - portfolio_grid
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5006/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: tradepulse_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    depends_on:
+      - modular_panel_ui
+    profiles:
+      - production
+
+  # Redis Cache (Optional)
+  redis:
+    image: redis:alpine
+    container_name: tradepulse_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Monitoring (Optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: tradepulse_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    profiles:
+      - production
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: tradepulse_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - tradepulse_network
+    restart: unless-stopped
+    profiles:
+      - production
+
+networks:
+  tradepulse_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  grafana_data:
+    driver: local
+
+# Development profile (default)
+profiles:
+  - development
+  - production

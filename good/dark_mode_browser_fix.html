@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dark Mode Fix for TradePulse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #2d2d2d;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #404040;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            border: 1px solid #404040;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #404040;
+            border-radius: 5px;
+        }
+        .highlight {
+            color: #00ff88;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌙 Dark Mode Fix for TradePulse</h1>
+        <p>This will fix the black on black visibility issue in your TradePulse application.</p>
+        
+        <div class="step">
+            <h2>Step 1: Open Developer Tools</h2>
+            <p>In your browser at <span class="highlight">http://localhost:5006</span>:</p>
+            <ul>
+                <li><strong>Chrome/Edge:</strong> Press <kbd>F12</kbd> or <kbd>Ctrl+Shift+I</kbd></li>
+                <li><strong>Safari:</strong> Press <kbd>Cmd+Option+I</kbd></li>
+                <li><strong>Firefox:</strong> Press <kbd>F12</kbd> or <kbd>Ctrl+Shift+I</kbd></li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <h2>Step 2: Go to Console Tab</h2>
+            <p>Click on the "Console" tab in the developer tools.</p>
+        </div>
+        
+        <div class="step">
+            <h2>Step 3: Copy and Paste This Code</h2>
+            <p>Copy the following code and paste it into the console, then press Enter:</p>
+            
+            <div class="code-block">// Dark Mode Fix for TradePulse
+(function() {
+    // Create and inject CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Dark Mode Fix */
+        body {
+            background-color: #1e1e1e !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-layout-Column {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border: 1px solid #404040 !important;
+            padding: 10px !important;
+            margin: 5px !important;
+        }
+        
+        .bk-panel-models-layout-Row {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-widgets-Tabs {
+            background-color: #1e1e1e !important;
+        }
+        
+        .bk-panel-models-widgets-Tabs .bk-tabs-header {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+        
+        .bk-panel-models-widgets-Tabs .bk-tab {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        .bk-panel-models-widgets-Tabs .bk-tab.bk-active {
+            background-color: #404040 !important;
+            color: #00ff88 !important;
+        }
+        
+        .bk-panel-models-widgets-DataFrame {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-widgets-DataFrame table {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-widgets-DataFrame th {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-widgets-DataFrame td {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        .bk-panel-models-widgets-Button {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        .bk-panel-models-widgets-Button:hover {
+            background-color: #505050 !important;
+        }
+        
+        .bk-panel-models-widgets-Button.bk-btn-primary {
+            background-color: #00ff88 !important;
+            color: #1e1e1e !important;
+        }
+        
+        .bk-panel-models-widgets-TextInput {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        .bk-panel-models-widgets-Select {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        .bk-panel-models-widgets-IntSlider {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-widgets-FloatSlider {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-widgets-FloatInput {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+            border-color: #404040 !important;
+        }
+        
+        .bk-panel-models-markup-Markdown {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        .bk-panel-models-plot-Plot {
+            background-color: #1e1e1e !important;
+        }
+        
+        .bk-root {
+            background-color: #1e1e1e !important;
+        }
+        
+        h1, h2, h3, h4, h5, h6, p, span, div {
+            color: #ffffff !important;
+        }
+        
+        * {
+            background-color: #1e1e1e !important;
+            color: #ffffff !important;
+        }
+        
+        [style*="background-color: black"], 
+        [style*="background: black"],
+        [style*="background-color: #000"],
+        [style*="background: #000"] {
+            background-color: #2d2d2d !important;
+        }
+    `;
+    
+    document.head.appendChild(style);
+    
+    console.log('✅ Dark mode fix applied! Panels should now be visible.');
+    console.log('🎨 Dark theme: White text on dark backgrounds');
+    console.log('🔄 If panels are still not visible, refresh the page.');
+})();</div>
+        </div>
+        
+        <div class="step">
+            <h2>Step 4: Verify the Fix</h2>
+            <p>After running the code:</p>
+            <ul>
+                <li>✅ Panels should have dark gray backgrounds (#2d2d2d)</li>
+                <li>✅ Text should be white and clearly visible</li>
+                <li>✅ Tabs should have proper contrast</li>
+                <li>✅ Buttons and inputs should be visible</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <h2>Step 5: If Still Not Working</h2>
+            <p>If the panels are still not visible:</p>
+            <ul>
+                <li>🔄 Refresh the page (F5 or Cmd+R)</li>
+                <li>🔄 Run the code again in the console</li>
+                <li>🔄 Try a different browser</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <h2>Color Scheme Applied</h2>
+            <ul>
+                <li><span style="color: #1e1e1e; background-color: #1e1e1e; padding: 2px 5px;">Main Background</span> #1e1e1e (Dark Gray)</li>
+                <li><span style="color: #2d2d2d; background-color: #2d2d2d; padding: 2px 5px;">Panel Background</span> #2d2d2d (Medium Gray)</li>
+                <li><span style="color: #ffffff; background-color: #ffffff; padding: 2px 5px;">Text Color</span> #ffffff (White)</li>
+                <li><span style="color: #00ff88; background-color: #00ff88; padding: 2px 5px;">Accent Color</span> #00ff88 (Green)</li>
+                <li><span style="color: #404040; background-color: #404040; padding: 2px 5px;">Border Color</span> #404040 (Gray)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
