@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
 """
-TradePulse Dataset Selector - Operations
-Handles dataset selector operations and data management
+TradePulse Dataset Selector Operations
+Operations for dataset selection and management
 """
 
-import pandas as pd
-from typing import Dict, List, Any
 import logging
+from typing import Dict, List, Optional, Any
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
 class DatasetSelectorOperations:
-    """Handles dataset selector operations and data management"""
+    """Operations for dataset selection and management"""
     
-    def __init__(self, data_manager, module_name: str):
+    def __init__(self, data_manager, module_name: Optional[str] = None):
         self.data_manager = data_manager
         self.module_name = module_name
-        self.selected_datasets = set()
+        self.selection_history = []
+        self.active_selections = {}
+        
         # UI component references (will be set by main component)
         self.dataset_info = None
         self.preview_table = None
         self.active_datasets_display = None
         self.export_button = None
+        
+        logger.info(f"🔧 Dataset Selector Operations initialized for module: {module_name}")
     
     def refresh_datasets(self, datasets_list, active_datasets_display):
         """Refresh the list of available datasets"""
@@ -52,163 +56,188 @@ class DatasetSelectorOperations:
         except Exception as e:
             logger.error(f"Failed to refresh datasets: {e}")
     
-    def on_search_change(self, event, datasets_list, active_datasets_display):
-        """Handle search input changes"""
-        query = event.new
-        if query:
-            # Search datasets
-            search_results = self.data_manager.search_datasets(query, self.module_name)
-            self.update_datasets_list(search_results, datasets_list)
-        else:
-            # Show all available datasets
-            self.refresh_datasets(datasets_list, active_datasets_display)
-    
-    def on_filter_change(self, event, datasets_list, active_datasets_display):
-        """Handle type filter changes"""
-        filter_type = event.new
-        self.refresh_datasets(datasets_list, active_datasets_display)
-    
-    def on_dataset_selection(self, event, dataset_info, preview_table, activate_button, deactivate_button, export_button):
-        """Handle dataset selection"""
-        selected_id = event.new
-        if selected_id:
-            self.show_dataset_info(selected_id, dataset_info, preview_table, activate_button, deactivate_button, export_button)
-        else:
-            dataset_info.object = "**Dataset Info:** Select a dataset to view details"
-            preview_table.value = pd.DataFrame()
-            activate_button.disabled = True
-            export_button.disabled = True
-    
-    def show_dataset_info(self, dataset_id: str, dataset_info, preview_table, activate_button, deactivate_button, export_button):
-        """Display information about the selected dataset"""
-        try:
-            if hasattr(self.data_manager, 'uploaded_datasets') and dataset_id in self.data_manager.uploaded_datasets:
-                dataset_data = self.data_manager.uploaded_datasets[dataset_id]
-                
-                # Create info text
-                info_text = f"""
-                **Dataset: {dataset_id}**
-                
-                **Basic Info:**
-                - **Shape:** {dataset_data['shape'][0]} rows × {dataset_data['shape'][1]} columns
-                - **Columns:** {', '.join(dataset_data['columns'])}
-                - **Memory Usage:** {dataset_data['memory_usage'] / 1024:.2f} KB
-                - **Upload Time:** {dataset_data['upload_time'].strftime('%Y-%m-%d %H:%M:%S')}
-                - **Access Count:** {dataset_data['access_count']}
-                
-                **Data Types:**
-                {', '.join([f'{col}: {dtype}' for col, dtype in dataset_data['dtypes'].items()])}
-                
-                **Metadata:**
-                {', '.join([f'{k}: {v}' for k, v in dataset_data['metadata'].items()])}
-                """
-                
-                dataset_info.object = info_text
-                
-                # Show preview
-                preview_data = dataset_data['data'].head(10)
-                preview_table.value = preview_data
-                
-                # Check if dataset is already active
-                if self.is_dataset_active(dataset_id):
-                    activate_button.disabled = True
-                    deactivate_button.disabled = False
-                else:
-                    activate_button.disabled = False
-                    deactivate_button.disabled = True
-                    
-                export_button.disabled = False
-                    
-        except Exception as e:
-            logger.error(f"Failed to show dataset info: {e}")
-            dataset_info.object = f"**Error:** {str(e)}"
-    
-    def is_dataset_active(self, dataset_id: str) -> bool:
-        """Check if a dataset is active for this module"""
-        try:
-            active_datasets = self.data_manager.get_active_datasets_for_module(self.module_name)
-            return dataset_id in active_datasets
-        except Exception as e:
-            logger.error(f"Failed to check dataset activation status: {e}")
-            return False
-    
-    def activate_dataset(self, event, datasets_list, active_datasets_display, dataset_info, preview_table, activate_button, deactivate_button):
-        """Activate the selected dataset for this module"""
-        try:
-            selected_id = datasets_list.value
-            if selected_id:
-                success = self.data_manager.activate_dataset_for_module(selected_id, self.module_name)
-                if success:
-                    self.selected_datasets.add(selected_id)
-                    self.update_active_datasets_display(active_datasets_display)
-                    self.show_dataset_info(selected_id, dataset_info, preview_table, activate_button, deactivate_button, None)
-                    
-                    logger.info(f"✅ Dataset {selected_id} activated for {self.module_name}")
-                else:
-                    logger.error(f"❌ Failed to activate dataset {selected_id}")
-                    
-        except Exception as e:
-            logger.error(f"Failed to activate dataset: {e}")
-    
-    def deactivate_dataset(self, event, datasets_list, active_datasets_display, dataset_info, preview_table, activate_button, deactivate_button):
-        """Deactivate the selected dataset for this module"""
-        try:
-            selected_id = datasets_list.value
-            if selected_id and selected_id in self.selected_datasets:
-                # Remove from active datasets
-                self.selected_datasets.discard(selected_id)
-                self.update_active_datasets_display(active_datasets_display)
-                self.show_dataset_info(selected_id, dataset_info, preview_table, activate_button, deactivate_button, None)
-                
-                logger.info(f"✅ Dataset {selected_id} deactivated for {self.module_name}")
-                
-        except Exception as e:
-            logger.error(f"Failed to deactivate dataset: {e}")
-    
-    def export_dataset(self, event, datasets_list):
-        """Export the selected dataset"""
-        try:
-            selected_id = datasets_list.value
-            if selected_id:
-                logger.info(f"Export functionality would show dialog for {selected_id}")
-                
-        except Exception as e:
-            logger.error(f"Failed to export dataset: {e}")
-    
     def update_active_datasets_display(self, active_datasets_display):
-        """Update the display of active datasets"""
+        """Update the active datasets display"""
         try:
-            active_datasets = self.data_manager.get_active_datasets_for_module(self.module_name)
-            
+            active_datasets = self.get_active_datasets(self.module_name)
             if active_datasets:
-                display_text = "**Active Datasets:**\n"
-                for dataset_id, data in active_datasets.items():
-                    display_text += f"- {dataset_id}: {data.shape[0]} rows × {data.shape[1]} cols\n"
+                display_text = "**Active Datasets:**\n\n"
+                for dataset_id, info in active_datasets.items():
+                    display_text += f"- **{dataset_id}** (selected at {info['selected_at'].strftime('%H:%M:%S')})\n"
+                active_datasets_display.object = display_text
             else:
-                display_text = "**Active Datasets:** None"
-            
-            active_datasets_display.object = display_text
-            
+                active_datasets_display.object = "**Active Datasets:** None"
         except Exception as e:
             logger.error(f"Failed to update active datasets display: {e}")
+            active_datasets_display.object = "**Active Datasets:** Error loading"
     
-    def update_datasets_list(self, search_results, datasets_list):
-        """Update datasets list with search results"""
+    def get_available_datasets(self, module: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Get list of available datasets"""
         try:
-            options = []
-            for dataset_id, info in search_results.items():
-                display_name = f"{info.get('name', dataset_id)}"
-                options.append((display_name, dataset_id))
+            if self.data_manager is None:
+                return []
             
-            datasets_list.options = options
+            available_datasets = self.data_manager.get_available_datasets(module)
+            dataset_list = []
+            
+            for dataset_id in available_datasets:
+                try:
+                    dataset_data = self.data_manager.get_dataset(dataset_id)
+                    if dataset_data is not None and not dataset_data.empty:
+                        dataset_list.append({
+                            'id': dataset_id,
+                            'name': dataset_id,
+                            'rows': len(dataset_data),
+                            'columns': len(dataset_data.columns),
+                            'columns_list': dataset_data.columns.tolist(),
+                            'type': 'uploaded',
+                            'last_accessed': datetime.now().isoformat()
+                        })
+                except Exception as e:
+                    logger.warning(f"⚠️ Error processing dataset {dataset_id}: {e}")
+            
+            return dataset_list
             
         except Exception as e:
-            logger.error(f"Failed to update datasets list: {e}")
+            logger.error(f"❌ Error getting available datasets: {e}")
+            return []
     
-    def get_active_datasets(self) -> Dict[str, pd.DataFrame]:
-        """Get all active datasets for this module"""
+    def select_dataset(self, dataset_id: str, module: str) -> Dict[str, Any]:
+        """Select a dataset for a specific module"""
         try:
-            return self.data_manager.get_active_datasets_for_module(self.module_name)
+            if self.data_manager is None:
+                return {
+                    'success': False,
+                    'error': 'Data manager not available'
+                }
+            
+            # Check if dataset exists
+            dataset_data = self.data_manager.get_dataset(dataset_id)
+            if dataset_data is None or dataset_data.empty:
+                return {
+                    'success': False,
+                    'error': f'Dataset {dataset_id} not found or empty'
+                }
+            
+            # Record selection
+            selection_record = {
+                'dataset_id': dataset_id,
+                'module': module,
+                'selection_time': datetime.now(),
+                'rows': len(dataset_data),
+                'columns': len(dataset_data.columns)
+            }
+            
+            self.selection_history.append(selection_record)
+            
+            # Update active selections
+            if module not in self.active_selections:
+                self.active_selections[module] = {}
+            
+            self.active_selections[module][dataset_id] = {
+                'selected_at': datetime.now(),
+                'rows': len(dataset_data),
+                'columns': len(dataset_data.columns)
+            }
+            
+            logger.info(f"✅ Dataset {dataset_id} selected for module {module}")
+            
+            return {
+                'success': True,
+                'dataset_id': dataset_id,
+                'module': module,
+                'rows': len(dataset_data),
+                'columns': len(dataset_data.columns),
+                'columns_list': dataset_data.columns.tolist()
+            }
+            
         except Exception as e:
-            logger.error(f"Failed to get active datasets: {e}")
+            logger.error(f"❌ Error selecting dataset {dataset_id}: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def deselect_dataset(self, dataset_id: str, module: str) -> Dict[str, Any]:
+        """Deselect a dataset for a specific module"""
+        try:
+            if module in self.active_selections and dataset_id in self.active_selections[module]:
+                del self.active_selections[module][dataset_id]
+                logger.info(f"✅ Dataset {dataset_id} deselected for module {module}")
+                return {
+                    'success': True,
+                    'dataset_id': dataset_id,
+                    'module': module
+                }
+            else:
+                return {
+                    'success': False,
+                    'error': f'Dataset {dataset_id} not active for module {module}'
+                }
+                
+        except Exception as e:
+            logger.error(f"❌ Error deselecting dataset {dataset_id}: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def get_active_datasets(self, module: Optional[str] = None) -> Dict[str, Any]:
+        """Get currently active datasets"""
+        try:
+            if module:
+                return self.active_selections.get(module, {})
+            else:
+                return self.active_selections.copy()
+                
+        except Exception as e:
+            logger.error(f"❌ Error getting active datasets: {e}")
             return {}
+    
+    def get_selection_history(self) -> List[Dict[str, Any]]:
+        """Get selection history"""
+        return self.selection_history.copy()
+    
+    def clear_selection_history(self) -> int:
+        """Clear selection history and return count"""
+        count = len(self.selection_history)
+        self.selection_history.clear()
+        logger.info(f"🗑️ Cleared {count} selection records")
+        return count
+    
+    def get_selection_stats(self) -> Dict[str, Any]:
+        """Get selection statistics"""
+        if not self.selection_history:
+            return {
+                'total_selections': 0,
+                'active_modules': [],
+                'most_selected_datasets': [],
+                'recent_selections': []
+            }
+        
+        # Count selections by dataset
+        dataset_counts = {}
+        for record in self.selection_history:
+            dataset_id = record['dataset_id']
+            dataset_counts[dataset_id] = dataset_counts.get(dataset_id, 0) + 1
+        
+        # Get most selected datasets
+        most_selected = sorted(
+            dataset_counts.items(), 
+            key=lambda x: x[1], 
+            reverse=True
+        )[:5]
+        
+        # Get recent selections
+        recent_selections = sorted(
+            self.selection_history, 
+            key=lambda x: x['selection_time'], 
+            reverse=True
+        )[:10]
+        
+        return {
+            'total_selections': len(self.selection_history),
+            'active_modules': list(self.active_selections.keys()),
+            'most_selected_datasets': most_selected,
+            'recent_selections': recent_selections
+        }

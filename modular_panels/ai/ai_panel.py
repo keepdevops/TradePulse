@@ -11,7 +11,7 @@ from typing import Dict
 import logging
 
 from .. import BasePanel
-from ..dataset_selector import DatasetActivator as DatasetSelectorComponent
+from ..dataset_selector_component import DatasetSelectorComponent
 from .model_manager import ModelManager
 from .ai_ui_components import AIUIComponents
 from .ai_callbacks import AICallbacks

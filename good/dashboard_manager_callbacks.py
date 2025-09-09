@@ -84,7 +84,7 @@ class DashboardManagerCallbacks:
     def on_role_validation(self, role: str) -> bool:
         """Validate role changes"""
         try:
-            valid_roles = ['day_trader', 'ml_analyst', 'default']
+            valid_roles = ['day_trader', 'ml_analyst', 'trend_analyst', 'default']
             is_valid = role in valid_roles
             
             if is_valid:

@@ -51,15 +51,63 @@ def create_refactored_modular_ui():
         dashboard_manager = DashboardManager()
         
         # Create refactored panels with data access
-        panels = {
-            '📊 Data': DataPanel(data_manager, data_access_manager),
-            '🤖 Models': ModelsPanel(data_manager, data_access_manager),
-            '💼 Portfolio': PortfolioPanel(data_manager, data_access_manager),
-            '🧠 AI': AIPanel(data_manager, data_access_manager),
-            '📈 Charts': ChartsPanel(data_manager, data_access_manager),
-            '🚨 Alerts': AlertsPanel(data_manager, data_access_manager),
-            '⚙️ System': SystemPanel()
-        }
+        panels = {}
+        
+        try:
+            logger.info("🔧 Creating Data Panel...")
+            panels['📊 Data'] = DataPanel(data_manager, data_access_manager)
+            logger.info("✅ Data Panel created successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to create Data Panel: {e}")
+            raise
+        
+        try:
+            logger.info("🔧 Creating Models Panel...")
+            panels['🤖 Models'] = ModelsPanel(data_manager, data_access_manager)
+            logger.info("✅ Models Panel created successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to create Models Panel: {e}")
+            raise
+        
+        try:
+            logger.info("🔧 Creating Portfolio Panel...")
+            panels['💼 Portfolio'] = PortfolioPanel(data_manager, data_access_manager)
+            logger.info("✅ Portfolio Panel created successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to create Portfolio Panel: {e}")
+            raise
+        
+        try:
+            logger.info("🔧 Creating AI Panel...")
+            panels['🧠 AI'] = AIPanel(data_manager, data_access_manager)
+            logger.info("✅ AI Panel created successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to create AI Panel: {e}")
+            raise
+        
+        try:
+            logger.info("🔧 Creating Charts Panel...")
+            panels['📈 Charts'] = ChartsPanel(data_manager, data_access_manager)
+            logger.info("✅ Charts Panel created successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to create Charts Panel: {e}")
+            raise
+        
+        try:
+            logger.info("🔧 Creating Alerts Panel...")
+            panels['🚨 Alerts'] = AlertsPanel(data_manager, data_access_manager)
+            logger.info("✅ Alerts Panel created successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to create Alerts Panel: {e}")
+            raise
+        
+        try:
+            logger.info("🔧 Creating System Panel...")
+            panels['⚙️ System'] = SystemPanel()
+            logger.info("✅ System Panel created successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to create System Panel: {e}")
+            raise
         
         # Create a reactive dashboard container
         dashboard_container = pn.Column(sizing_mode='stretch_width')

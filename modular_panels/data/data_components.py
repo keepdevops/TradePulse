@@ -89,7 +89,7 @@ class DataComponents:
         # Data source selector
         self.data_source = pn.widgets.Select(
             name='Data Source',
-            options=['Yahoo Finance', 'Alpha Vantage', 'IEX Cloud', 'Mock Data', 'Upload Data'],
+            options=['Yahoo Finance', 'Alpha Vantage', 'IEX Cloud', 'Mock Data', 'upload'],
             value='Mock Data',
             width=150
         )

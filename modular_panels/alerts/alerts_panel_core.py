@@ -14,7 +14,7 @@ from .alerts_components import AlertsComponents
 from .alerts_operations import AlertsOperations
 from .alerts_management import AlertsManagement
 from .alerts_callbacks import AlertsCallbacks
-from ..dataset_selector import DatasetActivator
+from ..dataset_selector_component import DatasetSelectorComponent
 from .alert_creator import AlertCreator
 from ui_components.module_data_access import ModuleDataAccess
 
@@ -25,7 +25,7 @@ class AlertsPanelCore(BasePanel):
     
     def __init__(self, data_manager, data_access_manager=None):
         super().__init__("Alerts", data_manager)
-        self.dataset_selector = DatasetActivator(data_manager, 'alerts')
+        self.dataset_selector = DatasetSelectorComponent(data_manager, 'alerts')
         self.alert_creator = AlertCreator()
         self.data_access = ModuleDataAccess(data_manager, data_access_manager, 'alerts')
         

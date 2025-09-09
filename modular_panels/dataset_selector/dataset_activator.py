@@ -1,313 +1,205 @@
 #!/usr/bin/env python3
 """
 TradePulse Dataset Selector - Dataset Activator
-Handles dataset activation, deactivation, and management
+Main dataset activator component for dataset selection
 """
 
 import panel as pn
-import pandas as pd
-from typing import Dict, List, Optional, Any, Callable
 import logging
+from typing import Dict, List, Optional, Any
+
+from ..base_component import BaseComponent
+from ..dataset_selector_operations import DatasetSelectorOperations
 
 logger = logging.getLogger(__name__)
 
-class DatasetActivator:
-    """Handles dataset activation, deactivation, and management"""
+class DatasetActivator(BaseComponent):
+    """Dataset activator component for dataset selection and activation"""
     
-    def __init__(self, data_manager, module_name: str):
-        self.data_manager = data_manager
-        self.module_name = module_name
-        self.active_datasets = set()
-        self.activation_history = []
-        self.on_dataset_change_callbacks = []
+    def __init__(self, data_manager):
+        super().__init__(data_manager, None)
+        self.operations = DatasetSelectorOperations(data_manager)
+        self.active_datasets = {}
         
         # Create UI components
+        self.dataset_list = pn.widgets.Select(
+            name='📊 Available Datasets',
+            options=[],
+            size=8,
+            width=300
+        )
+        
         self.activate_button = pn.widgets.Button(
-            name='✅ Activate for Module',
+            name='✅ Activate',
             button_type='primary',
-            width=150,
-            disabled=True
+            width=100
         )
         
         self.deactivate_button = pn.widgets.Button(
             name='❌ Deactivate',
-            button_type='warning',
-            width=150,
-            disabled=True
+            button_type='danger',
+            width=100
         )
         
-        self.export_button = pn.widgets.Button(
-            name='📤 Export',
-            button_type='success',
-            width=100,
-            disabled=True
-        )
-        
-        self.active_datasets_display = pn.pane.Markdown("**Active Datasets:** None")
+        self.status_display = pn.pane.Markdown("**Status:** No datasets activated")
         
         # Setup callbacks
-        self.activate_button.on_click(self.activate_dataset)
-        self.deactivate_button.on_click(self.deactivate_dataset)
-        self.export_button.on_click(self.export_dataset)
+        self.setup_callbacks()
+        
+        # Load initial datasets
+        self.refresh_datasets()
+        
+        logger.info("🔧 Dataset Activator initialized")
     
-    def add_dataset_change_callback(self, callback: Callable):
-        """Add callback for dataset change events"""
-        if callback not in self.on_dataset_change_callbacks:
-            self.on_dataset_change_callbacks.append(callback)
-            logger.info(f"✅ Added dataset change callback for {self.module_name}")
+    def setup_callbacks(self):
+        """Setup component callbacks"""
+        self.activate_button.on_click(self.on_activate_dataset)
+        self.deactivate_button.on_click(self.on_deactivate_dataset)
+        self.dataset_list.param.watch(self.on_dataset_selection, 'value')
     
-    def remove_dataset_change_callback(self, callback: Callable):
-        """Remove dataset change callback"""
-        if callback in self.on_dataset_change_callbacks:
-            self.on_dataset_change_callbacks.remove(callback)
-            logger.info(f"✅ Removed dataset change callback for {self.module_name}")
-    
-    def activate_dataset(self, event):
-        """Activate a dataset for the current module"""
+    def refresh_datasets(self):
+        """Refresh the list of available datasets"""
         try:
-            # Get currently selected dataset from browser
-            selected_dataset = self._get_selected_dataset()
+            datasets = self.operations.get_available_datasets()
+            options = []
             
-            if not selected_dataset:
-                logger.warning("⚠️ No dataset selected for activation")
-                return
+            for dataset in datasets:
+                display_name = f"{dataset['name']} ({dataset['rows']} rows, {dataset['columns']} cols)"
+                options.append((display_name, dataset['id']))
             
-            if selected_dataset in self.active_datasets:
-                logger.info(f"📊 Dataset {selected_dataset} is already active for {self.module_name}")
-                return
+            self.dataset_list.options = options
             
-            # Activate dataset
-            self.active_datasets.add(selected_dataset)
-            
-            # Record activation
-            self._record_activation(selected_dataset, 'activated')
-            
-            # Update UI
-            self._update_active_datasets_display()
-            self._update_button_states()
-            
-            # Notify callbacks
-            self._notify_dataset_change('activated', selected_dataset)
-            
-            logger.info(f"✅ Dataset {selected_dataset} activated for {self.module_name}")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to activate dataset: {e}")
-    
-    def deactivate_dataset(self, event):
-        """Deactivate a dataset for the current module"""
-        try:
-            # Get currently selected dataset from browser
-            selected_dataset = self._get_selected_dataset()
-            
-            if not selected_dataset:
-                logger.warning("⚠️ No dataset selected for deactivation")
-                return
-            
-            if selected_dataset not in self.active_datasets:
-                logger.info(f"📊 Dataset {selected_dataset} is not active for {self.module_name}")
-                return
-            
-            # Deactivate dataset
-            self.active_datasets.remove(selected_dataset)
-            
-            # Record deactivation
-            self._record_activation(selected_dataset, 'deactivated')
-            
-            # Update UI
-            self._update_active_datasets_display()
-            self._update_button_states()
-            
-            # Notify callbacks
-            self._notify_dataset_change('deactivated', selected_dataset)
-            
-            logger.info(f"✅ Dataset {selected_dataset} deactivated for {self.module_name}")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to deactivate dataset: {e}")
-    
-    def export_dataset(self, event):
-        """Export the currently selected dataset"""
-        try:
-            selected_dataset = self._get_selected_dataset()
-            
-            if not selected_dataset:
-                logger.warning("⚠️ No dataset selected for export")
-                return
-            
-            # Get dataset data
-            dataset_data = self.data_manager.get_dataset(selected_dataset)
-            
-            if dataset_data is not None:
-                # Create export filename
-                export_filename = f"{selected_dataset}_{self.module_name}_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            if options:
+                logger.info(f"✅ Loaded {len(options)} datasets")
+            else:
+                logger.info("ℹ️ No datasets available")
                 
-                # Export to CSV
-                dataset_data.to_csv(export_filename, index=False)
+        except Exception as e:
+            logger.error(f"❌ Error refreshing datasets: {e}")
+    
+    def on_dataset_selection(self, event):
+        """Handle dataset selection change"""
+        try:
+            dataset_id = event.new
+            if dataset_id:
+                datasets = self.operations.get_available_datasets()
+                dataset_info = next((d for d in datasets if d['id'] == dataset_id), None)
                 
-                logger.info(f"📤 Dataset {selected_dataset} exported to {export_filename}")
+                if dataset_info:
+                    status_text = f"""
+                    **Selected Dataset:**
+                    
+                    **Name:** {dataset_info['name']}
+                    **Rows:** {dataset_info['rows']:,}
+                    **Columns:** {dataset_info['columns']}
+                    **Type:** {dataset_info['type']}
+                    **Status:** {'✅ Active' if dataset_id in self.active_datasets else '⏸️ Inactive'}
+                    """
+                    self.status_display.object = status_text
+                else:
+                    self.status_display.object = "**Status:** Dataset not found"
+            else:
+                self.status_display.object = "**Status:** No dataset selected"
+                
+        except Exception as e:
+            logger.error(f"❌ Error updating dataset status: {e}")
+            self.status_display.object = f"**Error:** {str(e)}"
+    
+    def on_activate_dataset(self, event):
+        """Handle dataset activation"""
+        try:
+            dataset_id = self.dataset_list.value
+            if not dataset_id:
+                logger.warning("⚠️ No dataset selected")
+                return
+            
+            result = self.operations.select_dataset(dataset_id, 'default')
+            
+            if result['success']:
+                self.active_datasets[dataset_id] = {
+                    'activated_at': result.get('selection_time', 'Unknown'),
+                    'rows': result.get('rows', 0),
+                    'columns': result.get('columns', 0)
+                }
+                logger.info(f"✅ Dataset {dataset_id} activated")
+                
+                # Update UI
+                self.activate_button.button_type = 'success'
+                self.activate_button.name = '✅ Activated'
+                
+                # Update status
+                self.on_dataset_selection(type('Event', (), {'new': dataset_id})())
                 
                 # Show success message
-                self._show_export_success(export_filename)
+                pn.state.notifications.success(f"Dataset {dataset_id} activated successfully")
             else:
-                logger.warning(f"⚠️ Could not retrieve dataset {selected_dataset} for export")
+                logger.error(f"❌ Failed to activate dataset: {result.get('error', 'Unknown error')}")
+                pn.state.notifications.error(f"Failed to activate dataset: {result.get('error', 'Unknown error')}")
                 
         except Exception as e:
-            logger.error(f"❌ Failed to export dataset: {e}")
+            logger.error(f"❌ Error activating dataset: {e}")
+            pn.state.notifications.error(f"Error activating dataset: {str(e)}")
     
-    def _get_selected_dataset(self) -> Optional[str]:
-        """Get the currently selected dataset ID"""
-        # This method should be implemented to get the selected dataset from the browser
-        # For now, return None - will be connected by the main component
-        return None
-    
-    def _record_activation(self, dataset_id: str, action: str):
-        """Record dataset activation/deactivation"""
+    def on_deactivate_dataset(self, event):
+        """Handle dataset deactivation"""
         try:
-            activation_record = {
-                'timestamp': pd.Timestamp.now(),
-                'dataset_id': dataset_id,
-                'action': action,
-                'module': self.module_name
-            }
-            self.activation_history.append(activation_record)
+            dataset_id = self.dataset_list.value
+            if not dataset_id:
+                logger.warning("⚠️ No dataset selected")
+                return
             
-        except Exception as e:
-            logger.error(f"Failed to record activation: {e}")
-    
-    def _update_active_datasets_display(self):
-        """Update the active datasets display"""
-        try:
-            if not self.active_datasets:
-                self.active_datasets_display.object = "**Active Datasets:** None"
+            if dataset_id not in self.active_datasets:
+                logger.warning("⚠️ Dataset not active")
+                return
+            
+            result = self.operations.deselect_dataset(dataset_id, 'default')
+            
+            if result['success']:
+                del self.active_datasets[dataset_id]
+                logger.info(f"✅ Dataset {dataset_id} deactivated")
+                
+                # Update UI
+                self.activate_button.button_type = 'primary'
+                self.activate_button.name = '✅ Activate'
+                
+                # Update status
+                self.on_dataset_selection(type('Event', (), {'new': dataset_id})())
+                
+                # Show success message
+                pn.state.notifications.success(f"Dataset {dataset_id} deactivated successfully")
             else:
-                datasets_list = ", ".join(sorted(self.active_datasets))
-                self.active_datasets_display.object = f"**Active Datasets:** {datasets_list}"
+                logger.error(f"❌ Failed to deactivate dataset: {result.get('error', 'Unknown error')}")
+                pn.state.notifications.error(f"Failed to deactivate dataset: {result.get('error', 'Unknown error')}")
                 
         except Exception as e:
-            logger.error(f"Failed to update active datasets display: {e}")
+            logger.error(f"❌ Error deactivating dataset: {e}")
+            pn.state.notifications.error(f"Error deactivating dataset: {str(e)}")
     
-    def _update_button_states(self):
-        """Update button enabled/disabled states"""
-        try:
-            has_active_datasets = len(self.active_datasets) > 0
-            has_selected_dataset = self._get_selected_dataset() is not None
-            
-            # Activate button: enabled when dataset is selected and not active
-            self.activate_button.disabled = not has_selected_dataset or self._get_selected_dataset() in self.active_datasets
-            
-            # Deactivate button: enabled when dataset is selected and active
-            self.deactivate_button.disabled = not has_selected_dataset or self._get_selected_dataset() not in self.active_datasets
-            
-            # Export button: enabled when dataset is selected
-            self.export_button.disabled = not has_selected_dataset
-            
-        except Exception as e:
-            logger.error(f"Failed to update button states: {e}")
+    def create_panel(self) -> pn.Column:
+        """Create the component panel"""
+        return pn.Column(
+            pn.pane.Markdown("## 📊 Dataset Activator"),
+            pn.Row(
+                self.dataset_list,
+                pn.Spacer(width=20),
+                pn.Column(
+                    self.activate_button,
+                    self.deactivate_button
+                )
+            ),
+            self.status_display,
+            width=400
+        )
     
-    def _notify_dataset_change(self, change_type: str, dataset_id: str):
-        """Notify all callbacks of dataset changes"""
-        try:
-            for callback in self.on_dataset_change_callbacks:
-                try:
-                    callback(change_type, dataset_id)
-                except Exception as e:
-                    logger.error(f"Callback notification failed: {e}")
-                    
-        except Exception as e:
-            logger.error(f"Failed to notify dataset change: {e}")
-    
-    def _show_export_success(self, filename: str):
-        """Show export success message"""
-        try:
-            # Update the display to show export success
-            current_text = self.active_datasets_display.object
-            success_message = f"\n\n**📤 Export Successful:** {filename}"
-            self.active_datasets_display.object = current_text + success_message
-            
-            # Clear success message after a few seconds
-            import threading
-            import time
-            
-            def clear_success_message():
-                time.sleep(3)
-                self._update_active_datasets_display()
-            
-            threading.Thread(target=clear_success_message, daemon=True).start()
-            
-        except Exception as e:
-            logger.error(f"Failed to show export success: {e}")
-    
-    def get_active_datasets(self) -> set:
-        """Get set of active dataset IDs"""
+    def get_active_datasets(self) -> Dict[str, Any]:
+        """Get currently active datasets"""
         return self.active_datasets.copy()
     
-    def is_dataset_active(self, dataset_id: str) -> bool:
-        """Check if a dataset is active"""
-        return dataset_id in self.active_datasets
-    
-    def get_activation_history(self) -> List[Dict]:
-        """Get activation/deactivation history"""
-        return self.activation_history.copy()
-    
-    def get_activator_statistics(self) -> Dict:
-        """Get activator statistics"""
-        try:
-            return {
-                'total_activations': len([r for r in self.activation_history if r['action'] == 'activated']),
-                'total_deactivations': len([r for r in self.activation_history if r['action'] == 'deactivated']),
-                'currently_active': len(self.active_datasets),
-                'callbacks_registered': len(self.on_dataset_change_callbacks),
-                'last_activation': next((r['timestamp'] for r in reversed(self.activation_history) if r['action'] == 'activated'), None),
-                'last_deactivation': next((r['timestamp'] for r in reversed(self.activation_history) if r['action'] == 'deactivated'), None)
-            }
-        except Exception as e:
-            logger.error(f"Failed to get activator statistics: {e}")
-            return {}
-    
-    def clear_activation_history(self) -> int:
-        """Clear activation history and return count"""
-        try:
-            count = len(self.activation_history)
-            self.activation_history.clear()
-            logger.info(f"🗑️ Cleared {count} activation records")
-            return count
-        except Exception as e:
-            logger.error(f"Failed to clear activation history: {e}")
-            return 0
-    
-    def get_components(self) -> Dict:
-        """Get UI components for external use"""
+    def get_component_stats(self) -> Dict[str, Any]:
+        """Get component statistics"""
         return {
-            'activate_button': self.activate_button,
-            'deactivate_button': self.deactivate_button,
-            'export_button': self.export_button,
-            'active_datasets_display': self.active_datasets_display
+            'active_datasets': len(self.active_datasets),
+            'available_datasets': len(self.dataset_list.options),
+            'selection_history': len(self.operations.get_selection_history()),
+            'active_dataset_ids': list(self.active_datasets.keys())
         }
-    
-    def get_component(self, component_name: str = None):
-        """Get a specific component by name or the entire layout if no name provided"""
-        if component_name is None:
-            # Return the entire layout
-            return self.create_component_layout()
-        else:
-            # Return specific component
-            components = self.get_components()
-            return components.get(component_name)
-    
-    def create_component_layout(self):
-        """Create the dataset activator component layout"""
-        import panel as pn
-        
-        # Create the layout with all components
-        return pn.Column(
-            pn.pane.Markdown(f"### 📁 Dataset Activator - {self.module_name}"),
-            pn.Row(
-                self.activate_button,
-                self.deactivate_button,
-                self.export_button,
-                align='center'
-            ),
-            self.active_datasets_display,
-            sizing_mode='stretch_width'
-        )

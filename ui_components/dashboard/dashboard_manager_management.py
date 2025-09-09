@@ -170,7 +170,7 @@ class DashboardManagerManagement:
                     pn.widgets.Button(name="📈 Trend Plot", button_type='primary'),
                     pn.widgets.Button(name="📊 Technical Indicators", button_type='success'),
                     pn.widgets.Button(name="🎯 Pattern Recognition", button_type='warning'),
-                    pn.widgets.Button(name="💾 Export Analysis", button_type='info'),
+                    pn.widgets.Button(name="💾 Export Analysis", button_type='default'),
                     pn.pane.Markdown("**Features:**"),
                     pn.pane.Markdown("- Trend line analysis"),
                     pn.pane.Markdown("- Technical indicator plots"),

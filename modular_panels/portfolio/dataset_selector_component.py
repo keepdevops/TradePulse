@@ -1,234 +1,192 @@
 #!/usr/bin/env python3
 """
-TradePulse Dataset Selector - Main Component
-Refactored dataset selector component using focused components
+TradePulse Portfolio Dataset Selector Component
+Component for dataset selection in portfolio panel
 """
 
 import panel as pn
-import pandas as pd
-from typing import Dict, List, Optional, Any, Callable
 import logging
+from typing import Dict, List, Optional, Any, Callable
 
-from .dataset_browser import DatasetBrowser
-from .dataset_activator import DatasetActivator
-from .dataset_preview import DatasetPreview
+from ..base_component import BaseComponent
+from ..dataset_selector_operations import DatasetSelectorOperations
 
 logger = logging.getLogger(__name__)
 
-class DatasetSelectorComponent:
-    """Refactored dataset selector component using focused components"""
+class DatasetSelectorComponent(BaseComponent):
+    """Dataset selector component for portfolio panel"""
     
-    def __init__(self, data_manager, module_name: str):
-        self.data_manager = data_manager
-        self.module_name = module_name
-        self.selected_datasets = set()
+    def __init__(self, data_manager, module_name: Optional[str] = None):
+        super().__init__(data_manager)
+        self.module_name = module_name or 'portfolio'
+        self.operations = DatasetSelectorOperations(data_manager, self.module_name)
+        self.selected_dataset = None
         
-        # Initialize focused components
-        self.browser = DatasetBrowser(data_manager, module_name)
-        self.activator = DatasetActivator(data_manager, module_name)
-        self.preview = DatasetPreview(data_manager)
+        # Create UI components
+        self.dataset_selector = pn.widgets.Select(
+            name='📊 Select Dataset',
+            options=[],
+            width=300
+        )
         
-        # Connect components
-        self._connect_components()
+        self.dataset_info = pn.pane.Markdown("**Dataset Info:** No dataset selected")
+        
+        self.select_button = pn.widgets.Button(
+            name='✅ Select',
+            button_type='primary',
+            width=100
+        )
+        
+        self.deselect_button = pn.widgets.Button(
+            name='❌ Deselect',
+            button_type='danger',
+            width=100
+        )
         
         # Setup callbacks
-        self._setup_callbacks()
+        self.setup_callbacks()
         
-        logger.info(f"✅ DatasetSelectorComponent initialized for {module_name}")
+        # Load initial datasets
+        self.refresh_datasets()
+        
+        logger.info("🔧 Dataset Selector Component initialized")
     
-    def _connect_components(self):
-        """Connect the focused components together"""
-        try:
-            # Connect browser selection to activator
-            self.browser.datasets_list.param.watch(self._on_dataset_selection_change, 'value')
-            
-            # Connect activator to preview
-            self.activator.add_dataset_change_callback(self._on_dataset_activation_change)
-            
-            logger.info("✅ Dataset selector components connected successfully")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to connect components: {e}")
-    
-    def _setup_callbacks(self):
+    def setup_callbacks(self):
         """Setup component callbacks"""
-        try:
-            # Override the activator's _get_selected_dataset method to get from browser
-            self.activator._get_selected_dataset = self._get_selected_dataset
-            
-            logger.info("✅ Dataset selector callbacks setup completed")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to setup callbacks: {e}")
-    
-    def _on_dataset_selection_change(self, event):
-        """Handle dataset selection changes from browser"""
-        try:
-            selected_option = event.new
-            if selected_option and selected_option != 'No datasets available' and 'Error' not in selected_option:
-                # Extract dataset ID from display option
-                dataset_id = self.browser._extract_dataset_id(selected_option)
-                if dataset_id:
-                    logger.info(f"📊 Dataset selection changed: {dataset_id}")
-                    
-                    # Update preview
-                    self.preview.update_preview(dataset_id)
-                    
-                    # Update activator button states
-                    self.activator._update_button_states()
-                    
-                    return dataset_id
-            else:
-                # Clear preview if no valid selection
-                self.preview.update_preview(None)
-                self.activator._update_button_states()
-            
-            return None
-            
-        except Exception as e:
-            logger.error(f"❌ Dataset selection change failed: {e}")
-            return None
-    
-    def _on_dataset_activation_change(self, change_type: str, dataset_id: str):
-        """Handle dataset activation/deactivation changes"""
-        try:
-            logger.info(f"🔄 Dataset {change_type}: {dataset_id} for {self.module_name}")
-            
-            if change_type == 'activated':
-                self.selected_datasets.add(dataset_id)
-            elif change_type == 'deactivated':
-                self.selected_datasets.discard(dataset_id)
-            
-            # Update browser to reflect changes
-            self.browser.refresh_datasets()
-            
-        except Exception as e:
-            logger.error(f"❌ Dataset activation change handling failed: {e}")
-    
-    def _get_selected_dataset(self) -> Optional[str]:
-        """Get the currently selected dataset ID from browser"""
-        try:
-            selected_option = self.browser.datasets_list.value
-            if selected_option and selected_option != 'No datasets available' and 'Error' not in selected_option:
-                return self.browser._extract_dataset_id(selected_option)
-            return None
-        except Exception as e:
-            logger.error(f"Failed to get selected dataset: {e}")
-            return None
-    
-    def add_dataset_change_callback(self, callback: Callable):
-        """Add callback for dataset change events"""
-        self.activator.add_dataset_change_callback(callback)
-    
-    def remove_dataset_change_callback(self, callback: Callable):
-        """Remove dataset change callback"""
-        self.activator.remove_dataset_change_callback(callback)
-    
-    def get_component(self):
-        """Get the main dataset selector component layout"""
-        try:
-            # Create the main layout
-            browser_section = pn.Column(
-                pn.pane.Markdown("### 🔍 Dataset Browser"),
-                pn.Row(
-                    self.browser.search_input,
-                    self.browser.type_filter,
-                    align='center'
-                ),
-                self.browser.datasets_list,
-                sizing_mode='stretch_width'
-            )
-            
-            preview_section = pn.Column(
-                pn.pane.Markdown("### 📊 Dataset Preview"),
-                self.preview.dataset_info,
-                self.preview.preview_table,
-                pn.Row(
-                    self.preview.metadata_display,
-                    self.preview.statistics_display,
-                    align='start'
-                ),
-                sizing_mode='stretch_width'
-            )
-            
-            activator_section = pn.Column(
-                pn.pane.Markdown("### ⚡ Dataset Actions"),
-                pn.Row(
-                    self.activator.activate_button,
-                    self.activator.deactivate_button,
-                    self.activator.export_button,
-                    align='center'
-                ),
-                self.activator.active_datasets_display,
-                sizing_mode='stretch_width'
-            )
-            
-            # Main layout with tabs
-            tabs = pn.Tabs(
-                ('🔍 Browse', browser_section),
-                ('📊 Preview', preview_section),
-                ('⚡ Actions', activator_section),
-                sizing_mode='stretch_width'
-            )
-            
-            return pn.Column(
-                pn.pane.Markdown(f"### 📁 Dataset Selector for {self.module_name.title()} Module"),
-                pn.pane.Markdown("Browse, preview, and manage datasets for this module"),
-                tabs,
-                sizing_mode='stretch_width'
-            )
-            
-        except Exception as e:
-            logger.error(f"Failed to create component layout: {e}")
-            return pn.pane.Markdown("**Error:** Failed to create dataset selector component")
+        self.select_button.on_click(self.on_select_dataset)
+        self.deselect_button.on_click(self.on_deselect_dataset)
+        self.dataset_selector.param.watch(self.on_dataset_change, 'value')
     
     def refresh_datasets(self):
-        """Refresh the dataset list"""
-        self.browser.refresh_datasets()
-    
-    def get_selected_datasets(self) -> set:
-        """Get set of selected dataset IDs"""
-        return self.selected_datasets.copy()
-    
-    def get_active_datasets(self) -> set:
-        """Get set of active dataset IDs"""
-        return self.activator.get_active_datasets()
-    
-    def is_dataset_active(self, dataset_id: str) -> bool:
-        """Check if a dataset is active"""
-        return self.activator.is_dataset_active(dataset_id)
-    
-    def get_component_statistics(self) -> Dict:
-        """Get comprehensive statistics from all components"""
+        """Refresh the list of available datasets"""
         try:
-            browser_stats = self.browser.get_browser_statistics()
-            activator_stats = self.activator.get_activator_statistics()
-            preview_stats = self.preview.get_preview_statistics()
+            datasets = self.operations.get_available_datasets(self.module_name)
+            options = []
             
-            return {
-                'browser': browser_stats,
-                'activator': activator_stats,
-                'preview': preview_stats,
-                'module': self.module_name,
-                'total_selected': len(self.selected_datasets)
-            }
+            for dataset in datasets:
+                display_name = f"{dataset['name']} ({dataset['rows']} rows, {dataset['columns']} cols)"
+                options.append((display_name, dataset['id']))
             
+            self.dataset_selector.options = options
+            
+            if options:
+                logger.info(f"✅ Loaded {len(options)} datasets")
+            else:
+                logger.info("ℹ️ No datasets available")
+                
         except Exception as e:
-            logger.error(f"Failed to get component statistics: {e}")
-            return {}
+            logger.error(f"❌ Error refreshing datasets: {e}")
     
-    def clear_all_history(self) -> int:
-        """Clear all history from all components"""
+    def on_dataset_change(self, event):
+        """Handle dataset selection change"""
         try:
-            browser_cleared = self.browser.clear_history()
-            activator_cleared = self.activator.clear_activation_history()
-            preview_cleared = self.preview.clear_preview_history()
-            
-            total_cleared = browser_cleared + activator_cleared + preview_cleared
-            
-            logger.info(f"🗑️ Cleared {total_cleared} total history records")
-            return total_cleared
-            
+            dataset_id = event.new
+            if dataset_id:
+                datasets = self.operations.get_available_datasets(self.module_name)
+                dataset_info = next((d for d in datasets if d['id'] == dataset_id), None)
+                
+                if dataset_info:
+                    info_text = f"""
+                    **Dataset Info:**
+                    
+                    **Name:** {dataset_info['name']}
+                    **Rows:** {dataset_info['rows']:,}
+                    **Columns:** {dataset_info['columns']}
+                    **Type:** {dataset_info['type']}
+                    **Columns:** {', '.join(dataset_info['columns_list'][:5])}{'...' if len(dataset_info['columns_list']) > 5 else ''}
+                    """
+                    self.dataset_info.object = info_text
+                else:
+                    self.dataset_info.object = "**Dataset Info:** Dataset not found"
         except Exception as e:
-            logger.error(f"Failed to clear all history: {e}")
-            return 0
+            logger.error(f"❌ Error handling dataset change: {e}")
+    
+    def add_dataset_change_callback(self, callback: Callable):
+        """Add a callback for dataset changes"""
+        self.dataset_selector.param.watch(callback, 'value')
+    
+    def on_select_dataset(self, event):
+        """Handle dataset selection"""
+        try:
+            dataset_id = self.dataset_selector.value
+            if not dataset_id:
+                logger.warning("⚠️ No dataset selected")
+                return
+            
+            result = self.operations.select_dataset(dataset_id, 'portfolio')
+            
+            if result['success']:
+                self.selected_dataset = dataset_id
+                logger.info(f"✅ Dataset {dataset_id} selected for portfolio")
+                
+                # Update UI
+                self.select_button.button_type = 'success'
+                self.select_button.name = '✅ Selected'
+                
+                # Show success message
+                pn.state.notifications.success(f"Dataset {dataset_id} selected successfully")
+            else:
+                logger.error(f"❌ Failed to select dataset: {result.get('error', 'Unknown error')}")
+                pn.state.notifications.error(f"Failed to select dataset: {result.get('error', 'Unknown error')}")
+                
+        except Exception as e:
+            logger.error(f"❌ Error selecting dataset: {e}")
+            pn.state.notifications.error(f"Error selecting dataset: {str(e)}")
+    
+    def on_deselect_dataset(self, event):
+        """Handle dataset deselection"""
+        try:
+            if not self.selected_dataset:
+                logger.warning("⚠️ No dataset to deselect")
+                return
+            
+            result = self.operations.deselect_dataset(self.selected_dataset, 'portfolio')
+            
+            if result['success']:
+                logger.info(f"✅ Dataset {self.selected_dataset} deselected")
+                self.selected_dataset = None
+                
+                # Update UI
+                self.select_button.button_type = 'primary'
+                self.select_button.name = '✅ Select'
+                
+                # Show success message
+                pn.state.notifications.success(f"Dataset deselected successfully")
+            else:
+                logger.error(f"❌ Failed to deselect dataset: {result.get('error', 'Unknown error')}")
+                pn.state.notifications.error(f"Failed to deselect dataset: {result.get('error', 'Unknown error')}")
+                
+        except Exception as e:
+            logger.error(f"❌ Error deselecting dataset: {e}")
+            pn.state.notifications.error(f"Error deselecting dataset: {str(e)}")
+    
+    def create_panel(self) -> pn.Column:
+        """Create the component panel"""
+        return pn.Column(
+            pn.pane.Markdown("## 📊 Dataset Selector"),
+            pn.Row(
+                self.dataset_selector,
+                pn.Spacer(width=20),
+                self.select_button,
+                self.deselect_button
+            ),
+            self.dataset_info,
+            width=400
+        )
+    
+    def get_component(self):
+        """Get the component layout"""
+        return self.create_panel()
+    
+    def get_selected_dataset(self) -> Optional[str]:
+        """Get the currently selected dataset"""
+        return self.selected_dataset
+    
+    def get_component_stats(self) -> Dict[str, Any]:
+        """Get component statistics"""
+        return {
+            'selected_dataset': self.selected_dataset,
+            'available_datasets': len(self.dataset_selector.options),
+            'selection_history': len(self.operations.get_selection_history()),
+            'active_selections': len(self.operations.get_active_datasets('portfolio'))
+        }

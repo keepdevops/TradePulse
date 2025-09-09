@@ -27,14 +27,11 @@ def main():
         logger.info("=" * 50)
         
         # Import Panel components
-        from modular_panel_ui_main_refactored import main
+        from modular_panel_ui_main_refactored import create_refactored_modular_ui
         
         # Create Panel app
         logger.info("🔧 Creating Panel application...")
-        panel_app, port, host = main()
-        
-        # Panel is already configured in main()
-        logger.info("✅ Panel application created successfully")
+        panel_app = create_refactored_modular_ui()
         
         logger.info("✅ Panel application created successfully")
         logger.info("")
@@ -51,8 +48,8 @@ def main():
         
         # Start Panel server
         panel_app.show(
-            port=port,
-            host=host,
+            port=5006,
+            host="0.0.0.0",
             title="TradePulse - Panel UI"
         )
         

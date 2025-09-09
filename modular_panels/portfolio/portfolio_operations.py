@@ -15,7 +15,8 @@ class PortfolioOperations:
     
     def create_positions_dataframe(self, data_manager) -> pd.DataFrame:
         """Create positions dataframe from portfolio data"""
-        positions = data_manager.portfolio_data['positions']
+        portfolio_data = data_manager.get_portfolio_data()
+        positions = portfolio_data['positions']
         data = []
         
         for symbol, pos in positions.items():
@@ -39,7 +40,7 @@ class PortfolioOperations:
     def calculate_portfolio_metrics(self, data_manager) -> Dict:
         """Calculate portfolio performance metrics"""
         try:
-            portfolio_data = data_manager.portfolio_data
+            portfolio_data = data_manager.get_portfolio_data()
             positions = portfolio_data['positions']
             
             total_value = portfolio_data['total_value']
@@ -62,7 +63,7 @@ class PortfolioOperations:
     def validate_portfolio_data(self, data_manager) -> bool:
         """Validate portfolio data structure"""
         try:
-            portfolio_data = data_manager.portfolio_data
+            portfolio_data = data_manager.get_portfolio_data()
             
             required_keys = ['total_value', 'positions', 'performance']
             if not all(key in portfolio_data for key in required_keys):
@@ -82,7 +83,8 @@ class PortfolioOperations:
     def get_portfolio_summary(self, data_manager) -> Dict:
         """Get portfolio summary statistics"""
         try:
-            positions = data_manager.portfolio_data['positions']
+            portfolio_data = data_manager.get_portfolio_data()
+            positions = portfolio_data['positions']
             
             if not positions:
                 return {'message': 'No positions in portfolio'}

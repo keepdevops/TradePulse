@@ -18,6 +18,7 @@ class UserRole(Enum):
     """User role enumeration"""
     DAY_TRADER = "day_trader"
     ML_ANALYST = "ml_analyst"
+    TREND_ANALYST = "trend_analyst"
     DEFAULT = "default"
 
 class DashboardManager:

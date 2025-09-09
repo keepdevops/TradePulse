@@ -1,0 +1,138 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en">\
+<head>\
+  <meta charset="UTF-8">\
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+  <title>AI Prompt Generator</title>\
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>\
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>\
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>\
+  <script src="https://cdn.tailwindcss.com"></script>\
+</head>\
+<body>\
+  <div id="root"></div>\
+  <script type="text/babel">\
+    // React component to create, test, and refine JSON prompts for AI\
+    function App() \{\
+      const [userInput, setUserInput] = React.useState('');\
+      const [jsonPrompt, setJsonPrompt] = React.useState(null);\
+      const [aiResponse, setAiResponse] = React.useState(null);\
+      const [error, setError] = React.useState(null);\
+\
+      // Function to generate JSON prompt from user input\
+      const generatePrompt = () => \{\
+        try \{\
+          const prompt = \{\
+            query: userInput,\
+            context: "Provide a concise and accurate response in JSON format",\
+            parameters: \{\
+              max_length: 100,\
+              tone: "professional"\
+            \}\
+          \};\
+          setJsonPrompt(prompt);\
+          setError(null);\
+          return prompt;\
+        \} catch (e) \{\
+          setError('Failed to generate JSON prompt');\
+          return null;\
+        \}\
+      \};\
+\
+      // Simulated AI call (replace with actual API call in production)\
+      const callAI = async (prompt) => \{\
+        // Simulate AI response\
+        return new Promise((resolve) => \{\
+          setTimeout(() => \{\
+            resolve(\{\
+              response: `Answer to "$\{prompt.query\}"`,\
+              status: "success",\
+              timestamp: new Date().toISOString()\
+            \});\
+          \}, 1000);\
+        \});\
+      \};\
+\
+      // Handle form submission\
+      const handleSubmit = async (e) => \{\
+        e.preventDefault();\
+        const prompt = generatePrompt();\
+        if (prompt) \{\
+          try \{\
+            const response = await callAI(prompt);\
+            setAiResponse(response);\
+            setError(null);\
+          \} catch (e) \{\
+            setError('Failed to get AI response');\
+          \}\
+        \}\
+      \};\
+\
+      return (\
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center">\
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">\
+            <h1 className="text-2xl font-bold mb-4 text-center">AI Prompt Generator</h1>\
+            <div className="space-y-4">\
+              <textarea\
+                className="w-full p-2 border rounded-md"\
+                rows="4"\
+                value=\{userInput\}\
+                onChange=\{(e) => setUserInput(e.target.value)\}\
+                placeholder="Enter your query here"\
+              />\
+              <button\
+                className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"\
+                onClick=\{handleSubmit\}\
+              >\
+                Generate & Send Prompt\
+              </button>\
+              \{jsonPrompt && (\
+                <div>\
+                  <h2 className="text-lg font-semibold">Generated JSON Prompt:</h2>\
+                  <pre className="bg-gray-200 p-2 rounded-md">\
+                    \{JSON.stringify(jsonPrompt, null, 2)\}\
+                  </pre>\
+                </div>\
+              )\}\
+              \{aiResponse && (\
+                <div>\
+                  <h2 className="text-lg font-semibold">AI Response:</h2>\
+                  <pre className="bg-gray-200 p-2 rounded-md">\
+                    \{JSON.stringify(aiResponse, null, 2)\}\
+                  </pre>\
+                </div>\
+              )\}\
+              \{error && (\
+                <div className="text-red-500">\
+                  Error: \{error\}\
+                </div>\
+              )\}\
+            </div>\
+          </div>\
+        </div>\
+      );\
+    \}\
+\
+    // Updated rendering with createRoot for React 18\
+    const root = ReactDOM.createRoot(document.getElementById('root'));\
+    root.render(<App />);\
+\
+    // Testing and Refinement Instructions for Cursor:\
+    // 1. Test the app by entering various inputs (e.g., short queries, long queries, special characters) to ensure JSON generation is robust.\
+    // 2. Check if the JSON structure is consistent and valid (e.g., no missing fields, proper formatting).\
+    // 3. Simulate edge cases (e.g., empty input, invalid JSON) and verify error handling.\
+    // 4. Refine the JSON template by adding optional fields (e.g., 'language' or 'priority') based on AI model requirements.\
+    // 5. Replace the simulated AI call with a real API endpoint (e.g., xAI's API at https://x.ai/api) and test for proper response handling.\
+    // 6. Optimize UI with Tailwind: adjust padding, colors, or layout for better user experience.\
+    // 7. Add loading states during AI calls to improve UX.\
+    // 8. Iterate on prompt structure by testing different 'context' or 'parameters' values to improve AI response quality.\
+  </script>\
+</body>\
+</html>}

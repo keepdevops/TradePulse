@@ -117,7 +117,7 @@ class DataRegistry:
                     elif data_type_name == 'alerts':
                         module_data['alerts'] = data_manager.alerts
                     elif data_type_name == 'portfolio_data':
-                        module_data['portfolio_data'] = data_manager.portfolio_data
+                        module_data['portfolio_data'] = data_manager.get_portfolio_data()
         
         return module_data
     

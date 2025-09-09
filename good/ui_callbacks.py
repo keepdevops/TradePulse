@@ -49,7 +49,8 @@ class UICallbacks:
             logger.info(f"🔧 Optimizing portfolio with {strategy} strategy, {risk_tolerance} risk tolerance")
             
             # Simulate optimization
-            self.ui.data_manager.portfolio_data['performance']['total_return'] += 0.01
+            portfolio_data = self.ui.data_manager.get_portfolio_data()
+            portfolio_data['performance']['total_return'] += 0.01
             self.ui.portfolio_component.update_portfolio_display()
             
             # Add alert
@@ -104,15 +105,16 @@ class UICallbacks:
             order_id = f"ORD_{int(time.time())}"
             
             # Update portfolio
-            if symbol not in self.ui.data_manager.portfolio_data['positions']:
-                self.ui.data_manager.portfolio_data['positions'][symbol] = {
+            portfolio_data = self.ui.data_manager.get_portfolio_data()
+            if symbol not in portfolio_data['positions']:
+                portfolio_data['positions'][symbol] = {
                     'shares': 0,
                     'avg_price': 0.0,
                     'current_price': price if price > 0 else 150.0
                 }
             
             # Add to positions
-            current_pos = self.ui.data_manager.portfolio_data['positions'][symbol]
+            current_pos = portfolio_data['positions'][symbol]
             current_pos['shares'] += quantity
             current_pos['avg_price'] = (current_pos['avg_price'] * (current_pos['shares'] - quantity) + 
                                       price * quantity) / current_pos['shares']
@@ -164,8 +166,9 @@ class UICallbacks:
                         df.iloc[-1, df.columns.get_loc('Low')] = min(df.iloc[-1]['Low'], new_price)
                         
                         # Update portfolio positions
-                        if symbol in self.ui.data_manager.portfolio_data['positions']:
-                            self.ui.data_manager.portfolio_data['positions'][symbol]['current_price'] = new_price
+                        portfolio_data = self.ui.data_manager.get_portfolio_data()
+                        if symbol in portfolio_data['positions']:
+                            portfolio_data['positions'][symbol]['current_price'] = new_price
                 
                 # Update current symbol display
                 if self.ui.current_symbol in self.ui.data_manager.price_data:

@@ -76,7 +76,7 @@ def launch_modular_ui():
     """Launch the refactored modular panel UI with tabbed modules"""
     try:
         # Import and run the REFACTORED MODULAR PANEL UI
-        from modular_panel_ui_main_refactored import main
+        from modular_panel_ui_main_refactored import create_refactored_modular_ui
         
         print("🚀 Launching TradePulse REFACTORED MODULAR PANEL UI...")
         print("📊 Starting web interface...")
@@ -93,7 +93,7 @@ def launch_modular_ui():
         print("⏹️  Press Ctrl+C to stop the server")
         print("-" * 50)
         
-        app, port, host = main()
+        app = create_refactored_modular_ui()
         app.show()
         
     except ImportError as e:

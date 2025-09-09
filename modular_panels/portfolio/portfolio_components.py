@@ -30,15 +30,16 @@ class PortfolioComponents:
     def create_basic_components(self, data_manager):
         """Create basic UI components"""
         # Portfolio value display
+        portfolio_data = data_manager.get_portfolio_data()
         self.portfolio_value = pn.indicators.Number(
             name='Portfolio Value',
-            value=data_manager.portfolio_data['total_value'],
+            value=portfolio_data['total_value'],
             format='${value:,.0f}',
             font_size='24pt'
         )
         
         # P&L display
-        total_return = data_manager.portfolio_data['performance']['yearly_return']
+        total_return = portfolio_data['performance']['yearly_return']
         self.pnl_display = pn.indicators.Number(
             name='Total Return',
             value=total_return * 100,
@@ -117,7 +118,8 @@ class PortfolioComponents:
     
     def _create_positions_dataframe(self, data_manager) -> pd.DataFrame:
         """Create positions dataframe from portfolio data"""
-        positions = data_manager.portfolio_data['positions']
+        portfolio_data = data_manager.get_portfolio_data()
+        positions = portfolio_data['positions']
         data = []
         
         for symbol, pos in positions.items():

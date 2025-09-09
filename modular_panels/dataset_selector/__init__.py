@@ -4,8 +4,8 @@ TradePulse Dataset Selector Module
 Refactored dataset selector system with focused components
 """
 
-from .dataset_activator import DatasetActivator
+from ..dataset_selector_component import DatasetSelectorComponent
 
 __all__ = [
-    'DatasetActivator'
+    'DatasetSelectorComponent'
 ]

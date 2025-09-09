@@ -1,0 +1,851 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 TradePulse - Software Design Document\
+Version: 10.23Date: September 3, 2025Author: Bret KuhneUpdated by: Grok (xAI)\
+0. Version History\
+\
+\
+\
+Version\
+Date\
+Author/Updater\
+Key Changes\
+\
+\
+\
+1.0\
+Jan 1, 2025\
+Bret Kuhne\
+Initial draft with core architecture.\
+\
+\
+10.0\
+Aug 28, 2025\
+Grok (xAI)\
+Added Message Bus with ZeroMQ implementation.\
+\
+\
+10.1\
+Aug 29, 2025\
+Grok (xAI)\
+Expanded Models Grid with time series models.\
+\
+\
+10.2\
+Aug 29, 2025\
+Grok (xAI)\
+Added Reinforcement Learning Module.\
+\
+\
+10.3\
+Aug 29, 2025\
+Grok (xAI)\
+Added Version History, Requirements, Risk Analysis, API Specifications.\
+\
+\
+10.4\
+Aug 29, 2025\
+Grok (xAI)\
+Added stock selection feature in Models Grid.\
+\
+\
+10.5\
+Aug 29, 2025\
+Grok (xAI)\
+Expanded asset support to include currencies, cryptocurrencies, and commodities.\
+\
+\
+10.6\
+Aug 29, 2025\
+Grok (xAI)\
+Added AI Module for Trading Strategies.\
+\
+\
+10.7\
+Aug 30, 2025\
+Grok (xAI)\
+Major code refactoring and modularization.\
+\
+\
+10.8\
+Aug 30, 2025\
+Grok (xAI)\
+Complete UI refactoring and Docker integration.\
+\
+\
+10.9\
+Aug 31, 2025\
+Grok (xAI)\
+COMPREHENSIVE REFACTORING COMPLETED.\
+\
+\
+10.10\
+Sep 1, 2025\
+Grok (xAI)\
+ENHANCED DATA PERSISTENCE AND SEARCH FUNCTIONALITY.\
+\
+\
+10.11\
+Sep 2, 2025\
+Grok (xAI)\
+Redesigned UI dashboard layouts with role-specific customizations.\
+\
+\
+10.12\
+Sep 3, 2025\
+Grok (xAI)\
+FASTAPI INTEGRATION AND ENHANCED DATA ACCESS: Implemented comprehensive FastAPI backend with unified server architecture; enhanced data access with hard drive scanning and multi-format support (CSV, JSON, Feather, Parquet, DuckDB, Keras); added enhanced date range functionality with extended historical periods; implemented hybrid deployment (FastAPI in Docker, Panel UI locally); resolved data access manager availability issues and NaTType errors; updated terminology from "redline data" to "upload data"; comprehensive file organization with 190 total files supporting both Panel UI (150 files) and FastAPI (10 files) systems. Additionally, incorporated comprehensive enhancements to Technical Analysis (TA) features, inspired by foundational principles from John J. Murphy's "Technical Analysis of the Financial Markets." This includes a new dedicated Technical Analysis Panel, expanded support for chart types, indicators, patterns, trends, volume analysis, advanced topics like cycles and Elliott Wave, intermarket analysis, and integrated trading systems with money management. Updated architecture with new files (15 additional files for TA components), expanded API endpoints, UI customizations, testing suites, and future enhancements roadmap. TA integrations leverage existing ML modules for AI-augmented analysis, ensuring modular design under 200 lines per file.\
+\
+\
+10.13\
+Sep 3, 2025\
+Grok (xAI)\
+UNCONVENTIONAL TRADING EDGES INTEGRATION: Incorporated advanced, overlooked trading advantages including Psychological Tilt Detection via biofeedback, Hidden Order and Dark Trading Opacity Simulator, Personal Bias Auditor with AI-driven journal analysis, Intermarket Hidden Divergence with Volume Profile Fusion, and Retail Horizon Edge: Delayed Gratification Simulator. Added new modules, files (~10 additional for edges), API endpoints, UI integrations in AI and Portfolio Panels, testing suites, and glossary terms. Enhancements emphasize psychological discipline, opacity strategies, bias auditing, hidden divergences, and long-term patience modeling, providing unique edges for day traders and analysts. Updated requirements, architecture, and appendices for seamless integration with existing TA and ML features.\
+\
+\
+10.14\
+Sep 3, 2025\
+Grok (xAI)\
+DAY TRADER OPTIMIZATIONS: Enhanced platform for day traders with stronger reliability (real-time data validation, redundant sources), better usability (streamlined TA Panel, enhanced chart interactivity, advanced alerts, sentiment-TA integration), and faster performance (optimized TA calculations, WebSocket updates, scalable architecture). Added scalping mode, one-click trade execution, mobile-optimized TA, and Kagi charts. Updated with new files (~10 additional), API endpoints, UI customizations (e.g., Scalping Mode in dashboard), testing suites, and integrations with existing TA/edge features for high-frequency trading advantages.\
+\
+\
+10.15\
+Sep 3, 2025\
+Grok (xAI)\
+MODULAR EXPANSION FOR DATA, ML, CHARTS, AND FORMULAS: Enhanced Data Panel with detailed retrieval from PC (hard drive scanning) or internet (API integrations), role-agnostic design. Implemented each ML model as separate pluggable module into ML training system. Each chart type as separate module plugging into Plotly/matplotlib. Dynamic symbol dropdown updating dict with new tickers. Each formula as separate editable module plugging into AI, ML, Charts. Added ~15 new files for modules, updated UI with pn.widgets.Select for dropdowns and pn.bind for reactivity, plugin architecture using abstract classes/entry points for modularity. Updated requirements, architecture, testing, and appendices.\
+\
+\
+10.16\
+Sep 3, 2025\
+Grok (xAI)\
+PLUGGABLE ML/AI FOR DIVERSE DATA TYPES: Expanded ML/AI with pluggable features for analysis beyond time series (e.g., images for chart patterns, text for sentiment, tabular for fundamentals). Added analyzer plugins in ai_analyzers/ (~10 new files), supporting libraries like PIL/OpenCV for images, NLTK/HuggingFace for text. Updated plugin architecture with BaseAnalyzer abstract class; integrated into AI/ML Panels for dynamic switching. Enhanced Data Panel for multi-type ingestion; updated endpoints, testing, and appendices for non-time-series workflows.\
+\
+\
+10.17\
+Sep 3, 2025\
+Grok (xAI)\
+ENHANCED PLUGGABILITY AND FLEXIBILITY: Incorporated recommendations for greater flexibility, reusability, pluggability, and editability. Added PluginManager singleton for runtime registration/reloading, dependency injection via injector library, configuration-driven plugins (YAML/JSON), observer pattern for updates. Updated data with pluggable sources (BaseDataSource), reusable symbol manager, editable validation pipeline. UI with pluggable widgets (BasePluginWidget), reusable dropdowns, safe editable formulas. ML with pluggable preprocessors, hybrid builder, editable model code, analyzer-model registry. Portfolio with pluggable risk calculators, reusable optimization pipeline. API with dynamic endpoint registration, reusable validation. Deployment with volume-mounted plugins, configurable entry points. Testing with reusable harness. Added ~20 new files/utils, updated all sections for SOLID adherence and easier additions/edits.\
+\
+\
+10.18\
+Sep 3, 2025\
+Grok (xAI)\
+PLUGGABLE DATA FORMATS: Enhanced flexibility with pluggable data format handling via BaseDataFormat abstract class and data_formats/ directory (~10 new files). Added format-specific read/write plugins (e.g., csv_format.py, parquet_format.py), integrated with PluginManager for runtime loading. Extended Data Panel for format selection, format-specific validation, and UI widgets (BaseFormatWidget). Updated symbol manager for non-time-series metadata, validation pipeline for format-specific validators, and export capabilities for pluggable writers. Enhanced API with dynamic format endpoints, portfolio with format-aware pipelines, and deployment with hot-reloadable configs (watchdog). Added reusable test harness for formats. Updated requirements, architecture, testing, and appendices for seamless format integration, ensuring SOLID compliance and easier additions/edits for all plugins.\
+\
+\
+10.19\
+Sep 3, 2025\
+Grok (xAI)\
+FURTHER FLEXIBILITY WITH PLUGGABLE FORMATS: Incorporated re-critique recommendations for pluggable data formats. Added BaseDataFormat for read/write, data_formats/ directory with plugins (e.g., csv_format.py), format-specific validation/UI (BaseFormatWidget). Updated pipeline for format detection/loading, symbol manager for non-time-series, validation with format-aware chains. Enhanced API/deployment/testing with format endpoints, hot-reload, and harness. Integrated with existing plugins (e.g., analyzers format-aware). Added ~10 new files, updated all sections for greater extensibility.\
+\
+\
+10.20\
+Sep 3, 2025\
+Grok (xAI)\
+STANDALONE MODULAR DESIGN: Made each module standalone with data input/output sharing via BaseModule interface and shared data bus. Enforced 200-line limit per file. Added pluggable options for analysis/outputs in all modules. Introduced BaseModule with receive_input/send_output methods; data bus in utils/data_bus.py for sharing. Updated all modules to inherit BaseModule, with plugin loaders for options. Added ~15 new files, updated architecture, requirements, testing, and appendices for enhanced modularity.\
+\
+\
+10.21\
+Sep 3, 2025\
+Grok (xAI)\
+PLUGGABLE API DATA STREAMING: Made API data streaming pluggable and expandable via BaseStreamHandler abstract class and stream_plugins/ directory (~5 new files). Added streaming endpoints with dynamic registration, reusable stream functions, and UI toggles for stream sources. Updated data management, API, deployment, testing for pluggable streaming; integrated with existing plugins/formats. Added ~5 new files, updated sections for extensibility.\
+\
+\
+10.22\
+Sep 3, 2025\
+Grok (xAI)\
+ENHANCED MODULARITY FOR UNTOUCHED FEATURES: Incorporated suggestions for broker integration, cloud sync, user authentication, sentiment analysis, backtesting framework, and real-time alerts. Added new directories/modules (~30 files), pluggable with Base* abstracts (e.g., BaseBroker, BaseCloudSync). Updated requirements, architecture, UI, API, testing, and appendices for standalone, pluggable design (<200 lines/file, DI, data bus sharing).\
+\
+\
+10.23\
+Sep 3, 2025\
+Grok (xAI)\
+ENHANCED MODULARITY AND PLUGGABILITY: Incorporated suggestions to make broker integration, cloud sync, user authentication, sentiment analysis, backtesting framework, and real-time alerts standalone and pluggable. Added new directories: broker_plugins/, cloud_sync_plugins/, auth_plugins/, sentiment_plugins/, backtest_plugins/, alert_plugins/ (~30 files), with BaseBroker, BaseCloudSync, BaseAuthProvider, BaseSentimentAnalyzer, BaseBacktester, BaseAlertTrigger abstracts. All modules inherit BaseModule for data input/output via data_bus.py, ensuring <200 lines/file and pluggable options (e.g., custom alert triggers). Updated requirements, architecture, UI, API, testing, and appendices for seamless integration with existing plugins (ML, charts, formulas, analyzers, formats, streaming).\
+\
+\
+1. System Overview\
+1.1 Purpose\
+TradePulse is a comprehensive trading and portfolio management platform designed to empower day traders, financial analysts, and quantitative traders with advanced tools for market analysis, AI-driven trading strategies, and portfolio optimization. It provides actionable insights through a modular panel-based interface, robust backend processing with FastAPI integration, and advanced visualization using Panel, Plotly, and matplotlib. The platform supports historical financial data from multiple sources (hard drive scanning, live feeds) for machine learning (ML) training and predictions. Optimized for M3 Silicon (ARM64) compatibility, TradePulse supports deployment via Conda Forge or Docker containers, with features like real-time alerts, backtesting, sentiment analysis, interactive dashboards, portfolio management, broker integration, cloud sync, and user authentication. Technical Analysis (TA) capabilities, inspired by John J. Murphy's "Technical Analysis of the Financial Markets," include tools for trend identification, chart patterns, indicators, volume analysis, cycles, intermarket relationships, and rule-based trading systems, integrated with AI for hybrid strategies. Unconventional trading edges (e.g., psychological tilt detection, hidden order opacity simulation) provide unique advantages in emotional control, institutional mimicry, bias correction, signal detection, and long-term patience modeling. Day trader optimizations enhance reliability (data validation), usability (scalping mode, interactive charts), and performance (WebSocket, TA-Lib). Modular expansions include a role-agnostic Data Retrieval Panel, pluggable ML models, charts, formulas, analyzers, data formats, and API streaming. Pluggability is enhanced via PluginManager for runtime reloading, dependency injection (DI) via injector, configuration-driven plugins (configs/plugins.yaml), and observer patterns for flexibility, enabling easy additions/edits without restarts. Standalone modular design ensures each module operates independently with data input/output sharing via BaseModule and a shared data bus (data_bus.py), enforcing <200 lines per file and pluggable options for analysis/outputs. API data streaming is pluggable via BaseStreamHandler. New enhancements make broker integration, cloud sync, user authentication, sentiment analysis, backtesting framework, and real-time alerts standalone and pluggable with dedicated abstract classes (BaseBroker, BaseCloudSync, BaseAuthProvider, BaseSentimentAnalyzer, BaseBacktester, BaseAlertTrigger), integrated with data bus for sharing, UI toggles, and dynamic API endpoints, ensuring extensibility and SOLID compliance.\
+1.2 Target Audience and Use Cases\
+Target Audience\
+\
+Day Traders: Require real-time data, volatility analysis, and automated trading tools for high-frequency trades, enhanced with TA (e.g., pattern detection), edges (e.g., tilt detection), scalping mode, WebSocket, pluggable brokers/backtesting/alerts/sentiment, standalone modules with data sharing (<200 lines/file).\
+Financial Analysts: Need advanced analytics, visualization, and risk assessment for long-term investments, leveraging intermarket analysis, cycle detection, bias auditing, horizon simulation, pluggable ML/charts/analyzers/cloud sync, with data bus sharing.\
+Quantitative Traders: Rely on mathematical models and backtesting, enhanced by TA-ML hybrids, hidden divergence, pluggable models/charts/formulas/backtesting/authentication/sentiment, with standalone modules and data sharing.\
+\
+Use Cases\
+\
+Identifying Undervalued Stocks: Leverage indicators, ML predictions, and horizon simulations with dynamic symbol dropdowns, pluggable formats, cloud sync for backups, and backtesting for validation.\
+Detecting Volatile Stocks: Use real-time feeds, TA patterns, hidden divergence, and pluggable sentiment analyzers (e.g., VADER) for volatility predictions, with chart plugins and data bus sharing.\
+Portfolio Optimization: Apply modern portfolio theory, AI-driven rebalancing, and TA risk metrics (e.g., ATR), with pluggable risk calculators, formats, cloud sync, and broker integration for execution.\
+Real-time Market Monitoring: Set alerts for price/volume/indicator crossovers with pluggable triggers (e.g., anomaly-based), interactive charts, tilt detection, and streaming via BaseStreamHandler.\
+Technical Analysis-Driven Trading: Construct charts, trends, and systems with editable formulas, intermarket correlations, and pluggable backtesting for strategy validation.\
+Unconventional Edge Utilization: Activate edges (e.g., tilt detection, bias auditing) with pluggable analyzers, formats, and cloud sync for journal backups.\
+Day Trader High-Frequency Execution: Utilize scalping mode, one-click trades via pluggable brokers, complex alerts, sentiment-adjusted TA, WebSocket streaming, and backtesting for rapid strategies.\
+Data Retrieval and Customization: Access Data Panel for PC/internet sources, dynamic symbol updates, editable formulas, and pluggable formats/streaming.\
+Diverse Data Analysis: Switch pluggable analyzers for non-time-series (e.g., images, text) with format-aware ingestion and cloud sync.\
+\
+1.3 Requirements\
+Functional Requirements\
+\
+Data Management:\
+Support multiple formats (CSV, JSON, DuckDB, SQLite, Feather, Parquet, Excel, Keras HDF5).\
+Real-time streaming from Yahoo Finance, Alpha Vantage, IEX Cloud.\
+Global data persistence across modules.\
+Advanced dataset search/filtering.\
+Enhanced date range functionality with historical periods.\
+Hard drive scanning for discovery.\
+Export with multiple format options.\
+TA-Specific: Aggregation for long-term charts, volume/open interest pulls.\
+Edge-Specific: Secure biofeedback/journal uploads.\
+Day Trader-Specific: Redundant source failover, real-time validation.\
+New: Role-agnostic Data Retrieval Panel with pn.widgets.FileSelector for PC, pn.widgets.TextInput/pn.bind for APIs, pn.widgets.Select for symbols.\
+New: Non-time-series ingestion (e.g., images, text) via analyzers.\
+New: Pluggable sources (BaseDataSource), symbol manager, validation pipeline, formats (BaseDataFormat), streaming (BaseStreamHandler).\
+New: Cloud sync via BaseCloudSync for backups.\
+\
+\
+Machine Learning:\
+Train models (ADM, CIPO, BICIPO, Ensemble).\
+Hyperparameter tuning, performance tracking, persistent storage, real-time predictions.\
+TA Integration: Hybrid models with TA indicators/patterns.\
+Edge Integration: Bias auditing, hidden divergence models.\
+Day Trader-Specific: Sentiment-TA hybrids.\
+New: Pluggable models (BaseMLModel), analyzers (BaseAnalyzer), preprocessors, hybrid builder, editable code, analyzer-model registry.\
+New: Format-aware preprocessing; sentiment via BaseSentimentAnalyzer.\
+\
+\
+Portfolio Management:\
+Modern portfolio theory optimization, risk assessment, rebalancing.\
+TA Enhancements: Trend strength (ADX), volatility (Bollinger Bands).\
+Edge Enhancements: Horizon simulator with DCF.\
+Day Trader-Specific: One-click trade execution with broker APIs.\
+New: Pluggable risk calculators (BaseRiskFunction), optimization pipeline, formats, brokers (BaseBroker).\
+\
+\
+User Interface:\
+Modular panel-based interface, real-time updates, responsive design, role-based customization.\
+New: TA Panel with interactive tools; Edge Panel with toggles; scalping mode, chart tools, complex alerts; pluggable charts (BaseChart), formulas (BaseFormula), widgets (BasePluginWidget), dropdowns (DynamicSelect), sandboxed formula editing.\
+New: Format widgets (BaseFormatWidget); streaming toggles; authentication UI (BaseAuthProvider); backtesting UI (BaseBacktester); alert triggers (BaseAlertTrigger).\
+\
+\
+API Integration:\
+FastAPI backend with RESTful design, JSON responses, auto-generated docs.\
+New: TA/edge/day trader endpoints; dynamic symbol updates (/api/symbols/update), formula editing (/api/formulas/edit), formats (/api/data/\{format\}/read), streaming (/api/stream/\{handler\}/start), brokers (/api/broker/\{broker\}/execute), cloud sync (/api/cloud/\{provider\}/sync), authentication (/api/auth/\{provider\}/login), sentiment (/api/sentiment/\{analyzer\}/analyze), backtesting (/api/backtest/\{engine\}/run), alerts (/api/alerts/\{trigger\}/monitor).\
+\
+\
+\
+Non-Functional Requirements\
+\
+Performance:\
+Sub-second query response times.\
+Real-time processing, efficient memory, ARM64 optimization.\
+TA-Specific: Vectorized calculations (numpy/pandas).\
+Edge-Specific: Low-latency biofeedback.\
+Day Trader-Specific: WebSocket, TA-Lib, Redis caching.\
+New: Efficient analyzer/format/streaming plugins (e.g., batched processing).\
+\
+\
+Scalability:\
+Modular architecture, Docker containerization, horizontal scaling, FastAPI serving.\
+TA/Edge/Day Trader Enhancements: Caching, scalable NLP, async requests.\
+New: Dynamic plugin loading, analyzer/format/streaming batching.\
+\
+\
+Reliability:\
+Robust error handling, persistence, logging, NaTType resolution.\
+TA/Edge/Day Trader-Specific: Input validation, privacy, circuit breakers.\
+New: Non-time-series/format/streaming validators; observer pattern.\
+\
+\
+Security:\
+Authentication, secure transmission, input sanitization.\
+Edge-Specific: Encrypted biofeedback, anonymized auditing.\
+New: Sandboxing for code execution; secure streaming/auth.\
+\
+\
+\
+2. System Architecture\
+2.1 High-Level Architecture\
+TradePulse follows a modular, microservices-inspired architecture with the following key components:\
+\
+Core Components:\
+modular_panel_ui_main_refactored.py: Main application entry point.\
+ui_components/: Core UI components and data management.\
+modular_panels/: Modular panel implementations.\
+api/: FastAPI backend components.\
+data_grid/: Data processing and management.\
+models_grid/: Machine learning models and training.\
+ai_module/: AI-driven trading strategies.\
+auth/: Authentication and authorization.\
+utils/: Utility functions and helpers.\
+New: technical_analysis/: TA components (e.g., indicator engines).\
+New: edge_modules/: Edges (e.g., tilt detection).\
+New: ml_plugins/: Pluggable ML models (e.g., adm_plugin.py).\
+New: chart_plugins/: Pluggable chart types (e.g., kagi_chart.py).\
+New: formula_plugins/: Editable formulas (e.g., rsi_formula.py).\
+New: ai_analyzers/: Pluggable analyzers (e.g., image_analyzer.py).\
+New: data_plugins/: Pluggable sources (e.g., yahoo_source.py).\
+New: data_formats/: Pluggable formats (e.g., csv_format.py).\
+New: stream_plugins/: Pluggable streaming (e.g., websocket_stream.py).\
+New: broker_plugins/: Pluggable brokers (e.g., alpaca_broker.py).\
+New: cloud_sync_plugins/: Pluggable cloud sync (e.g., s3_sync.py).\
+New: auth_plugins/: Pluggable authentication (e.g., jwt_auth.py).\
+New: sentiment_plugins/: Pluggable sentiment (e.g., nltk_sentiment.py).\
+New: backtest_plugins/: Pluggable backtesting (e.g., zipline_backtester.py).\
+New: alert_plugins/: Pluggable alerts (e.g., price_alert.py).\
+New: utils/plugin_manager.py: Singleton for runtime registration/reloading.\
+New: utils/plugin_registry.py: Shared registry for plugins.\
+New: utils/observable_registry.py: Observer pattern for updates.\
+New: utils/symbol_manager.py: Symbol dictionary management.\
+New: utils/format_registry.py: Format handler registry.\
+New: utils/data_bus.py: Shared data bus for module input/output.\
+\
+\
+\
+2.2 FastAPI Integration Architecture\
+Unified Server Implementation:\
+\
+fastapi_panel_advanced_integration.py: Advanced FastAPI + Panel integration.\
+fastapi_panel_integration.py: Basic FastAPI + Panel integration.\
+api/fastapi_server.py: Main FastAPI server.\
+api/fastapi_client.py: FastAPI client for API interactions.\
+api/models.py: Pydantic models for data validation.\
+api/endpoints/:\
+data_endpoints.py: Data management APIs.\
+model_endpoints.py: Model training APIs.\
+portfolio_endpoints.py: Portfolio management APIs.\
+alert_endpoints.py: Alert management APIs.\
+system_endpoints.py: System monitoring APIs.\
+file_upload_endpoints.py: File upload APIs.\
+New: technical_analysis_endpoints.py: TA APIs (indicators, patterns).\
+New: edge_endpoints.py: Edge APIs (tilt, opacity, bias).\
+New: day_trader_endpoints.py: Scalping, alerts, trade execution.\
+New: ml_plugin_endpoints.py: ML module plugging.\
+New: chart_plugin_endpoints.py: Chart rendering.\
+New: formula_plugin_endpoints.py: Formula editing.\
+New: analyzer_endpoints.py: Analyzer loading/processing.\
+New: format_endpoints.py: Format read/write.\
+New: stream_endpoints.py: Streaming endpoints.\
+New: broker_endpoints.py: Broker execution.\
+New: cloud_sync_endpoints.py: Cloud sync operations.\
+New: auth_endpoints.py: Authentication providers.\
+New: sentiment_endpoints.py: Sentiment analysis.\
+New: backtest_endpoints.py: Backtesting engines.\
+New: alert_trigger_endpoints.py: Alert triggers.\
+New: Dynamic registration using router.add_api_route in PluginManager.\
+\
+\
+\
+2.3 Modular Panel Architecture\
+The application uses a modular panel system:\
+\
+data_panel.py: Data management, role-agnostic retrieval.\
+models_panel.py: ML model training with plugin loader.\
+portfolio_panel.py: Portfolio management.\
+ai_panel.py: AI strategies with formula/analyzer plugins.\
+charts_panel.py: Charting with plugin loader.\
+alerts_panel.py: Real-time alerts with triggers.\
+system_panel.py: System monitoring, plugin management.\
+New: technical_analysis_panel.py: TA tools (<200 lines).\
+New: edge_panel.py: Edge interfaces (<200 lines).Each panel inherits BaseModule for standalone operation, with receive_input(data), send_output(result) for data bus sharing, and sub-plugin loaders for options (e.g., alert triggers). Limited to <200 lines, using DI (injector) and ObservableRegistry for updates.\
+\
+2.4 Enhanced Data Access Architecture\
+Comprehensive Data Access System:\
+\
+ui_components/data_access.py: Hard drive scanning.\
+ui_components/module_data_access.py: Module-specific wrapper.\
+ui_components/data_manager.py: Upload support.\
+ui_components/global_data_store.py: Global persistence.\
+Support for formats: CSV, JSON, Feather, Parquet, DuckDB, Keras HDF5.\
+Hard drive scanning across directories.\
+Enhanced date range functionality.\
+TA-Specific: Volume/open interest, intermarket data.\
+Edge-Specific: Biofeedback/journal uploads.\
+Day Trader-Specific: Failover, tick caching.\
+New: Role-agnostic retrieval with pn.widgets.FileSelector, pn.widgets.TextInput/pn.bind, pn.widgets.Select for symbols.\
+New: Non-time-series ingestion (images, text).\
+New: Pluggable sources (BaseDataSource), symbol manager, validation pipeline, formats (BaseDataFormat), streaming (BaseStreamHandler).\
+New: Cloud sync via BaseCloudSync.\
+\
+2.5 File Structure (Version 10.23)\
+Complete file organization with ~350 total files (increased by ~30 for new modules):\
+\
+Panel UI Files (~225 files):\
+Main entry points: 4 files (launchers).\
+Core panel components: ~140 files (data, models, portfolio, AI, charts, alerts, system, TA, edges, day trader, plugins, analyzers, formats, streaming, brokers, cloud sync, auth, sentiment, backtesting, alerts).\
+UI components: ~55 files (data management, dashboard, TA/edge/day trader/format/stream/broker/auth/sentiment/backtest/alert widgets).\
+Model management: 7 files.\
+Integration & analysis: 4 files.\
+Launchers: 5 files.\
+New TA Files: ~10 files (e.g., ta_indicators.py, ta_patterns.py).\
+New Edge Files: ~5 files (e.g., tilt_detection.py).\
+New Day Trader Files: ~5 files (e.g., scalping_mode.py).\
+New ML Plugin Files: ~5 files (e.g., adm_plugin.py, base_ml_model.py).\
+New Chart Plugin Files: ~5 files (e.g., kagi_chart.py, base_chart.py).\
+New Formula Plugin Files: ~5 files (e.g., rsi_formula.py, base_formula.py).\
+New Analyzer Plugin Files: ~5 files (e.g., image_analyzer.py, base_analyzer.py).\
+New Data Plugin Files: ~5 files (e.g., yahoo_source.py, base_data_source.py).\
+New Data Format Files: ~10 files (e.g., csv_format.py, base_data_format.py).\
+New Stream Plugin Files: ~5 files (e.g., websocket_stream.py, base_stream_handler.py).\
+New Broker Plugin Files: ~5 files (e.g., alpaca_broker.py, base_broker.py).\
+New Cloud Sync Plugin Files: ~5 files (e.g., s3_sync.py, base_cloud_sync.py).\
+New Auth Plugin Files: ~5 files (e.g., jwt_auth.py, base_auth_provider.py).\
+New Sentiment Plugin Files: ~5 files (e.g., nltk_sentiment.py, base_sentiment_analyzer.py).\
+New Backtest Plugin Files: ~5 files (e.g., zipline_backtester.py, base_backtester.py).\
+New Alert Plugin Files: ~5 files (e.g., price_alert.py, base_alert_trigger.py).\
+New: utils/plugin_manager.py, plugin_registry.py, observable_registry.py, symbol_manager.py, format_registry.py, data_bus.py.\
+\
+\
+FastAPI Files (~26 files):\
+Main entry points: 4 files.\
+Core FastAPI: 4 files (server, client, models).\
+API endpoints: 17 files (data, models, portfolio, alerts, system, file upload, technical_analysis, edge, day_trader, ml_plugin, chart_plugin, formula_plugin, analyzer, format, stream, broker, cloud_sync, auth, sentiment, backtest, alert_trigger).\
+Documentation: 1 file.\
+\
+\
+Configuration Files (~19 files):\
+Requirements: 4 files (FastAPI, Panel, Docker, general; updated for injector, RestrictedPython, watchdog, pubsub).\
+Environment: 2 files (conda environments).\
+Docker: 5 files (Dockerfiles, compose files, scripts).\
+Launchers: 4 files (hybrid setup).\
+New: configs/plugins.yaml for plugins.\
+\
+\
+Test & Utility Files (~30 files):\
+Test files: 21 files (Panel, data access, date ranges, TA/edge/day trader/plugin/analyzer/format/stream/broker/cloud_sync/auth/sentiment/backtest/alert tests).\
+Utility files: 9 files (data upload, TA/edge/day trader/plugin/format/stream/broker/auth utilities).\
+\
+\
+Documentation Files (~6 files):\
+Panel documentation: 3 files.\
+API documentation: 2 files.\
+New: Plugin/Module guide.\
+\
+\
+\
+2.6 Hybrid Deployment Architecture\
+Flexible Deployment Options:\
+\
+Unified Server: FastAPI + Panel on single port.\
+Hybrid Setup: FastAPI in Docker, Panel UI locally.\
+Docker-only: Complete containerized deployment.\
+Local Development: Full local development environment.\
+TA-Specific: Docker images for TA-Lib.\
+Edge-Specific: Support for biofeedback APIs.\
+Day Trader-Specific: WebSocket, Redis configs.\
+New: Volume-mounted plugins; env vars (PLUGIN_DIRS); hot-reload configs with watchdog.\
+New: Support for broker/auth/cloud sync plugins.\
+\
+3. Data Management\
+3.1 Data Sources\
+\
+Primary Data Sources:\
+Yahoo Finance API: Real-time and historical stock data.\
+Alpha Vantage API: Technical indicators and fundamental data.\
+IEX Cloud API: Market data and financial statements.\
+File Uploads: CSV, JSON, DuckDB, SQLite, Feather, Parquet, Excel, Keras HDF5.\
+Hard Drive Scanning: Discovery across uploads/, data/, model_training_data/, Downloads/, Documents/, Desktop/.\
+Mock Data: For testing.\
+TA-Specific: Volume, open interest, intermarket data.\
+Edge-Specific: Biofeedback, journal files.\
+Day Trader-Specific: Failover for ticks.\
+New: Role-agnostic retrieval, dynamic symbol updates.\
+New: Non-time-series ingestion (images, text).\
+New: Pluggable via BaseDataSource, registered in PluginManager.\
+\
+\
+\
+3.2 Enhanced Data Access Implementation\
+\
+Comprehensive Data Access System:\
+ui_components/data_access.py: Hard drive scanning.\
+ui_components/module_data_access.py: Module-specific wrapper.\
+ui_components/data_manager.py: Upload support.\
+ui_components/global_data_store.py: Global persistence.\
+Support for formats via BaseDataFormat.\
+Scanning across directories.\
+Enhanced date range functionality.\
+TA-Specific: Volume/open interest, intermarket data.\
+Edge-Specific: Biofeedback/journal uploads.\
+Day Trader-Specific: Failover, tick caching.\
+New: Retrieval with pn.widgets.FileSelector, pn.widgets.TextInput/pn.bind, pn.widgets.Select for symbols.\
+New: Non-time-series ingestion.\
+New: Pluggable sources (BaseDataSource), symbol manager, validation pipeline, formats (BaseDataFormat), streaming (BaseStreamHandler).\
+New: Cloud sync via BaseCloudSync.\
+\
+\
+\
+3.3 Data Processing Pipeline\
+Enhanced Data Processing:\
+\
+Data Discovery: Directory scanning.\
+Format Detection: Via BaseDataFormat.read().\
+Data Validation: Chained validators, format-specific.\
+Metadata Extraction: Automatic generation.\
+Global Storage: In Global Data Store.\
+Module Registration: Via data bus.\
+Access Control: Module-specific permissions.\
+Export Capabilities: Via BaseDataFormat.write().\
+TA-Specific: Preprocessing for TA (weekly bars, volume metrics).\
+Edge-Specific: NLP/biofeedback preprocessing.\
+Day Trader-Specific: Circuit breakers, parallel detection.\
+New: Plugin registration for ML/charts/formulas/analyzers/formats/streaming/brokers/cloud sync/auth/sentiment/backtesting/alerts via pkgutil.iter_modules.\
+New: Non-time-series preprocessing (image resize, text tokenization).\
+New: Editable validation with DI-injected validators; observer updates.\
+New: Format-aware metadata; pluggable exporters.\
+\
+3.4 Enhanced Date Range Functionality\
+\
+Dynamic Date Ranges: Years, months, days.\
+Frequency Adjustment: Automatic for long periods.\
+Statistics Calculation: Duration and frequency analysis.\
+Error Handling: NaTType, invalid dates.\
+UI Integration: Date picker with presets.\
+TA-Specific: Cycle analysis presets.\
+Edge-Specific: Horizon simulation ranges.\
+Day Trader-Specific: Intraday filters.\
+New: YAML-configurable presets, injectable via DI.\
+\
+4. User Interface\
+4.1 Panel-Based Interface\
+Modular Panel System:\
+\
+data_panel.py: Data management, role-agnostic retrieval with pn.widgets.FileSelector, pn.widgets.TextInput/pn.bind, pn.widgets.Select for symbols, BaseFormatWidget for formats, BaseStreamHandler toggles.\
+models_panel.py: ML training with plugin loader.\
+portfolio_panel.py: Portfolio management with broker plugins.\
+ai_panel.py: AI strategies with formula/analyzer/sentiment plugins.\
+charts_panel.py: Charting with plugin loader.\
+alerts_panel.py: Alerts with trigger plugins.\
+system_panel.py: Monitoring, plugin management tab.\
+New: technical_analysis_panel.py: TA tools (<200 lines).\
+New: edge_panel.py: Edge interfaces (<200 lines).\
+New: Pluggable widgets (BasePluginWidget), DynamicSelect, sandboxed formulas, format/stream/broker/auth/sentiment/backtest/alert widgets.\
+\
+4.2 Role-Based Dashboard Layouts\
+Day Traders Dashboard Layout:\
+\
+3-column grid for real-time action.\
+Primary: Charts Panel with candlestick charts.\
+Monitoring: Alerts Panel with pluggable triggers.\
+Insights: Data Panel with live feeds, streaming toggles.\
+Optimizations: High refresh rates, touch-friendly.\
+TA Enhancements: Quick-access tools.\
+Edge Enhancements: Tilt detection, opacity simulator.\
+Day Trader-Specific: Scalping Mode, one-click trades, sentiment overlays.\
+New: Symbol dropdown, editable formulas, analyzer/stream/broker toggles.\
+\
+ML AI Trend Analysts Dashboard Layout:\
+\
+Tabbed dashboard with expandable sections.\
+Data/Models: Data Panel with search/filtering.\
+Analysis: AI Panel with trend/backtesting/sentiment.\
+Outputs: Portfolio Panel with optimization.\
+Optimizations: Large canvas, persistent history.\
+TA/Edge Enhancements: Cycle/intermarket views, bias/horizon tabs.\
+New: Pluggable ML/charts/analyzers/formats/stream/auth/backtest/alerts.\
+\
+New: Dashboards use DI for widget injection, observer for updates.\
+4.3 FastAPI Integration UI\
+\
+Single Port Access: FastAPI + Panel.\
+API Documentation: Auto-generated at /api/docs.\
+Health Monitoring: System health checks.\
+Hybrid Deployment: Flexible environments.\
+TA/Edge/Day Trader-Specific: Updated docs.\
+New: Docs for plugin/format/stream/broker/cloud/auth/sentiment/backtest/alert endpoints.\
+\
+4.4 Chart Types Details\
+Expanded Charting Support (Inspired by Murphy):\
+\
+Point and Figure Charts: X's for rising, O's for falling. Module: point_figure_chart.py (BaseChart).\
+Renko Charts: Brick-based, fixed price move. Module: renko_chart.py.\
+Heikin-Ashi Charts: Averaged candlesticks. Module: heikin_ashi_chart.py.\
+Ichimoku Cloud: Multi-line overlay. Module: ichimoku_chart.py.\
+Kagi Charts: Price reversal-based. Module: kagi_chart.py.\
+Implementation: Toggleable via Plotly; data from Global Data Store. Day Trader-Specific: Mobile gestures. Plugs via BaseChart.render().\
+New: YAML-configurable options; DI; analyzer/format integration.\
+\
+5. Machine Learning Models\
+5.1 Model Types\
+\
+ADM: Adaptive time series. Module: adm_plugin.py (BaseMLModel).\
+CIPO: Portfolio optimization. Module: cipo_plugin.py.\
+BICIPO: Bayesian optimization. Module: bicipo_plugin.py.\
+Ensemble: Combined predictions. Module: ensemble_plugin.py.\
+TA-Hybrid: ML with TA indicators/patterns.\
+Edge-Hybrid: Bias auditing, hidden divergence.\
+Day Trader-Specific: Sentiment-TA hybrids.\
+New: Pluggable via BaseMLModel; pkgutil.iter_modules registry.\
+New: Analyzers for non-time-series (CNN, Transformers).\
+New: Pluggable preprocessors; hybrid_model_builder() with DI; editable code; analyzer-model registry.\
+New: Sentiment via BaseSentimentAnalyzer.\
+\
+5.2 Enhanced Training System\
+\
+Data Preparation: Validation/preprocessing.\
+Hyperparameter Configuration: Configurable parameters.\
+Model Training: Execution with tracking.\
+Performance Evaluation: Metrics/validation.\
+Model Storage: Persistent metadata.\
+UI Updates: Real-time display.\
+Error Handling: Robust recovery.\
+TA-Specific: Pattern training.\
+Edge-Specific: Bias/divergence training.\
+Day Trader-Specific: High-frequency hybrids.\
+New: Plugin loader for ML/formulas/analyzers/formats/sentiment.\
+New: Chained preprocessors, DI-injected; observer updates.\
+New: Format-aware preprocessing.\
+\
+5.3 Technical Indicators and Oscillators\
+Inspired by Murphy:\
+\
+Indicators: SMAs/EMAs, MACD, RSI, Stochastic, Bollinger Bands, ATR, ADX, Parabolic SAR, Ichimoku Cloud, Fibonacci retracements.\
+Configuration: Adjustable via Indicators Grid.\
+Computation: numpy/pandas, TA-Lib, real-time.\
+Contrary Opinion: Sentiment via BaseSentimentAnalyzer.\
+Detailed Calculations:\
+\
+\
+Indicator\
+Formula\
+Step-by-Step Calculation\
+Interpretation/Usage\
+\
+\
+\
+RSI\
+RSI = 100 - (100 / (1 + RS)), RS = Avg Gain / Avg Loss over 14 periods\
+1. Calculate daily changes. 2. Separate gains/losses. 3. Initial Avg Gain/Loss over 14 periods. 4. Smooth: New Avg Gain = [(Prev \'d7 13) + Current]/14. 5. Compute RS and RSI.\
+Overbought >70, oversold <30; divergences signal reversals. Module: rsi_formula.py (BaseFormula).\
+\
+\
+MACD\
+MACD Line = 12-period EMA - 26-period EMA; Signal = 9-period EMA of MACD; Histogram = MACD - Signal\
+1. EMA: [Price - Prev EMA] \'d7 (2/(N+1)) + Prev EMA. 2. Subtract EMAs for Line. 3. EMA of Line for Signal. 4. Subtract for Histogram.\
+Bullish crossover above Signal; histogram for momentum. Module: macd_formula.py.\
+\
+\
+Bollinger Bands\
+Middle = 20-period SMA; Upper = Middle + (2 \'d7 SD); Lower = Middle - (2 \'d7 SD)\
+1. SMA of closes. 2. SD = \uc0\u8730 [\u931 (x - mean)\'b2 / N]. 3. Add/subtract 2\'d7SD.\
+Bands widen with volatility; prices at upper/lower indicate overbought/oversold. Module: bollinger_formula.py.\
+\
+\
+ATR\
+ATR = Avg of True Range over 14 periods; TR = max(High-Low,\
+High-Prev Close\
+,\
+\
+\
+ADX\
+ADX = Avg of DX over 14 periods; DX =\
++DI - -DI\
+/ (+DI + -DI) \'d7 100\
+\
+\
+\
+Day Trader-Specific: Preloaded configs, sentiment adjustments.\
+New: Pluggable via BaseFormula.edit(); format-aware.\
+\
+5.4 Chart Patterns and Detection\
+\
+Patterns: Head & shoulders, double tops/bottoms, flags, pennants, triangles, candlestick patterns.\
+Implementation: Time-series/ML in AI Panel.\
+Visualization: Overlays with probability scores.\
+Backtesting: Strategy testing via BaseBacktester.\
+Day Trader-Specific: Real-time detection with streaming.\
+New: Image analyzer for computer vision; format-aware data.\
+\
+6. Portfolio Management\
+6.1 Portfolio Optimization\
+\
+Modern Portfolio Theory: Efficient frontier, asset allocation, rebalancing.\
+TA Enhancements: Trend strength (ADX), volatility (Bollinger Bands).\
+Edge Enhancements: Horizon simulator with DCF.\
+Day Trader-Specific: One-click execution via BaseBroker.\
+New: Pluggable risk calculators (BaseRiskFunction), optimization pipeline, formats, brokers.\
+\
+6.2 Enhanced Risk Management\
+\
+Tools: VaR, Sharpe Ratio, Maximum Drawdown, correlation analysis.\
+TA-Specific: ATR stop-losses, volume divergences.\
+Edge-Specific: Tilt/bias risk scoring.\
+Day Trader-Specific: Signal validation.\
+New: Pluggable formulas; sentiment analyzer; chained risk functions, DI-injected; format-aware.\
+\
+6.3 Volume and Open Interest Analysis\
+\
+Tools: OBV, Accumulation/Distribution, Chaikin Money Flow, open interest.\
+Integration: Alerts via BaseAlertTrigger, multi-asset volume pulls.\
+Edge Enhancements: Hidden divergence fusion.\
+New: Pluggable formulas; analyzer/format-aware.\
+\
+6.4 Unconventional Edges\
+\
+Tilt Detection: Biofeedback alerts.\
+Opacity Simulator: Hidden/dark trades sandbox.\
+Bias Auditor: NLP journal analysis via BaseSentimentAnalyzer.\
+Hidden Divergence: Volume profile fusion.\
+Horizon Simulator: DCF-based patience.\
+New: Analyzer/format-aware; data bus sharing.\
+\
+7. API Integration\
+7.1 FastAPI Backend\
+\
+RESTful design, JSON responses, auto-generated docs.\
+Modular endpoints, Pydantic validation, error handling.\
+New: Dynamic registration via PluginManager.add_endpoint().\
+New: Reusable validate_data_type() in api/utils.py; format/stream-aware.\
+\
+7.2 API Endpoints\
+\
+Data Management:\
+Upload/Search/Export/Metadata/Scanning.\
+New: /api/data/symbols/update, /api/data/\{format\}/read.\
+\
+\
+Model Training:\
+Training, performance, storage, predictions.\
+New: /api/ml/plugins/load.\
+\
+\
+Portfolio Management: Optimization, risk, performance.\
+Alert Management: Creation, monitoring, history.\
+System Management: Health checks, status, configuration.\
+Technical Analysis:\
+/api/ta/indicators, /api/ta/patterns, /api/ta/trends, /api/ta/volume, /api/ta/cycles, /api/ta/intermarket, /api/ta/backtest, /api/ta/charts/load, /api/ta/formulas/edit.\
+\
+\
+Edge APIs:\
+/api/edge/tilt, /api/edge/opacity, /api/edge/bias, /api/edge/divergence, /api/edge/horizon.\
+\
+\
+Day Trader APIs:\
+/api/day_trader/indicators/batch, /api/day_trader/alerts/complex, /api/day_trader/sentiment_indicators, /api/day_trader/trade/execute.\
+\
+\
+Analyzer APIs:\
+/api/ai/analyzers/load, /api/ai/analyze.\
+\
+\
+New:\
+Streaming: /api/stream/\{handler\}/start.\
+Brokers: /api/broker/\{broker\}/execute.\
+Cloud Sync: /api/cloud/\{provider\}/sync.\
+Authentication: /api/auth/\{provider\}/login.\
+Sentiment: /api/sentiment/\{analyzer\}/analyze.\
+Backtesting: /api/backtest/\{engine\}/run.\
+Alerts: /api/alerts/\{trigger\}/monitor.\
+\
+\
+\
+8. Deployment Architecture\
+8.1 Deployment Options\
+\
+Unified Server, Hybrid Setup, Docker-only, Local Development.\
+\
+8.2 Docker Integration\
+\
+Multi-stage builds, environment profiles, health checks, resource limits.\
+TA/Edge/Day Trader-Specific: TA-Lib, torch, WebSocket, Redis.\
+New: Volume-mounted plugins; env vars (PLUGIN_DIRS); watchdog for configs; broker/auth/cloud sync support.\
+\
+9. Testing Strategy\
+9.1 Comprehensive Testing\
+\
+Unit, Integration, API, UI, Data Access, Date Range.\
+New: TA/Edge/Day Trader/Plugin/Analyzer/Format/Stream/Broker/Cloud Sync/Auth/Sentiment/Backtest/Alert testing.\
+New: Reusable harness (test_plugin_base.py).\
+\
+9.2 Test Files\
+\
+test_panel.py, test_data_access_manager.py, test_date_ranges.py, test_enhanced_data_access.py, test_enhanced_date_range.py.\
+New: test_ta_indicators.py, test_ta_patterns.py, test_ta_strategies.py, test_edge_tilt.py, test_edge_opacity.py, test_edge_bias.py, test_edge_divergence.py, test_edge_horizon.py, test_websocket_performance.py, test_scalping_mode.py, test_chart_types.py, test_ml_plugins.py, test_chart_plugins.py, test_formula_plugins.py, test_ai_analyzers.py, test_format_plugins.py, test_stream_handlers.py, test_broker_plugins.py, test_cloud_sync_plugins.py, test_auth_plugins.py, test_sentiment_plugins.py, test_backtest_plugins.py, test_alert_plugins.py, test_plugin_base.py.\
+\
+10. Code Quality\
+10.1 Enhanced Coding Standards\
+\
+Single Responsibility Principle (<200 lines/file).\
+Modular design, comprehensive documentation, robust error handling.\
+RESTful FastAPI, data validation.\
+TA/Edge/Day Trader-Specific: Murphy comments, privacy, latency notes.\
+New: Plugin standards with abstract classes (BaseMLModel, BaseChart, BaseFormula, BaseAnalyzer, BaseDataSource, BaseDataFormat, BaseStreamHandler, BaseBroker, BaseCloudSync, BaseAuthProvider, BaseSentimentAnalyzer, BaseBacktester, BaseAlertTrigger); SOLID adherence; DI; observer; configuration-driven.\
+\
+10.2 File Organization\
+\
+Panel UI Files: ~225 files.\
+FastAPI Files: ~26 files.\
+Configuration Files: ~19 files.\
+Test & Utility Files: ~30 files.\
+Documentation Files: ~6 files.\
+\
+11. Future Enhancements\
+11.1 Planned Features\
+\
+Advanced analytics, real-time trading, mobile app, cloud integration.\
+Enhanced API for TA/edges.\
+Day trader mobile/scalping refinements.\
+User-defined plugins for ML/charts/formulas/analyzers/formats/streaming/brokers/auth/sentiment/backtesting/alerts.\
+Plugin marketplace integration.\
+\
+11.2 Scalability Improvements\
+\
+Microservices, database storage, caching, load balancing, API gateway.\
+Edge-Specific: Scalable biofeedback streaming.\
+Day Trader-Specific: High-frequency scaling.\
+New: Dynamic plugin loading, analyzer/format/streaming batching.\
+\
+12. Glossary\
+\
+ADM: Adaptive time series model.\
+BICIPO: Bayesian portfolio optimizer.\
+CIPO: Comprehensive portfolio optimizer.\
+DuckDB: In-process SQL OLAP database.\
+Ensemble: Combined model predictions.\
+FastAPI: Fast web framework for APIs.\
+Global Data Store: Singleton for persistence.\
+ModuleDataAccess: Module-specific data wrapper.\
+NaTType: Pandas Not-a-Time type.\
+Panel: Python library for dashboards.\
+Pydantic: Data validation library.\
+Single Responsibility Principle: One reason to change per module.\
+Upload Data: Replaces "redline data".\
+TA Terms (Murphy): ADX, ATR, Dow Theory, Elliott Wave, MACD, OBV, RSI, Point and Figure, Renko, Heikin-Ashi, Ichimoku Cloud.\
+Edge Terms: Tilt Detection, Opacity Simulator, Bias Auditor, Hidden Divergence, Horizon Simulator.\
+Day Trader Terms: Scalping Mode, Kagi Chart, WebSocket.\
+Modular Terms: BaseMLModel, BaseChart, BaseFormula, BaseAnalyzer, BaseDataSource, BaseDataFormat, BaseStreamHandler.\
+New: BaseBroker, BaseCloudSync, BaseAuthProvider, BaseSentimentAnalyzer, BaseBacktester, BaseAlertTrigger, BaseModule, data_bus.py.\
+\
+13. Appendices\
+13.1 Complete File Listing\
+~350 files supporting Panel UI, FastAPI, TA, edges, day trader, plugins, analyzers, formats, streaming, brokers, cloud sync, auth, sentiment, backtesting, alerts.\
+13.2 Configuration Files\
+Docker, requirements, environments, updated for injector, RestrictedPython, watchdog, pubsub.\
+13.3 Test Files\
+21 test files covering all modules, plugins, formats, streaming, brokers, cloud sync, auth, sentiment, backtesting, alerts.\
+13.4 Documentation Files\
+Status reports, summaries, TA fundamentals, edge/day trader/plugin/format/stream/broker/auth/sentiment/backtest/alert guides.\
+13.5 API Documentation\
+Complete FastAPI endpoint documentation for all features.\
+13.6 Technical Analysis Fundamentals\
+Murphy-inspired overview of TA principles, calculations, chart constructions.\
+13.7 Unconventional Edges Overview\
+Details tilt detection, opacity simulation, bias auditing, hidden divergence, horizon simulation.\
+13.8 Day Trader Optimizations Overview\
+Summarizes reliability, usability, performance enhancements.\
+13.9 Modular Plugin Architecture\
+Details abstract classes (BaseMLModel, BaseChart, BaseFormula, BaseAnalyzer, BaseDataSource, BaseDataFormat, BaseStreamHandler, BaseBroker, BaseCloudSync, BaseAuthProvider, BaseSentimentAnalyzer, BaseBacktester, BaseAlertTrigger) and pkgutil.iter_modules.\
+13.10 Pluggable Analyzer Architecture\
+Details BaseAnalyzer.process() for diverse data types (images, text).\
+13.11 Enhanced Pluggability Guide\
+Details PluginManager, DI with injector, configs/plugins.yaml, ObservableRegistry.\
+13.12 Pluggable Data Format Architecture\
+Details BaseDataFormat.read/write() for handlers (e.g., csv_format.py).\
+13.13 Standalone Module Design\
+Details BaseModule with receive_input/send_output for data sharing via data_bus.py (pub/sub). Enforces <200 lines/file; pluggable sub-options.}

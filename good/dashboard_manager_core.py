@@ -21,6 +21,7 @@ class UserRole(Enum):
     """User role enumeration"""
     DAY_TRADER = "day_trader"
     ML_ANALYST = "ml_analyst"
+    TREND_ANALYST = "trend_analyst"
     DEFAULT = "default"
 
 class DashboardManagerCore:
@@ -45,7 +46,8 @@ class DashboardManagerCore:
                 name="🎭 User Role",
                 options=[
                     ("Day Trader", UserRole.DAY_TRADER),
-                    ("ML AI Trend Analyst", UserRole.ML_ANALYST),
+                    ("ML AI Analyst", UserRole.ML_ANALYST),
+                    ("Trend Analyst", UserRole.TREND_ANALYST),
                     ("Default", UserRole.DEFAULT)
                 ],
                 value=UserRole.DEFAULT,
@@ -77,6 +79,8 @@ class DashboardManagerCore:
                 return self.management.create_day_trader_layout(panels, self.role_switcher)
             elif self.current_role == UserRole.ML_ANALYST:
                 return self.management.create_ml_analyst_layout(panels, self.role_switcher)
+            elif self.current_role == UserRole.TREND_ANALYST:
+                return self.management.create_trend_analyst_layout(panels, self.role_switcher)
             else:
                 return self.layout.create_default_layout(panels, self.role_switcher)
                 

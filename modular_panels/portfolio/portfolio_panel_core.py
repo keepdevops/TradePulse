@@ -166,11 +166,12 @@ class PortfolioPanelCore(BasePanel):
             self.components.positions_table.value = self.operations.create_positions_dataframe(self.data_manager)
             
             # Update portfolio value
-            total_value = self.data_manager.portfolio_data['total_value']
+            portfolio_data = self.data_manager.get_portfolio_data()
+            total_value = portfolio_data['total_value']
             self.components.portfolio_value.value = total_value
             
             # Update P&L
-            total_return = self.data_manager.portfolio_data['performance']['yearly_return']
+            total_return = portfolio_data['performance']['yearly_return']
             self.components.pnl_display.value = total_return * 100
             
             # Check for uploaded data and show info
